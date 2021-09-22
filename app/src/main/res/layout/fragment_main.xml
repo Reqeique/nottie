@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:backgroundTint="?attr/colorSurface"
+        android:id="@+id/appbar"
+
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+
+            app:toolbarId="@+id/toolbar">
+
+
+            <androidx.appcompat.widget.Toolbar
+
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <TextView
+                    android:textAppearance="@android:style/TextAppearance.Material.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/sofia_pro_bold"
+                    android:text="@string/app_name"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+            </androidx.appcompat.widget.Toolbar>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_marginBottom="24dp"
+                android:paddingStart="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <com.google.android.material.card.MaterialCardView
+
+                    android:transitionName="fragment_main_search_card_transition"
+                    android:clickable="true"
+                    android:focusable="true"
+
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:id="@+id/fragment_main_search_card"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginStart="2dp"
+                    app:cardElevation="2dp"
+                    app:layout_constraintBottom_toTopOf="@+id/textView3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <androidx.appcompat.widget.SearchView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+
+
+                        app:commitIcon="@drawable/ic_baseline_arrow_back_ios_new_24"
+
+                        app:tint="@color/black" />
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <TextView
+
+                    android:id="@+id/textView3"
+                    style="@style/secondaryTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/sofia_pro_regular"
+                    android:text="JAN, 21"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@+id/fragment_main_recycler_date_time"
+                    app:layout_constraintStart_toStartOf="@+id/fragment_main_recycler_date_time" />
+
+                <androidx.recyclerview.widget.RecyclerView
+
+                    android:id="@+id/fragment_main_recycler_date_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    tools:listitem="@layout/rm_date_time" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        style="?attr/elevationOverlayEnabled"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ic_bg_main"
+        android:backgroundTint="?attr/colorSurfaceSecondary"
+
+        app:behavior_overlapTop="16dp"
+
+
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/root2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/fragment_main_root_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/fragment_main_recycler_note"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/chipGroup"
+                    tools:listitem="@layout/rm_main_note_small" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+                    <com.google.android.material.chip.Chip
+
+
+                        android:id="@+id/chip5"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/sofia_pro_regular"
+                        android:includeFontPadding="false"
+                        android:text="New"
+                        android:textAppearance="@style/chipText"
+                        android:textColor="?android:textColorSecondary"
+                        android:textSize="16sp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip4"
+                        style="@style/Widget.MaterialComponents.Chip.Filter"
+
+                        android:layout_width="wrap_content"
+
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/sofia_pro_regular"
+                        android:text="Pinned"
+                        android:textAppearance="@style/chipText"
+                        android:textColor="?android:textColorSecondary"
+                        android:textSize="16sp" />
+                </com.google.android.material.chip.ChipGroup>
+
+                <ImageButton
+
+                    android:id="@+id/fragment_main_open_note"
+                    style="ImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@null"
+                    android:backgroundTint="?attr/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView2"
+                    app:layout_constraintStart_toEndOf="@+id/textView2"
+                    app:layout_constraintTop_toTopOf="@+id/textView2"
+                    app:layout_constraintVertical_bias="0.0"
+                    app:srcCompat="@drawable/ic_round_chevron_right_24"
+                    app:tint="?attr/colorPrimary" />
+
+                <ImageButton
+                    android:id="@+id/fragment_main_add_note"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textView2"
+                    app:srcCompat="@drawable/ic_add_24px"
+                    app:tint="@color/lightSecondaryTextColor" />
+
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:textColor="@color/lightSecondaryTextColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/sofia_pro_regular"
+                    android:text="ALL NOTE"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+
+                android:id="@+id/fragment_main_root_collection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fragment_main_root_note">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/fragment_main_recycler_collection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+                    app:layout_constraintTop_toBottomOf="@+id/textView5"
+                    tools:listitem="@layout/rm_main_collection_small" />
+
+
+                <ImageButton
+
+                    android:id="@+id/fragment_main_open_collection"
+                    style="ImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:backgroundTint="?attr/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView5"
+                    app:layout_constraintStart_toEndOf="@+id/textView5"
+                    app:layout_constraintTop_toTopOf="@+id/textView5"
+                    app:srcCompat="@drawable/ic_round_chevron_right_24"
+                    app:tint="?attr/colorPrimary" />
+
+                <ImageButton
+                    android:id="@+id/fragment_main_add_collection"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView5"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textView5"
+                    app:srcCompat="@drawable/ic_add_24px"
+                    app:tint="@color/lightSecondaryTextColor" />
+
+
+                <TextView
+                    android:textColor="@color/lightSecondaryTextColor"
+
+                    android:id="@+id/textView5"
+                    style="@style/secondaryTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/sofia_pro_regular"
+                    android:text="COLLECTION"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

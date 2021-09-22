@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_main_note_root"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:background="?attr/colorSurface"
+        android:id="@+id/appBarLayout2"
+        android:layout_width="match_parent"
+        app:elevation="0dp"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="0dp"
+
+            app:contentScrim="?attr/colorAccent"
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+
+            app:toolbarId="@+id/toolbar">
+
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:elevation="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/f_m_n_chip_new"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:fontFamily="@font/sofia_pro_regular"
+                    android:text="New"
+                    android:textColor="?android:textColorSecondary"
+
+                    android:textAppearance="@style/chipText"
+                   />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/f_m_n_chip_pinned"
+                    android:textColor="?android:textColorSecondary"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/sofia_pro_regular"
+                    android:text="Pinned"
+                    android:textAppearance="@style/chipText"
+                  />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/f_m_n_chip_default"
+                    android:textColor="?android:textColorSecondary"
+
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="5dp"
+
+                    android:fontFamily="@font/sofia_pro_regular"
+                    android:text="Default"
+                    android:textAppearance="@style/chipText"
+
+                    app:chipIconTint="@color/main_violet" />
+                <ImageView
+                    android:layout_marginEnd="16dp"
+                    android:layout_gravity="center|end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_search_black_24dp"
+                    app:tint="?attr/colorPrimary" />
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/fragment_main_note_recycler"
+        app:spanCount="2"
+        tools:listitem="@layout/rm_main_note" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+         android:layout_margin="16dp"
+        android:id="@+id/f_m_n_fab"
+        android:transitionName="f_m_n_fab_transition"
+       android:src="@drawable/ic_add_24px"
+        android:layout_width="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_height="wrap_content">
+
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

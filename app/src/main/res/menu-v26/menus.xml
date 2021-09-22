@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:title="notes"
+      android:id="@+id/notes"
+      android:iconTint="@color/main_violet"
+      android:icon="@drawable/ic_outline_sticky_note_2_24"/>
+    <item android:title="account"
+        android:id="@+id/accounts"
+        android:iconTint="@color/main_violet"
+        android:icon="@drawable/ic_outline_account_circle_24"/>
+</menu>

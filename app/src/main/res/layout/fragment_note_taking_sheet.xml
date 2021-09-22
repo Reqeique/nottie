@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/text"
+
+
+    android:padding="16dp"
+
+    android:layout_width="match_parent"
+    android:layout_height="333dp"
+    >
+
+    <LinearLayout
+
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/fragment_note_taking_sheet_insert_image"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:focusable="true"
+            android:clickable="true"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                app:tint="@color/lightSecondaryTextColor"
+                android:layout_gravity="start"
+                android:src="@drawable/ic_outline_image_24"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:textColor="@color/lightSecondaryTextColor"
+
+                app:tint="@color/lightSecondaryTextColor"
+
+
+                android:layout_marginStart="16dp"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                style="@style/secondaryTextStyle"
+                android:layout_height="wrap_content"
+
+                android:text="Image"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                app:tint="@color/lightSecondaryTextColor"
+
+                android:layout_gravity="start"
+                android:src="@drawable/ic_baseline_attach_file_24"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:textColor="@color/lightSecondaryTextColor"
+
+                app:tint="@color/lightSecondaryTextColor"
+
+                android:layout_marginStart="16dp"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                style="@style/secondaryTextStyle"
+                android:layout_height="wrap_content"
+
+                android:text="File"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                app:tint="@color/lightSecondaryTextColor"
+
+                android:layout_gravity="start"
+                android:src="@drawable/ic_outline_push_pin_24"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:textColor="@color/lightSecondaryTextColor"
+
+
+                android:layout_marginStart="16dp"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                style="@style/secondaryTextStyle"
+                android:layout_height="wrap_content"
+
+                android:text="Archive"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

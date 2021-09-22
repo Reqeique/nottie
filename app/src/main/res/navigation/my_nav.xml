@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/notes">
+
+    <fragment
+        android:id="@+id/accounts"
+        android:name="com.ultraone.nottie.fragment.NoteTakingFragment"
+        android:label="MainAccountFragment"
+        tools:layout="@layout/fragment_note_taking_new"/>
+    <fragment
+        android:id="@+id/notes"
+        android:name="com.ultraone.nottie.fragment.MainNoteFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main_note">
+
+    </fragment>
+
+</navigation>

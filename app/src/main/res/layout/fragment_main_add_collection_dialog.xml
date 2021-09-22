@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/shp_rd_10dp"
+    android:minWidth="260dp"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/fragment_main_add_collection_dialog_collection_name"
+        android:textStyle="bold"
+        android:layout_margin="16dp"
+        android:hint="Collection Name"
+        android:padding="8dp"
+
+        style="@style/editTextStyle2"
+        android:background="@drawable/shp_rd_10dp"
+        android:layout_width="match_parent"
+
+        android:layout_height="50dp"
+        />
+    <LinearLayout
+        android:gravity="end"
+        android:layout_margin="16dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <TextView
+            android:textStyle="bold"
+            android:layout_gravity="end"
+            android:padding="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CANCEL"/>
+        <TextView
+            android:textStyle="bold"
+            android:id="@+id/fragment_main_add_collection_dialog_add_button"
+            android:padding="16dp"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ADD"/>
+    </LinearLayout>
+
+</LinearLayout>

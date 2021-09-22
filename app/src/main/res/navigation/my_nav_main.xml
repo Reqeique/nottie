@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav_main"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.ultraone.nottie.fragment.main.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main"
+        >
+        <action
+            android:id="@+id/action_mainFragment_to_noteTakingFragment"
+            app:destination="@id/noteTakingFragment"
+            />
+        <action
+            android:id="@+id/action_mainFragment_to_mainNoteFragment"
+            app:destination="@id/mainNoteFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/noteTakingFragment"
+        android:name="com.ultraone.nottie.fragment.NoteTakingFragment"
+        android:label="NoteTakingFragment"
+        tools:layout="@layout/fragment_note_taking_new">
+        <action
+            android:id="@+id/action_noteTakingFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <argument
+            android:defaultValue="-2"
+            android:name="position"
+            app:argType="integer"
+            app:nullable="false"
+            />
+
+        <argument
+            android:defaultValue="-2"
+            android:name="id"
+            app:argType="integer"
+            app:nullable="false"
+            />
+        <argument
+            android:defaultValue="@null"
+            app:nullable="true"
+            android:name="note"
+            app:argType="com.ultraone.nottie.model.Note"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/mainNoteFragment"
+        android:name="com.ultraone.nottie.fragment.MainNoteFragment"
+        android:label="MainNoteFragment"
+        tools:layout="@layout/fragment_main_note">
+        <action
+            android:id="@+id/action_mainNoteFragment_to_noteTakingFragment"
+            app:destination="@id/noteTakingFragment" />
+
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_search"
+        android:id="@+id/searchFragment"
+        android:name="com.ultraone.nottie.fragment.SearchFragment"
+        android:label="SearchFragment" />
+
+</navigation>

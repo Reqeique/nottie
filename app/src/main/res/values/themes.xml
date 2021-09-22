@@ -1,0 +1,95 @@
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.Nottie" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorTertiary">@color/default_white</item>
+        <!-- Primary brand color. -->
+
+        <item name="fontFamily">@font/sofia_pro_bold</item>
+
+
+        <!-- Secondary brand color. -->
+        <item name="colorSurfaceSecondary">@color/gray_700</item>
+        <item name="colorSecondary">@color/blue_500</item>
+        <item name="colorSecondaryVariant">@color/blue_500</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSurface">@color/white</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
+        <!-- Primary brand color. -->
+        <item name= "colorPrimary">@color/blue_500</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryVariant">@color/white</item>
+        <item name="colorAccent">@color/white</item>
+
+        <item name="android:windowActionBar">false</item>
+
+
+        <item name="windowNoTitle">true</item>
+        <item name="android:navigationBarColor">@color/white</item>
+
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+
+
+
+        <!-- Status bar color. -->
+<!--        <item name="android:textStyle">bold</item>-->
+        <item name="android:textColor">@color/blue_500</item>
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+    </style>
+
+    <style name="Theme.Nottie.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:background">@color/white</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:textColor">@color/blue_500</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="chipText" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#44000000</item>
+        <item name="android:fontFamily">@font/sofia_pro_regular</item>
+    </style>
+    <style name="tertiaryTextStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/darkTertiaryTextColor</item>
+        <item name="android:fontFamily">@font/sofia_pro_regular</item>
+    </style>
+    <style name="primaryTextStyle" parent="Widget.AppCompat.TextView">
+
+        <item name="android:textColor">@color/darkSecondaryTextColor</item>
+        <item name="android:fontFamily">@font/sofia_pro_regular</item>
+    </style>
+    <style name="editTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/darkSecondaryTextColor</item>
+        <item name="android:backgroundTint">#f4f4f4</item>
+    </style>
+    <style name="appbarStyle" parent="Widget.Design.AppBarLayout">
+        <item name="android:background">#f4f4f4</item>
+
+    </style>
+    <style name="secondaryTextStyle" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/darkSecondaryTextColor</item>
+        <item name="android:fontFamily">@font/sofia_pro_bold</item>
+    </style>
+    <style name="secondaryTextStyleOpposite" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/lightSecondaryTextColor</item>
+        <item name="android:fontFamily">@font/sofia_pro_regular</item>
+    </style>
+    <style name="editTextStyle2" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/darkSecondaryTextColor</item>
+        <item name="android:backgroundTint">#f4f4f4</item>
+    </style>
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:navigationBarColor">?attr/colorSurfaceSecondary</item>
+        <item name="bottomSheetStyle">@style/appBottomSheetStyle</item>
+    </style>
+    <style name="appBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:backgroundTint">?attr/colorSurfaceSecondary</item>
+        <item name="android:background">@drawable/ic_bg_main</item>
+    </style>
+</resources>
