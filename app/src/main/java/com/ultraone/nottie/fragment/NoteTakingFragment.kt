@@ -1,7 +1,5 @@
 package com.ultraone.nottie.fragment
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import io.noties.markwon.editor.MarkwonEditorTextWatcher
 import android.graphics.Color
@@ -13,21 +11,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.Nullable
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Lifecycle
 
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.discord.simpleast.core.simple.SimpleRenderer
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.ultraone.nottie.R
 
@@ -41,9 +32,7 @@ import com.ultraone.nottie.viewmodel.NoteTakingFragmentViewModel
 import io.noties.markwon.Markwon
 import io.noties.markwon.editor.MarkwonEditor
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import java.util.concurrent.Executors
 import kotlin.contracts.ExperimentalContracts
@@ -86,10 +75,9 @@ class NoteTakingFragment : Fragment() {
             scrimColor = Color.TRANSPARENT
             setAllContainerColors(requireContext().resolver(R.attr.colorSurface))
         }
-        registerForActivityResult(ActivityResultContracts.GetContent()){
-            Log.d("$TAG@110","URI = $it")
+        registerForActivityResult(ActivityResultContracts.GetContent()) {
+            Log.d("$TAG@110", "URI = $it")
         }
-
 
 
     }
@@ -117,7 +105,7 @@ class NoteTakingFragment : Fragment() {
             binding.fNTNBackButton.setOnClickListener {
                 launch {
                     var hecked = (1..10).random()
-                    noteTakingFragmentViewModel.heckedNoteId.emit(hecked)
+                    noteTakingFragmentViewModel.noteId.emit(hecked)
 //                    findNavController().let {
 //                        it.navigate(NoteTakingFragmentDirections.actionNoteTakingFragmentToMainFragment())
 //                        it.popBackStack()
@@ -130,24 +118,38 @@ class NoteTakingFragment : Fragment() {
             val _note = args.note
             binding.fNTNNotes.text = _note?.mainNote?.toEditable()
             binding.fNTNTitle.text = _note?.title?.toEditable()
-            val it = Note(0, null, null, null, null, false)
-            var copiable = it
+            var copyable = Note(
+                0, null, null, null, NoteAttachmentAndOther(
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+                ), false
+            )
+
 
             binding.fNTNTitle.doOnTextChanged { text, _, _, _ ->
                 if (text.isNullOrBlank()) return@doOnTextChanged
                 Log.d(
                     "$TAG@134",
-                    noteTakingFragmentViewModel.heckedNoteId.value.toString() + text.toString()
+                    noteTakingFragmentViewModel.noteId.value.toString() + text.toString()
                 )
-                copiable = it.copy(title = text.toString())
-                updateOrCreateNew(copiable)
+                copyable = copyable.copy(title = text.toString())
+                updateOrCreateNew(copyable)
 
 
             }
             binding.fNTNNotes.doOnTextChanged { text, _, _, _ ->
                 if (text.isNullOrBlank()) return@doOnTextChanged
-                copiable = it.copy(mainNote = text.toString())
-                updateOrCreateNew(copiable)
+                copyable = copyable.copy(mainNote = text.toString())
+                updateOrCreateNew(copyable)
+            }
+            binding.fNTNPinButton.invokeSelectableState<ImageButton> {
+                copyable =
+                    copyable.copy(attachmentAndOthers = copyable.attachmentAndOthers?.copy(pinned = it))
+                Log.d("$TAG@154", "pinned = $it, copiable = $copyable")
+                updateOrCreateNew(copyable)
             }
 
             setUpNoteClient()
@@ -166,37 +168,31 @@ class NoteTakingFragment : Fragment() {
     private fun updateOrCreateNew(note: Note) {
 
         when {
-            noteTakingFragmentViewModel.heckedNoteId.value == NULL_VALUE_INT -> {
+            noteTakingFragmentViewModel.noteId.value == NULL_VALUE_INT -> {
                 //ADD
 
-                binding.new(note)
+                binding.new(note.copy(dateTime = currentTime))
 
             }
-            noteTakingFragmentViewModel.heckedNoteId.value != NULL_VALUE_INT -> {
+            noteTakingFragmentViewModel.noteId.value != NULL_VALUE_INT -> {
                 //UPDATE
                 lifecycleScope.launch {
                     Log.d(
                         "$TAG@145",
-                        "D = ${noteTakingFragmentViewModel.heckedNoteId.value}"
+                        "D = ${noteTakingFragmentViewModel.noteId.value}"
                     )
                     notesClient.let { itList ->
                         val itNote = itList.first { itNote ->
-                            itNote.id == noteTakingFragmentViewModel.heckedNoteId.value
+                            itNote.id == noteTakingFragmentViewModel.noteId.value
                         }
 
                         binding.update(
                             itNote.copy(
                                 title = note.title ?: itNote.title,
                                 mainNote = note.mainNote ?: itNote.mainNote,
-                                dateTime = note.mainNote.takeIf {
-                                    it != null
-                                } ?: itNote.dateTime,
-                                attachmentAndOthers = note.attachmentAndOthers.takeIf {
-                                    it != null
-                                } ?: itNote.attachmentAndOthers,
-                                deleted = note.deleted.takeIf {
-                                    it != null
-                                } ?: itNote.deleted
+                                dateTime = currentTime,
+                                attachmentAndOthers = note.attachmentAndOthers ?: itNote.attachmentAndOthers,
+                                deleted = note.deleted ?: itNote.deleted
                             )
                         )
                         Log.d("$TAG@153", itList.toString())
@@ -212,7 +208,7 @@ class NoteTakingFragment : Fragment() {
     }
 
     private suspend fun lamdBda(block: (Note) -> Unit) = with(binding) {
-        noteTakingFragmentViewModel.heckedNoteId.collect {
+        noteTakingFragmentViewModel.noteId.collect {
             if (it == null) return@collect
             Log.d("$TAG@202", "id = $it")
             val note = Note(0, null, null, null, null, false)
@@ -221,11 +217,22 @@ class NoteTakingFragment : Fragment() {
 
     }
 
-    private suspend fun setUpNoteClient() {
+    private suspend fun setUpNoteClient() = with(binding) {
         dataProvider.getAllNote.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
                 it.collect { list ->
                     notesClient = list
+
+                    val data = list.firstOrNull {
+                        it.id == noteTakingFragmentViewModel.noteId.value
+                    }
+
+                    if (data !=null && data.attachmentAndOthers?.pinned == true) {
+                        fNTNPinButton.isSelected = true
+                    } else if (data == null || data.attachmentAndOthers?.pinned == false) {
+                        fNTNPinButton.isSelected = false
+                    }
+
                 }
             }
         }
@@ -233,7 +240,7 @@ class NoteTakingFragment : Fragment() {
 
     private suspend fun setUpNoteId() {
         //  noteTakingFragmentViewModel.noteId.postValue(args.id)
-        noteTakingFragmentViewModel.heckedNoteId.emit(args.id)
+        noteTakingFragmentViewModel.noteId.emit(args.id)
     }
 
     /**function [observeNoteFirst] used to observe for the note that has been declared before or return new note*/
@@ -315,9 +322,8 @@ class NoteTakingFragment : Fragment() {
                         is Result.SUCCESS<*> -> {
                             val data = it.data as Long
                             Log.d("$TAG@129", "$data")
-                            noteTakingFragmentViewModel.noteId.postValue(data.toInt())
 
-                            noteTakingFragmentViewModel.heckedNoteId.value = data.toInt()
+                            noteTakingFragmentViewModel.noteId.value = data.toInt()
                         }
 
                     }

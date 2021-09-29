@@ -6,6 +6,5 @@ import androidx.lifecycle.liveData
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class NoteTakingFragmentViewModel: ViewModel() {
-    val noteId: MutableLiveData<Int?> = MutableLiveData(null)
-    val heckedNoteId: MutableStateFlow<Int?> = MutableStateFlow(null)
+    val noteId: MutableStateFlow<Int?> = MutableStateFlow(null)
 }
