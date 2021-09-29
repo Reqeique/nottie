@@ -66,7 +66,7 @@ class DataProviderViewModel(application: Application) : AndroidViewModel(applica
 
                                 }
                                 is Result.SUCCESS<*> -> {
-                                    emit(Result.SUCCESS("Updated"))
+                                    emit(Result.SUCCESS(it.data.toString()))
 
                                 }
                             }
@@ -86,7 +86,7 @@ class DataProviderViewModel(application: Application) : AndroidViewModel(applica
 
                                 }
                                 is Result.SUCCESS<*> -> {
-                                    emit(Result.SUCCESS("Added"))
+                                    emit(Result.SUCCESS(it.data.toString()))
 
                                 }
                             }
@@ -123,7 +123,7 @@ class DataProviderViewModel(application: Application) : AndroidViewModel(applica
     }
     suspend fun updateNote(note: Note): LiveData<Result> = liveData {
         coroutineScope {
-            val mainJob = viewModelScope.launch {
+            val mainJob = viewModelScope.async {
                 emit(Result.LOADING)
                 noteRepo.updateNote(note)
             }
@@ -131,7 +131,7 @@ class DataProviderViewModel(application: Application) : AndroidViewModel(applica
             mainJob.invokeOnCompletion {
                 Log.d(TAG, "Saved")
                 launch {
-                    if (it != null) emit(Result.FAILED(it)) else emit(Result.SUCCESS(null))
+                    if (it != null) emit(Result.FAILED(it)) else emit(Result.SUCCESS(mainJob.await()))
                 }
             }
         }

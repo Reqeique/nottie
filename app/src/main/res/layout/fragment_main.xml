@@ -88,6 +88,7 @@
                     app:layout_constraintStart_toStartOf="@+id/fragment_main_recycler_date_time" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    tools:itemCount="10"
 
                     android:id="@+id/fragment_main_recycler_date_time"
                     android:layout_width="match_parent"

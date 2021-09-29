@@ -183,7 +183,7 @@ class NoteAdapter() : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
         holder.apply {
             note.text = datas[p].mainNote
             title.text = datas[p].title
-            date.text = datas[p].dateTime?.decodeToTimeAndDate()
+//            date.text = datas[p].dateTime?.decodeToTimeAndDate()
             root.transitionName = "createNewNote${datas[p].dateTime}"
             if(datas[p].attachmentAndOthers?.pinned == true) root.setCardBackgroundColor(root.context.resolver(R.attr.colorPrimary)) else if(datas[p].attachmentAndOthers?.pinned == false) root.setCardBackgroundColor(root.context.resolver(R.attr.colorSurface))
             when {

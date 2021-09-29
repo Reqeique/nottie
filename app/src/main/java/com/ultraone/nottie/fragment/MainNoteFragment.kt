@@ -144,10 +144,12 @@ class MainNoteFragment : Fragment() {
 
     }
 
+
     private fun observeNote(adapter: MainNoteAdapter) {
         lifecycleScope.launch {
             dataProvider.getAllNotes().observe(viewLifecycleOwner) {
                 lifecycleScope.launch(Main) {
+
                     when (it) {
                         is Result.FAILED -> {
                             toast("FAILED ${it.throwable.localizedMessage}")

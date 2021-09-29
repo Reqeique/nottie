@@ -224,3 +224,8 @@ fun Context.dialog(
 
 
 infix fun Note.existIn(notes: List<Note>): Boolean = notes.map(Note::id).contains(this.id)
+
+
+fun Any.copyIfNotNull(){
+
+}

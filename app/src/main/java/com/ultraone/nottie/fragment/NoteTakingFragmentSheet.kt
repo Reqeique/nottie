@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import com.ultraone.nottie.R
 import com.ultraone.nottie.databinding.FragmentNoteTakingSheetBinding
 
@@ -31,14 +33,25 @@ class NoteTakingFragmentSheet : BottomSheetDialogFragment() {
         super.onActivityCreated(savedInstanceState)
         (requireView().parent.parent.parent as View).fitsSystemWindows = true
     }
+    private lateinit var resultLauncher: ActivityResultLauncher<String>
     private val binding get() = _binding!!
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+       resultLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) {}
 
+
+
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
 
         _binding = FragmentNoteTakingSheetBinding.inflate(inflater, container, false)
+
+        binding.fragmentNoteTakingSheetInsertImage.setOnClickListener {
+            resultLauncher.launch("image/*")
+        }
         return binding.root
 
     }

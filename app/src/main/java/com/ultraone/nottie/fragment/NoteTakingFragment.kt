@@ -1,6 +1,7 @@
 package com.ultraone.nottie.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import io.noties.markwon.editor.MarkwonEditorTextWatcher
 import android.graphics.Color
@@ -13,11 +14,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Nullable
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -48,9 +53,10 @@ class NoteTakingFragment : Fragment() {
 
         const val TAG = "::NoteTakingF"
     }
-   private lateinit var notes: List<Note>
+
+    private lateinit var notesClient: List<Note>
     private lateinit var attachmentAndOther: NoteAttachmentAndOther
-     private lateinit var binding: FragmentNoteTakingNewBinding
+    private lateinit var binding: FragmentNoteTakingNewBinding
     private val noteTakingFragmentViewModel: NoteTakingFragmentViewModel by activityViewModels()
     private val dataProvider: DataProviderViewModel by activityViewModels()
     private val args: NoteTakingFragmentArgs by navArgs()
@@ -60,10 +66,7 @@ class NoteTakingFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        lifecycleScope.launch(Main){
 
-
-        }
     }
 
     //    private lateinit var changingTitle: String
@@ -83,7 +86,9 @@ class NoteTakingFragment : Fragment() {
             scrimColor = Color.TRANSPARENT
             setAllContainerColors(requireContext().resolver(R.attr.colorSurface))
         }
-
+        registerForActivityResult(ActivityResultContracts.GetContent()){
+            Log.d("$TAG@110","URI = $it")
+        }
 
 
 
@@ -99,212 +104,258 @@ class NoteTakingFragment : Fragment() {
     ): View {
         binding = FragmentNoteTakingNewBinding.inflate(inflater, container, false)
 
-        binding {
 //            requireActivity().window.navigationBarColor = ContextCompat.getColor(requireActivity(), R.color.gray_00)
 
-            lifecycleScope.launch(Main) {
-                setUpNoteId()
+        lifecycleScope.launch(Main) {
 
-                configureAddButton()
-                fNTNBackButton.setOnClickListener {
-                    findNavController().let {
-                        it.navigate(NoteTakingFragmentDirections.actionNoteTakingFragmentToMainFragment())
-                        it.popBackStack()
 
-                    }
-                }
+            setUpNoteId()
 
 
 
-               val _note = args.note
-                fNTNNotes.text = _note?.mainNote?.toEditable()
-                fNTNTitle.text = _note?.title?.toEditable()
-
-
-                observeNoteFirst { note ->
-                         fNTNTitle.doOnTextChanged { text, _, _, _ ->
-                             if (!text.isNullOrBlank()) {
-                                 lifecycleScope.launch(Main) {
-                                     dataProvider.updateOrCreateNewNote(note.copy(title = text.toString())).observe(viewLifecycleOwner){
-                                         Log.d("$TAG@129", it.data)
-                                     }
-                                 }
-                               //  toast("note.id.toString" + note.id.toString())
-//                                   noteTakingFragmentViewModel.noteId.observe(viewLifecycleOwner) {
-//                                       if (it != NULL_VALUE_INT) {
-//                                           update(
-//                                               note.copy(title = text.toString())
-//                                           )
-//                                       } else if (it == NULL_VALUE_INT) {
-//                                           //   toast("text @130"+"$text")
+            binding.configureAddButton()
+            binding.fNTNBackButton.setOnClickListener {
+                launch {
+                    var hecked = (1..10).random()
+                    noteTakingFragmentViewModel.heckedNoteId.emit(hecked)
+//                    findNavController().let {
+//                        it.navigate(NoteTakingFragmentDirections.actionNoteTakingFragmentToMainFragment())
+//                        it.popBackStack()
 //
-//                                           new(
-//                                               note.copy(title = text.toString())
-//                                           )
-//                                       }
-//                                   }
-                             }
-
-
-                         }
-
-                         fNTNNotes.doOnTextChanged { changingText, _, _, _ ->
-                             if (!changingText.isNullOrEmpty()) {
-                                 fNTNBackButton.visibility = View.GONE
-                                 fNTNSaveButton.visibility = View.VISIBLE
-                                 update(
-                                     note.copy(mainNote = changingText.toString())
-                                 )
-
-
-                             } else if (changingText.isNullOrEmpty()) {
-                                 fNTNBackButton.visibility = View.VISIBLE
-                                 fNTNSaveButton.visibility = View.GONE
-                             }
-                         }
-
-                         fNTNPinButton.invokeSelectableState<ImageButton> {
-                             binding.root.shortSnackBar(it.toString())
-
-                             update(
-                                 note.copy(attachmentAndOthers = attachmentAndOther.copy(pinned = it))
-                             )
-
-                         }
-
+//                    }
                 }
+            }
 
 
+            val _note = args.note
+            binding.fNTNNotes.text = _note?.mainNote?.toEditable()
+            binding.fNTNTitle.text = _note?.title?.toEditable()
+            val it = Note(0, null, null, null, null, false)
+            var copiable = it
 
+            binding.fNTNTitle.doOnTextChanged { text, _, _, _ ->
+                if (text.isNullOrBlank()) return@doOnTextChanged
+                Log.d(
+                    "$TAG@134",
+                    noteTakingFragmentViewModel.heckedNoteId.value.toString() + text.toString()
+                )
+                copiable = it.copy(title = text.toString())
+                updateOrCreateNew(copiable)
 
 
             }
+            binding.fNTNNotes.doOnTextChanged { text, _, _, _ ->
+                if (text.isNullOrBlank()) return@doOnTextChanged
+                copiable = it.copy(mainNote = text.toString())
+                updateOrCreateNew(copiable)
+            }
 
+            setUpNoteClient()
         }
+
+
+
+
+
+
+
 
         return binding.root
     }
 
-    private fun setUpNoteId() {
-        noteTakingFragmentViewModel.noteId.value = args.id
-    }
-    /**function [observeNoteFirst] used to observe for the note that has been declared before or return new note*/
-    private suspend fun observeNoteFirst(block: (Note) -> Unit) = with(binding){
-        noteTakingFragmentViewModel.noteId.observe(viewLifecycleOwner) { argsId ->
-            val note = Note(
-                0,
-                null,
-                null,
-                null,
-                 null,
-                false
-            )
-            if (argsId == NULL_VALUE_INT) {
-               block(note)
+    private fun updateOrCreateNew(note: Note) {
 
+        when {
+            noteTakingFragmentViewModel.heckedNoteId.value == NULL_VALUE_INT -> {
+                //ADD
+
+                binding.new(note)
 
             }
-            else (argsId != NULL_VALUE_INT){
+            noteTakingFragmentViewModel.heckedNoteId.value != NULL_VALUE_INT -> {
+                //UPDATE
                 lifecycleScope.launch {
-
-                    dataProvider.getAllNotes().observe(viewLifecycleOwner) {
-                        lifecycleScope.launch(Main) {
-                            when (it) {
-
-                                is Result.SUCCESS<*> -> {
-                                    val data = it.data as Flow<List<Note>>
-
-                                   data.collect {
-
-                                        lifecycleScope.launch {
-                                            val data = it.first { it.id == argsId }
-
-                                            if (data.attachmentAndOthers?.pinned == true) {
-                                                fNTNPinButton.isSelected = true
-                                            } else if (data.attachmentAndOthers?.pinned == false) {
-                                                fNTNPinButton.isSelected = false
-
-                                            }
-                                            block(data)
-
-
-                                        }
-                                    }
-
-
-                                }
-                                is Result.FAILED -> {
-                                }
-                                is Result.LOADING -> {
-                                }
-                                is Result.NULL_VALUE -> {
-                                }
-                            }
+                    Log.d(
+                        "$TAG@145",
+                        "D = ${noteTakingFragmentViewModel.heckedNoteId.value}"
+                    )
+                    notesClient.let { itList ->
+                        val itNote = itList.first { itNote ->
+                            itNote.id == noteTakingFragmentViewModel.heckedNoteId.value
                         }
+
+                        binding.update(
+                            itNote.copy(
+                                title = note.title ?: itNote.title,
+                                mainNote = note.mainNote ?: itNote.mainNote,
+                                dateTime = note.mainNote.takeIf {
+                                    it != null
+                                } ?: itNote.dateTime,
+                                attachmentAndOthers = note.attachmentAndOthers.takeIf {
+                                    it != null
+                                } ?: itNote.attachmentAndOthers,
+                                deleted = note.deleted.takeIf {
+                                    it != null
+                                } ?: itNote.deleted
+                            )
+                        )
+                        Log.d("$TAG@153", itList.toString())
+
+
                     }
                 }
-                //update
 
 
             }
         }
+
     }
 
-    private fun FragmentNoteTakingNewBinding.new(note: Note) = with(lifecycleScope){
+    private suspend fun lamdBda(block: (Note) -> Unit) = with(binding) {
+        noteTakingFragmentViewModel.heckedNoteId.collect {
+            if (it == null) return@collect
+            Log.d("$TAG@202", "id = $it")
+            val note = Note(0, null, null, null, null, false)
+            //  block(note)
+        }
+
+    }
+
+    private suspend fun setUpNoteClient() {
+        dataProvider.getAllNote.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                it.collect { list ->
+                    notesClient = list
+                }
+            }
+        }
+    }
+
+    private suspend fun setUpNoteId() {
+        //  noteTakingFragmentViewModel.noteId.postValue(args.id)
+        noteTakingFragmentViewModel.heckedNoteId.emit(args.id)
+    }
+
+    /**function [observeNoteFirst] used to observe for the note that has been declared before or return new note*/
+    private suspend fun observeNoteFirst(block: (Note) -> Unit) = with(binding) {
+        // if (argsId == null) return@collect
+
+        val note = Note(
+            0,
+            null,
+            null,
+            null,
+            null,
+            false
+        )
+        block(note)
+//                    if (args.id == NULL_VALUE_INT) {
+//
+//                        block(note)
+//
+//
+//                    } else if (args.id != NULL_VALUE_INT) {
+//                        Log.d("$TAG@217", true.toString())
+//                        lifecycleScope.launch {
+//
+//                            dataProvider.getAllNotes().observe(viewLifecycleOwner) {
+//                                lifecycleScope.launch(Main) {
+//                                    when (it) {
+//
+//                                        is Result.SUCCESS<*> -> {
+//                                            val data = it.data as Flow<List<Note>>
+//
+//                                            data.collect {
+//
+//                                                lifecycleScope.launch {
+//                                                    val data = it.first { it.id == argsId }
+//
+//                                                    if (data.attachmentAndOthers?.pinned == true) {
+//                                                        fNTNPinButton.isSelected = true
+//                                                    } else if (data.attachmentAndOthers?.pinned == false) {
+//                                                        fNTNPinButton.isSelected = false
+//
+//                                                    }
+//                                                    block(data)
+//
+//
+//                                                }
+//                                            }
+//
+//
+//                                        }
+//                                        is Result.FAILED -> {
+//                                        }
+//                                        is Result.LOADING -> {
+//                                        }
+//                                        is Result.NULL_VALUE -> {
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//
+//                        //update
+//
+//
+//                    }
+//
+
+    }
+
+    private fun FragmentNoteTakingNewBinding.new(note: Note) = with(lifecycleScope) {
         launch {
             //if(args.id == NULL_VALUE_INT){
-                dataProvider.addNote(note).observe(viewLifecycleOwner) {
+            dataProvider.addNote(note).observe(viewLifecycleOwner) {
+                lifecycleScope.launch(Main) {
+                    when (it) {
+                        is Result.FAILED -> root.shortSnackBar("Failed")
+                        is Result.LOADING -> root.shortSnackBar("Updating")
+                        is Result.NULL_VALUE -> root.shortSnackBar("Null Value")
+                        is Result.SUCCESS<*> -> {
+                            val data = it.data as Long
+                            Log.d("$TAG@129", "$data")
+                            noteTakingFragmentViewModel.noteId.postValue(data.toInt())
+
+                            noteTakingFragmentViewModel.heckedNoteId.value = data.toInt()
+                        }
+
+                    }
+                }
+            }
+            // }
+        }
+    }
+
+    private fun FragmentNoteTakingNewBinding.update(note: Note) = with(lifecycleScope) {
+        launch {
+
+            lifecycleScope.launch {
+
+                dataProvider.updateNote(note).observe(viewLifecycleOwner) {
                     lifecycleScope.launch(Main) {
                         when (it) {
                             is Result.FAILED -> root.shortSnackBar("Failed")
                             is Result.LOADING -> root.shortSnackBar("Updating")
                             is Result.NULL_VALUE -> root.shortSnackBar("Null Value")
                             is Result.SUCCESS<*> -> {
-                                val data = it.data as Long
-                                noteTakingFragmentViewModel.noteId.postValue(data.toInt())
+                                root.shortSnackBar("Updated")
                             }
 
                         }
                     }
                 }
-           // }
+            }
+
+
         }
-    }
-    private fun FragmentNoteTakingNewBinding.update(note: Note) = with(lifecycleScope) {
-         launch {
-             noteTakingFragmentViewModel.noteId.observe(viewLifecycleOwner) {argsId ->
-                 lifecycleScope.launch {
-                     if (argsId != NULL_VALUE_INT) {
-                         dataProvider.updateNote(note).observe(viewLifecycleOwner) {
-                             lifecycleScope.launch(Main) {
-                                 when (it) {
-                                     is Result.FAILED -> root.shortSnackBar("Failed")
-                                     is Result.LOADING -> root.shortSnackBar("Updating")
-                                     is Result.NULL_VALUE -> root.shortSnackBar("Null Value")
-                                     is Result.SUCCESS<*> -> {
-                                         root.shortSnackBar("Updated")
-                                     }
-
-                                 }
-                             }
-                         }
-                     }
-                 }
-             }
-         }
-
 
 
     }
 
 
-
-
-
-
-
-     /**[configureAddButton] is used to invoke click  listener to [FragmentNoteTakingNewBinding.fNTNAddButton]*/
-    private fun FragmentNoteTakingNewBinding.configureAddButton(){
+    /**[configureAddButton] is used to invoke click  listener to [FragmentNoteTakingNewBinding.fNTNAddButton]*/
+    private fun FragmentNoteTakingNewBinding.configureAddButton() {
         fNTNAddButton.setOnClickListener {
             NoteTakingFragmentSheet().let {
                 it.show(superFragmentManager, it.tag)

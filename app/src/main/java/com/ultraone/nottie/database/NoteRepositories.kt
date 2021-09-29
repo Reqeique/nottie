@@ -9,6 +9,6 @@ open class NoteRepositories(private val notesDao: NotesDao) {
     suspend fun addNote(note: Note): Long = notesDao.addNote(note)
     val getAllNotes : Flow<List<Note>> = notesDao.getAllNotes()
     suspend fun deleteNote(note: Note): Unit = notesDao.deleteNote(note)
-    suspend fun updateNote(note: Note): Unit = notesDao.updateNote(note)
+    suspend fun updateNote(note: Note): Int = notesDao.updateNote(note)
     suspend fun getAllNotesOrderedById(): Notes = Notes(notesDao.getAllNotesOrderedById())
 }

@@ -15,4 +15,7 @@ class EveryOneHateJava {
     public static void heck() {
     //    Type type = new TypeToken<List<int>>() {}.getType();
     }
+    public static void main(String [] arrr) {
+        String str =  "this is string ";
+    }
 }

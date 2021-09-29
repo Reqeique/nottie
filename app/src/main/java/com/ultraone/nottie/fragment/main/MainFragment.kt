@@ -3,6 +3,7 @@ package com.ultraone.nottie.fragment.main
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -56,6 +57,7 @@ class MainFragment : Fragment() {
     companion object {
         const val TAG = "::MainFragment"
     }
+
     lateinit var collectionsAdapter: NoteCollectionsAdapter
     lateinit var dateTimeAdapter: DateTimeAdapter
     lateinit var NoteAdapter: NoteAdapter
@@ -73,34 +75,32 @@ class MainFragment : Fragment() {
     ): View {
         //val contextThemeWrapper = ContextThemeWrapper(requireActivity(), R.style.mainFragStyle)
         //   context?.theme?.applyStyle(R.style.mainFragStyle,false)
-        requireActivity().window.navigationBarColor =
-            requireContext().resolver(R.attr.colorOnSecondary)
+
+        requireActivity().window.apply {
+            navigationBarColor =
+                requireContext().resolver(R.attr.colorSurfaceSecondary)
+
+
+
+        }
         binding = FragmentMainBinding.inflate(inflater, container, false)
-//        controller = childFragmentManager.findFragmentById(R.id.fragment_container_viewer)!!.findNavController()
-//        binding.bottomNavigationView2.setupWithNavController(controller)
-//        config = AppBarConfiguration(
-//            setOf(R.id.fragment_main_note_root, R.id.fragment_main_account_root)
-//        )
-//
-//        //findNavController().navigate(MainFragmentDirections.actionMainFragmentToNoteTakingFragment())
-//        val direction = MainFragmentDirections
-        binding {
+
             lifecycleScope.launch(Main) {
 
-                setUpNotes()
-                setUpCollections()
-                setSearchCardClickListener()
+                binding.setUpNotes()
+                binding.setUpCollections()
+                binding.setSearchCardClickListener()
                 dateTimeAdapter = DateTimeAdapter()
 
-                fragmentMainRecyclerDateTime.adapter = dateTimeAdapter
+                binding.fragmentMainRecyclerDateTime.adapter = dateTimeAdapter
 
 
 
-                tracker = SelectionTracker.Builder<Long>(
+                tracker = SelectionTracker.Builder (
                     "mySelection",
-                    fragmentMainRecyclerNote,
-                    StableIdKeyProvider(fragmentMainRecyclerNote),
-                    MyItemDetailLookup(fragmentMainRecyclerNote),
+                    binding.fragmentMainRecyclerNote,
+                    StableIdKeyProvider(binding.fragmentMainRecyclerNote),
+                    MyItemDetailLookup(binding.fragmentMainRecyclerNote),
                     StorageStrategy.createLongStorage()
                 ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).also {
 
@@ -110,22 +110,27 @@ class MainFragment : Fragment() {
             }
 
 
-        }
+
         return binding.root
 
     }
+
     /**
      * [setSearchCardClickListener] used to apply transition and click listener to [FragmentMainBinding.fragmentMainSearchCard]
      */
-    private fun FragmentMainBinding.setSearchCardClickListener(){
+    private fun FragmentMainBinding.setSearchCardClickListener() {
         trans()
-       fragmentMainSearchCard.setOnClickListener { view ->
-           val name = "fragmentSearchRootTransition"
-           val extras  = FragmentNavigatorExtras(view to name)
-           findNavController().navigate(MainFragmentDirections.actionMainFragmentToSearchFragment(), extras)
+        fragmentMainSearchCard.setOnClickListener { view ->
+            val name = "fragmentSearchRootTransition"
+            val extras = FragmentNavigatorExtras(view to name)
+            findNavController().navigate(
+                MainFragmentDirections.actionMainFragmentToSearchFragment(),
+                extras
+            )
 
-       }
+        }
     }
+
     /**
      *  those set of function used to invoke changes on the child of note site or so called `binding.fragmentMainRootNote` based on the condition
      *  */
@@ -210,16 +215,17 @@ class MainFragment : Fragment() {
     /**
      *  those set of function used to invoke changes on the child of collection site or so called `binding.fragmentMainRootCollection` based on the condition
      *  */
-    private suspend fun FragmentMainBinding.setUpCollections(){
+    private suspend fun FragmentMainBinding.setUpCollections() {
         collectionsAdapter = NoteCollectionsAdapter()
         fragmentMainRecyclerCollection.adapter = collectionsAdapter
         observeNoteCollection()
         setCollectionAddListener()
     }
-    private suspend fun observeNoteCollection(){
-        dataProvider.getAllCollections().observe(viewLifecycleOwner){
-            lifecycleScope.launch(Main){
-                when(it){
+
+    private suspend fun observeNoteCollection() {
+        dataProvider.getAllCollections().observe(viewLifecycleOwner) {
+            lifecycleScope.launch(Main) {
+                when (it) {
                     is Result.FAILED -> {
 
                     }
@@ -231,55 +237,62 @@ class MainFragment : Fragment() {
                     }
                     is Result.SUCCESS<*> -> {
                         it.data as Flow<List<NoteCollections>>
-                        it.data.collect { datas  ->
+                        it.data.collect { datas ->
 
-                            collectionsAdapter.addList(datas.filterNot {it.deleted})
+                            collectionsAdapter.addList(datas.filterNot { it.deleted })
                         }
                     }
                 }
             }
         }
     }
-    private fun FragmentMainBinding.setCollectionAddListener(){
+
+    private fun FragmentMainBinding.setCollectionAddListener() {
         fragmentMainAddCollection.setOnClickListener {
-           requireContext().dialog({
-               requestWindowFeature(Window.FEATURE_NO_TITLE)
-           },R.layout.fragment_main_add_collection_dialog) {
+            requireContext().dialog({
+                requestWindowFeature(Window.FEATURE_NO_TITLE)
+            }, R.layout.fragment_main_add_collection_dialog) {
 
-               window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-                   this@dialog.findViewById<EditText>(R.id.fragment_main_add_collection_dialog_collection_name).doOnTextChanged { text, start, before, count ->
-                       if(!text.isNullOrEmpty()) {
-                           this@dialog.findViewById<TextView>(R.id.fragment_main_add_collection_dialog_add_button).setOnClickListener {
-                           lifecycleScope.launch {
-                               dataProvider.addCollection(
-                                   NoteCollections(
-                                       0,
-                                       text.toString(),
-                                       null,
-                                       false
-                                   )
-                               ).observe(viewLifecycleOwner){
-                                   when(it){
-                                       is Result.FAILED -> {}
-                                       is Result.LOADING -> {}
-                                       is Result.NULL_VALUE -> {}
-                                       is Result.SUCCESS<*> -> {
-                                          dismiss()
+                this@dialog.findViewById<EditText>(R.id.fragment_main_add_collection_dialog_collection_name)
+                    .doOnTextChanged { text, start, before, count ->
+                        if (!text.isNullOrEmpty()) {
+                            this@dialog.findViewById<TextView>(R.id.fragment_main_add_collection_dialog_add_button)
+                                .setOnClickListener {
+                                    lifecycleScope.launch {
+                                        dataProvider.addCollection(
+                                            NoteCollections(
+                                                0,
+                                                text.toString(),
+                                                null,
+                                                false
+                                            )
+                                        ).observe(viewLifecycleOwner) {
+                                            when (it) {
+                                                is Result.FAILED -> {
+                                                }
+                                                is Result.LOADING -> {
+                                                }
+                                                is Result.NULL_VALUE -> {
+                                                }
+                                                is Result.SUCCESS<*> -> {
+                                                    dismiss()
 
-                                       }
-                                   }
-                               }
+                                                }
+                                            }
+                                        }
 
-                           }
-                       }
-                   }
-               }
-               show()
+                                    }
+                                }
+                        }
+                    }
+                show()
 
-           }
+            }
         }
     }
+
     /***/
     override fun onDetach() {
         super.onDetach()
@@ -303,7 +316,8 @@ class MainFragment : Fragment() {
         super.onPause()
         Log.i("$TAG@76", "Paused")
     }
-    private fun trans(){
+
+    private fun trans() {
         enterTransition = MaterialElevationScale(true).apply {
             duration = 300L
         }
