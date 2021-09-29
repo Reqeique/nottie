@@ -118,40 +118,8 @@ class NoteTakingFragment : Fragment() {
             val _note = args.note
             binding.fNTNNotes.text = _note?.mainNote?.toEditable()
             binding.fNTNTitle.text = _note?.title?.toEditable()
-            var copyable = Note(
-                0, null, null, null, NoteAttachmentAndOther(
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ), false
-            )
 
-
-            binding.fNTNTitle.doOnTextChanged { text, _, _, _ ->
-                if (text.isNullOrBlank()) return@doOnTextChanged
-                Log.d(
-                    "$TAG@134",
-                    noteTakingFragmentViewModel.noteId.value.toString() + text.toString()
-                )
-                copyable = copyable.copy(title = text.toString())
-                updateOrCreateNew(copyable)
-
-
-            }
-            binding.fNTNNotes.doOnTextChanged { text, _, _, _ ->
-                if (text.isNullOrBlank()) return@doOnTextChanged
-                copyable = copyable.copy(mainNote = text.toString())
-                updateOrCreateNew(copyable)
-            }
-            binding.fNTNPinButton.invokeSelectableState<ImageButton> {
-                copyable =
-                    copyable.copy(attachmentAndOthers = copyable.attachmentAndOthers?.copy(pinned = it))
-                Log.d("$TAG@154", "pinned = $it, copiable = $copyable")
-                updateOrCreateNew(copyable)
-            }
-
+            observeForChanges()
             setUpNoteClient()
         }
 
@@ -164,7 +132,47 @@ class NoteTakingFragment : Fragment() {
 
         return binding.root
     }
+    /**
+     * function [observeForChanges] used to listen for different form of changes i.e text , state and apply [updateOrCreateNew] note
+     * */
+    private fun observeForChanges(note: Note =  Note(
+        0, null, null, null, NoteAttachmentAndOther(
+            null,
+            null,
+            null,
+            null,
+            null
+        ), false
+    )) = with(binding){
+        var copyable = note
 
+
+        fNTNTitle.doOnTextChanged { text, _, _, _ ->
+            if (text.isNullOrBlank()) return@doOnTextChanged
+            Log.d(
+                "$TAG@134",
+                noteTakingFragmentViewModel.noteId.value.toString() + text.toString()
+            )
+            copyable = copyable.copy(title = text.toString())
+            updateOrCreateNew(copyable)
+
+
+        }
+        fNTNNotes.doOnTextChanged { text, _, _, _ ->
+            if (text.isNullOrBlank()) return@doOnTextChanged
+            copyable = copyable.copy(mainNote = text.toString())
+            updateOrCreateNew(copyable)
+        }
+        fNTNPinButton.invokeSelectableState<ImageButton> {
+            copyable =
+                copyable.copy(attachmentAndOthers = copyable.attachmentAndOthers?.copy(pinned = it))
+            Log.d("$TAG@154", "pinned = $it, copiable = $copyable")
+            updateOrCreateNew(copyable)
+        }
+    }
+    /**
+     * function [updateOrCreateNew] used to weather create new or update existing note based on [NoteTakingFragmentViewModel.noteId]
+     * */
     private fun updateOrCreateNew(note: Note) {
 
         when {
@@ -185,13 +193,20 @@ class NoteTakingFragment : Fragment() {
                         val itNote = itList.first { itNote ->
                             itNote.id == noteTakingFragmentViewModel.noteId.value
                         }
+                        Log.d("$TAG@193", "itNote = $itNote , $note")
 
                         binding.update(
                             itNote.copy(
                                 title = note.title ?: itNote.title,
                                 mainNote = note.mainNote ?: itNote.mainNote,
                                 dateTime = currentTime,
-                                attachmentAndOthers = note.attachmentAndOthers ?: itNote.attachmentAndOthers,
+                                attachmentAndOthers = NoteAttachmentAndOther(
+                                    note.attachmentAndOthers?.archived ?: itNote.attachmentAndOthers?.archived,
+                                    note.attachmentAndOthers?.pinned ?: itNote.attachmentAndOthers?.pinned,
+                                    note.attachmentAndOthers?.fileUri ?: itNote.attachmentAndOthers?.fileUri,
+                                    note.attachmentAndOthers?.imageUri ?: itNote.attachmentAndOthers?.imageUri,
+                                    note.attachmentAndOthers?.color ?: itNote.attachmentAndOthers?.color
+                                ),
                                 deleted = note.deleted ?: itNote.deleted
                             )
                         )
@@ -203,16 +218,6 @@ class NoteTakingFragment : Fragment() {
 
 
             }
-        }
-
-    }
-
-    private suspend fun lamdBda(block: (Note) -> Unit) = with(binding) {
-        noteTakingFragmentViewModel.noteId.collect {
-            if (it == null) return@collect
-            Log.d("$TAG@202", "id = $it")
-            val note = Note(0, null, null, null, null, false)
-            //  block(note)
         }
 
     }
@@ -239,77 +244,12 @@ class NoteTakingFragment : Fragment() {
     }
 
     private suspend fun setUpNoteId() {
-        //  noteTakingFragmentViewModel.noteId.postValue(args.id)
         noteTakingFragmentViewModel.noteId.emit(args.id)
     }
 
-    /**function [observeNoteFirst] used to observe for the note that has been declared before or return new note*/
-    private suspend fun observeNoteFirst(block: (Note) -> Unit) = with(binding) {
-        // if (argsId == null) return@collect
-
-        val note = Note(
-            0,
-            null,
-            null,
-            null,
-            null,
-            false
-        )
-        block(note)
-//                    if (args.id == NULL_VALUE_INT) {
-//
-//                        block(note)
-//
-//
-//                    } else if (args.id != NULL_VALUE_INT) {
-//                        Log.d("$TAG@217", true.toString())
-//                        lifecycleScope.launch {
-//
-//                            dataProvider.getAllNotes().observe(viewLifecycleOwner) {
-//                                lifecycleScope.launch(Main) {
-//                                    when (it) {
-//
-//                                        is Result.SUCCESS<*> -> {
-//                                            val data = it.data as Flow<List<Note>>
-//
-//                                            data.collect {
-//
-//                                                lifecycleScope.launch {
-//                                                    val data = it.first { it.id == argsId }
-//
-//                                                    if (data.attachmentAndOthers?.pinned == true) {
-//                                                        fNTNPinButton.isSelected = true
-//                                                    } else if (data.attachmentAndOthers?.pinned == false) {
-//                                                        fNTNPinButton.isSelected = false
-//
-//                                                    }
-//                                                    block(data)
-//
-//
-//                                                }
-//                                            }
-//
-//
-//                                        }
-//                                        is Result.FAILED -> {
-//                                        }
-//                                        is Result.LOADING -> {
-//                                        }
-//                                        is Result.NULL_VALUE -> {
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//
-//                        //update
-//
-//
-//                    }
-//
-
-    }
-
+    /**
+     * function [new] is used to insert new note
+     * */
     private fun FragmentNoteTakingNewBinding.new(note: Note) = with(lifecycleScope) {
         launch {
             //if(args.id == NULL_VALUE_INT){
@@ -332,7 +272,9 @@ class NoteTakingFragment : Fragment() {
             // }
         }
     }
-
+    /**
+     * function [update] is used to update existing note with declared id
+     * */
     private fun FragmentNoteTakingNewBinding.update(note: Note) = with(lifecycleScope) {
         launch {
 
