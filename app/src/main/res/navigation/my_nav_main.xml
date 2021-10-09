@@ -21,11 +21,14 @@
         <action
             android:id="@+id/action_mainFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_noteCollectionNoteFragment"
+            app:destination="@id/noteCollectionNoteFragment" />
 
     </fragment>
     <fragment
         android:id="@+id/noteTakingFragment"
-        android:name="com.ultraone.nottie.fragment.NoteTakingFragment"
+        android:name="com.ultraone.nottie.fragment.notetaking.NoteTakingFragment"
         android:label="NoteTakingFragment"
         tools:layout="@layout/fragment_note_taking_new">
         <action
@@ -53,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/mainNoteFragment"
-        android:name="com.ultraone.nottie.fragment.MainNoteFragment"
+        android:name="com.ultraone.nottie.fragment.main.MainNoteFragment"
         android:label="MainNoteFragment"
         tools:layout="@layout/fragment_main_note">
         <action
@@ -66,5 +69,32 @@
         android:id="@+id/searchFragment"
         android:name="com.ultraone.nottie.fragment.SearchFragment"
         android:label="SearchFragment" />
+    <fragment
+        tools:layout="@layout/fragment_note_collection_note"
+        android:id="@+id/noteCollectionNoteFragment"
+        android:name="com.ultraone.nottie.fragment.NoteCollectionNoteFragment"
+        android:label="NoteCollectionNoteFragment" >
+        <action
+            android:id="@+id/action_noteCollectionNoteFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <argument
+            android:defaultValue="-2"
+            android:name="position"
+            app:argType="integer"
+            app:nullable="false"
+            />
+
+        <argument
+            android:defaultValue="-2"
+            android:name="id"
+            app:argType="integer"
+            app:nullable="false"
+            />
+        <argument
+            android:defaultValue="@null"
+            app:nullable="true"
+            android:name="noteCollections"
+            app:argType="com.ultraone.nottie.model.NoteCollections"/>
+    </fragment>
 
 </navigation>

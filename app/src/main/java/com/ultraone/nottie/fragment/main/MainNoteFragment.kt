@@ -1,4 +1,4 @@
-package com.ultraone.nottie.fragment
+package com.ultraone.nottie.fragment.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -14,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialElevationScale
-import com.google.android.material.transition.MaterialSharedAxis
 import com.ultraone.nottie.adapter.MainNoteAdapter
 import com.ultraone.nottie.databinding.FragmentMainNoteBinding
 
@@ -24,7 +23,6 @@ import com.ultraone.nottie.util.invoke
 import com.ultraone.nottie.util.shortSnackBar
 import com.ultraone.nottie.util.toast
 import com.ultraone.nottie.viewmodel.DataProviderViewModel
-import com.ultraone.nottie.viewmodel.NoteTakingFragmentViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
@@ -73,12 +71,18 @@ class MainNoteFragment : Fragment() {
     }
 
     private fun recyclerClickListener(adapter: MainNoteAdapter) {
-        adapter.onItemClick = { note, pos, _ ->
+        adapter.onItemClick = { note, pos, v ->
+            enterTransition = MaterialElevationScale(true).apply {
+                duration = 300
+
+            }
+            val extras = FragmentNavigatorExtras(v to "createNewNote")
             findNavController().navigate(
                 MainNoteFragmentDirections.actionMainNoteFragmentToNoteTakingFragment(
                     pos,
-                    note.id
-                )
+                    note.id,
+                    note
+                ), extras
             )
         }
     }

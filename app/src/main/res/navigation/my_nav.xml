@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/accounts"
-        android:name="com.ultraone.nottie.fragment.NoteTakingFragment"
+        android:name="com.ultraone.nottie.fragment.notetaking.NoteTakingFragment"
         android:label="MainAccountFragment"
         tools:layout="@layout/fragment_note_taking_new"/>
     <fragment
         android:id="@+id/notes"
-        android:name="com.ultraone.nottie.fragment.MainNoteFragment"
+        android:name="com.ultraone.nottie.fragment.main.MainNoteFragment"
         android:label="MainFragment"
         tools:layout="@layout/fragment_main_note">
 

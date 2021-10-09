@@ -13,7 +13,7 @@ import com.ultraone.nottie.model.NoteCollections
 import com.ultraone.nottie.util.invoke
 
 class NoteCollectionsAdapter: RecyclerView.Adapter< NoteCollectionsAdapter.ViewHolder>()  {
-    var onItemClick: ((NoteCollections, Int, View) -> Unit)? = null
+    var onItemClick: ((noteCollection: NoteCollections,pos: Int,v: View) -> Unit)? = null
     private var datas = listOf<NoteCollections>()
 
     lateinit var parent: RecyclerView
@@ -44,6 +44,9 @@ class NoteCollectionsAdapter: RecyclerView.Adapter< NoteCollectionsAdapter.ViewH
         init {
             val x = 0
             collectionName = binding.rmMainCollectionSmallName
+            binding.root.setOnClickListener {
+                onItemClick?.invoke(datas[adapterPosition], adapterPosition, parent)
+            }
         }
     }
     override fun onBindViewHolder(holder: NoteCollectionsAdapter.ViewHolder, position: Int) {

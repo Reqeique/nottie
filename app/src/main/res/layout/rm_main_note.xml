@@ -53,8 +53,8 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
 
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc et accumsan quam. Suspendisse euismod ullamcorper ante non elementum. Nullam convallis leo sapien, sit amet fermentum risus bibendum quis. In bibendum et massa id pharetra. Nullam nisi nisl, iaculis quis elementum sed, rutrum id nulla. Morbi elementum neque urna, vitae mattis mauris laoreet a. Cras laoreet tempus consectetur. Maecenas gravida felis id vulputate laoreet. Nam sed posuere nisi. Praesent lorem ligula, ornare vitae consequat ac, porttitor vitae ex. Duis sed sem molestie, feugiat sapien eget, pulvinar purus.
-Ut viverra arcu a justo auctor, sed elementum leo vestibulum. Integer vitae blandit odio, non luctus mauris. Mauris diam justo, egestas eu ligula eu, varius mattis lorem. Cras consectetur interdum hendrerit. Morbi ut cursus leo. Pellentesque sit amet velit velit. Suspendisse gravida felis ac enim iaculis fringilla. Mauris suscipit semper ipsum eget varius."
+                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc et accumsan quam. Suspendisse euismod ullamcorper ante non elementum. Nullam convallis leo sapien, sit amet fermentum risus bibendum quis. In bibendum et massa id pharetra. Nullam nisi nisl, iaculis quis elementum sed,
+Ut viverra"
                 android:textColor="?android:textColorSecondary"
                 android:textSize="16sp"
                 android:textStyle="normal"

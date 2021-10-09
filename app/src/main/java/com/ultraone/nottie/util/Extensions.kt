@@ -4,12 +4,16 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.text.Editable
 import android.util.TypedValue
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.AttrRes
 import androidx.annotation.LayoutRes
+import androidx.core.graphics.drawable.toIcon
 import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
@@ -17,14 +21,27 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import com.google.android.material.snackbar.Snackbar
 import com.ultraone.nottie.R
 import com.ultraone.nottie.model.Note
+import com.ultraone.nottie.model.NoteCollections
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
+import android.content.ContentResolver
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
+import coil.load
+import coil.request.ImageRequest
+
 
 /**
  * Alternatives for [DataStore] preference
@@ -226,6 +243,92 @@ fun Context.dialog(
 infix fun Note.existIn(notes: List<Note>): Boolean = notes.map(Note::id).contains(this.id)
 
 
-fun Any.copyIfNotNull(){
-
+fun LiveData<*>.observe(lifecycleOwner: LifecycleOwner){
+    this.observe(lifecycleOwner, {})
 }
+
+fun List<NoteCollections>.filterById(id: Int): NoteCollections = first { it.id == id }
+fun List<NoteCollections>.filterByIdOrNull(id: Int?): NoteCollections? = firstOrNull { it.id == id }
+fun List<Note>.filterById(id: Int): Note = first { it.id == id}
+fun List<Note>.filterByIdOrNull(id: Int?) = firstOrNull { it.id == id }
+operator fun List<Note>.get(id: Int) = filterById(id)
+operator fun List<NoteCollections>.get(id: Int) = filterById(id)
+
+@ExperimentalStdlibApi
+fun <T> List<T>.update(element: T): List<T>{
+    val emptyList = mutableListOf<T>()
+    emptyList.addAll(this)
+    emptyList.add(element)
+
+    return emptyList
+}
+
+sealed interface FileType
+class IMAGE(val extension: String) : FileType
+class VIDEO(val extension: String): FileType
+class AUDIO(val extension: String): FileType
+class Other(val extension: String): FileType
+class DOCUMENT(val extension: String): FileType
+
+/**
+ * extension function [fileType] is used to determine [Uri]'s content type based on sealed interface [FileType]
+ * */
+fun String.fileType(context: Context): FileType {
+    val file = context.contentResolver.getType(this.toUri())
+    val (type: String?, extension: String?) = file?.split("/")?.first() to (file?.split("/")?.get(1) ?: "")
+
+    return when(type){
+        "audio" -> AUDIO(extension)
+        "video" -> VIDEO(extension)
+        "application"  -> DOCUMENT(extension)
+        "text" -> DOCUMENT(extension)
+        "image" -> IMAGE(extension)
+
+        else -> Other("$type/$extension")
+    }
+}
+
+
+inline fun ImageView.loadPreview(
+    uri: Uri?,
+    isOpened : Boolean = false,
+    builder: ImageRequest.Builder.() -> Unit = {},
+
+) {
+    load(uri) {
+        if (isOpened) size(860, 860) else size(240, 240)
+        builder()
+    }
+}
+inline fun ImageView.loadPreview(
+    uri: String?,
+    isOpened : Boolean = false,
+    builder: ImageRequest.Builder.() -> Unit = {}
+
+) {
+    load(uri) {
+        if (isOpened) size(860, 860) else size(240, 240)
+        builder()
+    }
+}
+
+
+fun getAlbumArtBitmap(context: Context, uri: Uri): Bitmap? {
+    val retriever = MediaMetadataRetriever()
+    val result = runCatching {
+        retriever
+            .run {
+                setDataSource(context, uri)
+                embeddedPicture
+            }
+            ?.let {
+                BitmapFactory.decodeByteArray(it, 0, it.size)
+            }
+    }.getOrNull()
+
+    retriever.release()
+
+    return result
+}
+
+fun Context.getDrawableCompat(@DrawableRes resId: Int) = ContextCompat.getDrawable(this, resId)

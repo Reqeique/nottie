@@ -1,35 +1,26 @@
 package com.ultraone.nottie.fragment.main
 
-import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.findFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StableIdKeyProvider
 import androidx.recyclerview.selection.StorageStrategy
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.dialog.MaterialDialogs
 import com.google.android.material.transition.MaterialElevationScale
 import com.ultraone.nottie.R
 import com.ultraone.nottie.adapter.DateTimeAdapter
@@ -40,10 +31,7 @@ import com.ultraone.nottie.databinding.FragmentMainBinding
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.NoteCollections
 import com.ultraone.nottie.model.Result
-import com.ultraone.nottie.util.NULL_VALUE_INT
-import com.ultraone.nottie.util.dialog
-import com.ultraone.nottie.util.invoke
-import com.ultraone.nottie.util.resolver
+import com.ultraone.nottie.util.*
 import com.ultraone.nottie.viewmodel.DataProviderViewModel
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
@@ -216,12 +204,20 @@ class MainFragment : Fragment() {
      *  those set of function used to invoke changes on the child of collection site or so called `binding.fragmentMainRootCollection` based on the condition
      *  */
     private suspend fun FragmentMainBinding.setUpCollections() {
+
+
         collectionsAdapter = NoteCollectionsAdapter()
         fragmentMainRecyclerCollection.adapter = collectionsAdapter
         observeNoteCollection()
+        setNoteCollectionRecyclerItemClickListener()
         setCollectionAddListener()
     }
+    private fun setNoteCollectionRecyclerItemClickListener(){
+        collectionsAdapter.onItemClick = {noteCollection, pos, v ->
+            findNavController().navigate(MainFragmentDirections.actionMainFragmentToNoteCollectionNoteFragment(pos,noteCollection.id,noteCollection))
 
+        }
+    }
     private suspend fun observeNoteCollection() {
         dataProvider.getAllCollections().observe(viewLifecycleOwner) {
             lifecycleScope.launch(Main) {
@@ -239,7 +235,18 @@ class MainFragment : Fragment() {
                         it.data as Flow<List<NoteCollections>>
                         it.data.collect { datas ->
 
-                            collectionsAdapter.addList(datas.filterNot { it.deleted })
+                            if(datas.firstOrNull {
+                                it.collectionName == "Untitled Collection" && !it.isVisible
+                            } == null){
+                                dataProvider.addCollection(NoteCollections(
+                                    0,
+                                    "Untitled Collection",
+                                    false,
+                                    isVisible = false
+                                )).observe(viewLifecycleOwner)
+                            }
+
+                            collectionsAdapter.addList(datas.filter{ it.isVisible }.filterNot { it.deleted })
                         }
                     }
                 }
@@ -265,8 +272,8 @@ class MainFragment : Fragment() {
                                             NoteCollections(
                                                 0,
                                                 text.toString(),
-                                                null,
-                                                false
+                                                false,
+                                                 true
                                             )
                                         ).observe(viewLifecycleOwner) {
                                             when (it) {

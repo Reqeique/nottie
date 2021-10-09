@@ -4,6 +4,7 @@
         <item name="fontFamily">@font/sofia_pro_bold</item>
 
         <!-- Primary brand color. -->
+        <item name="colorSurfaceTertiary">?attr/colorSurfaceSecondary</item>
         <item name="colorTertiary">?attr/colorOnSecondary</item>
         <item name="colorAccent">@color/gray_00</item>
         <item name="colorPrimary">@color/blue_200</item>
@@ -27,6 +28,7 @@
 
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
+        <item name="collectionStyle">@color/lightTertiaryTextColor</item>
     </style>
     <style name="chipText" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textSize">16sp</item>
@@ -36,6 +38,9 @@
     <style name="tertiaryTextStyle" parent="Widget.AppCompat.TextView">
         <item name="android:textColor">@color/lightTertiaryTextColor</item>
         <item name="android:fontFamily">@font/sofia_pro_regular</item>
+    </style>
+    <style name="tertiaryIconStyle" parent="Widget.AppCompat.ImageButton">
+        <item name="android:tint">@color/lightTertiaryTextColor</item>
     </style>
     <style name="secondaryTextStyle" parent="Widget.AppCompat.TextView">
         <item name="android:textColor">@color/lightSecondaryTextColor</item>
@@ -56,6 +61,9 @@
         <item name="android:backgroundTint">@color/gray_01</item>
         <item name="android:textColor">@color/lightSecondaryTextColor</item>
 
+    </style>
+    <style name="editTextStyleCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/gray_01</item>
     </style>
     <style name="mainFragStyle" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="android:navigationBarColor">@color/gray_01</item>

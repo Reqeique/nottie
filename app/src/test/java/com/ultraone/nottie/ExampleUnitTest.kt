@@ -11,6 +11,7 @@ import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.NoteAttachmentAndOther
 import com.ultraone.nottie.util.existIn
 import com.ultraone.nottie.util.invoke
+import com.ultraone.nottie.util.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -30,11 +31,25 @@ class ExampleUnitTest {
         val note = Note(0, null, "Nuke" ,null,null, false)
         update(note)
     }
-
+    @Test
+    @ExperimentalStdlibApi
+    fun `test list update function`(){
+        val list = listOf("hello","bruh", "hh")
+        println(list.update("hhow"))
+    }
     fun update(note: Note){
         val mNote = Note(0, "Bruh", null ,null,null, false)
         val copied = mNote.copy(title = note.title, mainNote = note.mainNote, dateTime = note.mainNote, attachmentAndOthers = note.attachmentAndOthers, deleted =  note.deleted)
         println(copied)
+    }
+    @Test
+    fun `print true or false`(){
+        print(12 + 8)
+    }
+    fun test(x: Int, y: Int){
+        if(x > y){
+             println("$y and ($x - ${x - y})")
+        }
     }
 
 }

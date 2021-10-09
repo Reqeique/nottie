@@ -137,31 +137,7 @@ class DataProviderViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    suspend fun pinNote(note: Note) = liveData {
-        coroutineScope {
-            val mainJob = viewModelScope.launch {
-                emit(Result.LOADING)
-                noteRepo.updateNote(
-                    Note(
-                        note.id, note.title, note.mainNote, note.dateTime, NoteAttachmentAndOther(
-                            note.attachmentAndOthers?.archived,
-                            true,
-                            note.attachmentAndOthers?.fileUri,
-                            note.attachmentAndOthers?.imageUri,
-                            note.attachmentAndOthers?.color
-                        ), note.deleted
-                    )
-                )
-            }
-            mainJob.join()
-            mainJob.invokeOnCompletion {
-                Log.d(TAG, "pinned")
-                launch {
-                    if (it != null) emit(Result.FAILED(it)) else emit(Result.SUCCESS(null))
-                }
-            }
-        }
-    }
+
 
     suspend fun deleteNote(note: Note) = liveData<Result> {
         coroutineScope {

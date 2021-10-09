@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
+import androidx.cardview.widget.CardView
+import androidx.core.net.toUri
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StableIdKeyProvider
@@ -118,7 +121,7 @@ class MyItemDetailLookup(private val recyclerView: RecyclerView) : ItemDetailsLo
 
 }
 
-class NoteAdapter() : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
+class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
     var onItemClick: ((Note, Int, View) -> Unit)? = null
     private var datas = listOf<Note>()
     var tracker: SelectionTracker<Long>? = null
@@ -147,11 +150,13 @@ class NoteAdapter() : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
     override fun getItemCount(): Int = datas.size
     inner class ViewHolder(binding: RmMainNoteSmallBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        val card: CardView
         val note: TextView
         val root: MaterialCardView
         val title: TextView
         val date: TextView
         val indicator: MaterialCardView
+        val imageView: ImageView
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
             object : ItemDetailsLookup.ItemDetails<Long>() {
                 override fun getPosition(): Int = adapterPosition
@@ -165,6 +170,8 @@ class NoteAdapter() : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
 
         init {
             val x = 0
+            card = binding.card
+            imageView = binding.rMNSImageView
             root = binding.rmMainNoteSmallRoot
             indicator = binding.rmMainNoteSmallIndicator
             date = binding.rmMainNoteSmallDate
@@ -183,6 +190,13 @@ class NoteAdapter() : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
         holder.apply {
             note.text = datas[p].mainNote
             title.text = datas[p].title
+            //todo uncomment the code below
+            if(datas[p].attachmentAndOthers?.fileUri?.isEmpty() == true) {
+                card.visibility = View.GONE
+            } else if(datas[p].attachmentAndOthers?.fileUri?.isNotEmpty() == true) {
+                card.visibility = View.VISIBLE
+                imageView.setImageURI(datas[p].attachmentAndOthers?.fileUri?.first()?.toUri())
+            }
 //            date.text = datas[p].dateTime?.decodeToTimeAndDate()
             root.transitionName = "createNewNote${datas[p].dateTime}"
             if(datas[p].attachmentAndOthers?.pinned == true) root.setCardBackgroundColor(root.context.resolver(R.attr.colorPrimary)) else if(datas[p].attachmentAndOthers?.pinned == false) root.setCardBackgroundColor(root.context.resolver(R.attr.colorSurface))

@@ -1,4 +1,4 @@
-package com.ultraone.nottie.fragment
+package com.ultraone.nottie.fragment.notetaking
 
 import android.content.Context
 import io.noties.markwon.editor.MarkwonEditorTextWatcher
@@ -21,10 +21,14 @@ import androidx.navigation.fragment.navArgs
 import com.discord.simpleast.core.simple.SimpleRenderer
 import com.google.android.material.transition.MaterialContainerTransform
 import com.ultraone.nottie.R
+import com.ultraone.nottie.adapter.NoteTakingAttachmentAdapter
 
 import com.ultraone.nottie.databinding.FragmentNoteTakingNewBinding
+import com.ultraone.nottie.fragment.notetaking.sheet.NoteTakingFragmentSheet
+import com.ultraone.nottie.fragment.notetaking.sheet.NoteTakingFragmentSheetNewCollection
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.NoteAttachmentAndOther
+import com.ultraone.nottie.model.NoteCollections
 import com.ultraone.nottie.model.Result
 import com.ultraone.nottie.util.*
 import com.ultraone.nottie.viewmodel.DataProviderViewModel
@@ -33,10 +37,12 @@ import io.noties.markwon.Markwon
 import io.noties.markwon.editor.MarkwonEditor
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import java.util.concurrent.Executors
 import kotlin.contracts.ExperimentalContracts
 
+@ExperimentalStdlibApi
 class NoteTakingFragment : Fragment() {
     companion object {
 
@@ -44,6 +50,7 @@ class NoteTakingFragment : Fragment() {
     }
 
     private lateinit var notesClient: List<Note>
+    private lateinit var attachmentAdapter: NoteTakingAttachmentAdapter
     private lateinit var attachmentAndOther: NoteAttachmentAndOther
     private lateinit var binding: FragmentNoteTakingNewBinding
     private val noteTakingFragmentViewModel: NoteTakingFragmentViewModel by activityViewModels()
@@ -95,17 +102,19 @@ class NoteTakingFragment : Fragment() {
 //            requireActivity().window.navigationBarColor = ContextCompat.getColor(requireActivity(), R.color.gray_00)
 
         lifecycleScope.launch(Main) {
+            attachmentAdapter = NoteTakingAttachmentAdapter()
+            binding.fNTNAttachmentRecycler.adapter = attachmentAdapter
 
 
             setUpNoteId()
-
+            setUpNoteClient()
 
 
             binding.configureAddButton()
             binding.fNTNBackButton.setOnClickListener {
+
                 launch {
-                    var hecked = (1..10).random()
-                    noteTakingFragmentViewModel.noteId.emit(hecked)
+
 //                    findNavController().let {
 //                        it.navigate(NoteTakingFragmentDirections.actionNoteTakingFragmentToMainFragment())
 //                        it.popBackStack()
@@ -113,37 +122,43 @@ class NoteTakingFragment : Fragment() {
 //                    }
                 }
             }
+            binding.fNTNCollection.setOnClickListener {
+                NoteTakingFragmentSheetNewCollection().show(
+                    childFragmentManager,
+                    NoteTakingFragmentSheetNewCollection().tag
+                )
+            }
 
 
             val _note = args.note
             binding.fNTNNotes.text = _note?.mainNote?.toEditable()
             binding.fNTNTitle.text = _note?.title?.toEditable()
 
+
             observeForChanges()
-            setUpNoteClient()
+
         }
-
-
-
-
-
-
-
 
         return binding.root
     }
+
     /**
      * function [observeForChanges] used to listen for different form of changes i.e text , state and apply [updateOrCreateNew] note
      * */
-    private fun observeForChanges(note: Note =  Note(
-        0, null, null, null, NoteAttachmentAndOther(
-            null,
-            null,
-            null,
-            null,
-            null
-        ), false
-    )) = with(binding){
+    @ExperimentalStdlibApi
+    private fun observeForChanges(
+        note: Note = Note(
+            0, null, null, null, NoteAttachmentAndOther(
+                null,
+                1,
+                null,
+
+
+                mutableListOf(),
+                null
+            ), false
+        )
+    ) = with(binding) {
         var copyable = note
 
 
@@ -159,17 +174,55 @@ class NoteTakingFragment : Fragment() {
 
         }
         fNTNNotes.doOnTextChanged { text, _, _, _ ->
-            if (text.isNullOrBlank()) return@doOnTextChanged
+            if (text == null) return@doOnTextChanged
             copyable = copyable.copy(mainNote = text.toString())
             updateOrCreateNew(copyable)
         }
+
         fNTNPinButton.invokeSelectableState<ImageButton> {
             copyable =
                 copyable.copy(attachmentAndOthers = copyable.attachmentAndOthers?.copy(pinned = it))
             Log.d("$TAG@154", "pinned = $it, copiable = $copyable")
             updateOrCreateNew(copyable)
         }
+        lifecycleScope.launch {
+            launch {
+
+                noteTakingFragmentViewModel.uriListener.collect { result ->
+                    if (result == null) return@collect
+
+                    copyable = copyable.copy(
+                        attachmentAndOthers = copyable.attachmentAndOthers!!.copy(
+                            fileUri = notesClient.filterById(noteTakingFragmentViewModel.noteId.value!!).attachmentAndOthers!!.fileUri.update(
+                                result.data.toString()
+                            )
+                        )
+                    )
+                    Log.d("$TAG@200", "copyable = $copyable.toS")
+                    updateOrCreateNew(copyable)
+
+
+                }
+//           \
+            }
+            launch {
+                dataProvider.getAllCollections()
+                noteTakingFragmentViewModel.collectionId.collect { id ->
+                    if (id == null) return@collect
+                    copyable = copyable.copy(
+                        attachmentAndOthers = copyable.attachmentAndOthers?.copy(collectionId = id)
+                    )
+
+
+                    updateOrCreateNew(copyable)
+                }
+            }
+
+        }
+
+
     }
+
     /**
      * function [updateOrCreateNew] used to weather create new or update existing note based on [NoteTakingFragmentViewModel.noteId]
      * */
@@ -179,7 +232,15 @@ class NoteTakingFragment : Fragment() {
             noteTakingFragmentViewModel.noteId.value == NULL_VALUE_INT -> {
                 //ADD
 
-                binding.new(note.copy(dateTime = currentTime))
+                binding.new(
+                    note.copy(
+                        dateTime = currentTime,
+                        attachmentAndOthers = note.attachmentAndOthers?.copy(
+                            collectionId = 1,
+                            fileUri = mutableListOf()
+                        )
+                    )
+                )
 
             }
             noteTakingFragmentViewModel.noteId.value != NULL_VALUE_INT -> {
@@ -189,6 +250,7 @@ class NoteTakingFragment : Fragment() {
                         "$TAG@145",
                         "D = ${noteTakingFragmentViewModel.noteId.value}"
                     )
+                    if (!::notesClient.isInitialized) return@launch
                     notesClient.let { itList ->
                         val itNote = itList.first { itNote ->
                             itNote.id == noteTakingFragmentViewModel.noteId.value
@@ -201,11 +263,17 @@ class NoteTakingFragment : Fragment() {
                                 mainNote = note.mainNote ?: itNote.mainNote,
                                 dateTime = currentTime,
                                 attachmentAndOthers = NoteAttachmentAndOther(
-                                    note.attachmentAndOthers?.archived ?: itNote.attachmentAndOthers?.archived,
-                                    note.attachmentAndOthers?.pinned ?: itNote.attachmentAndOthers?.pinned,
-                                    note.attachmentAndOthers?.fileUri ?: itNote.attachmentAndOthers?.fileUri,
-                                    note.attachmentAndOthers?.imageUri ?: itNote.attachmentAndOthers?.imageUri,
-                                    note.attachmentAndOthers?.color ?: itNote.attachmentAndOthers?.color
+                                    note.attachmentAndOthers?.archived
+                                        ?: itNote.attachmentAndOthers?.archived,
+                                    note.attachmentAndOthers?.collectionId
+                                        ?: itNote.attachmentAndOthers?.collectionId ?: 1,
+                                    note.attachmentAndOthers?.pinned
+                                        ?: itNote.attachmentAndOthers?.pinned,
+                                    note.attachmentAndOthers?.fileUri.takeIf { it!!.isNotEmpty() }
+                                        ?: itNote.attachmentAndOthers!!.fileUri,
+
+                                    note.attachmentAndOthers?.color
+                                        ?: itNote.attachmentAndOthers?.color
                                 ),
                                 deleted = note.deleted ?: itNote.deleted
                             )
@@ -223,23 +291,57 @@ class NoteTakingFragment : Fragment() {
     }
 
     private suspend fun setUpNoteClient() = with(binding) {
+
+
         dataProvider.getAllNote.observe(viewLifecycleOwner) {
             lifecycleScope.launch {
                 it.collect { list ->
+
                     notesClient = list
 
-                    val data = list.firstOrNull {
-                        it.id == noteTakingFragmentViewModel.noteId.value
-                    }
 
-                    if (data !=null && data.attachmentAndOthers?.pinned == true) {
-                        fNTNPinButton.isSelected = true
-                    } else if (data == null || data.attachmentAndOthers?.pinned == false) {
-                        fNTNPinButton.isSelected = false
+                    launch {
+
+                        val data = list.filterByIdOrNull(noteTakingFragmentViewModel.noteId.value)
+                        setUpCollection(data)
+                        setUpRecyclers(data)
+                        setUpPinButton(data)
+
+
                     }
 
                 }
             }
+        }
+    }
+
+    private suspend fun FragmentNoteTakingNewBinding.setUpCollection(data: Note?) {
+        noteTakingFragmentViewModel.collectionId.emit(
+            data?.attachmentAndOthers?.collectionId ?: 1
+        )
+        dataProvider.getAllCollections().observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.FAILED -> {
+
+                }
+                is Result.LOADING -> {
+
+
+                }
+                is Result.NULL_VALUE -> {
+
+                }
+                is Result.SUCCESS<*> -> {
+                    val collectionsFlow = result.data as Flow<List<NoteCollections>>
+                    lifecycleScope.launch {
+                        collectionsFlow.collect { collections ->
+                            fNTNCollectionText.text =
+                                collections.filterByIdOrNull(data?.attachmentAndOthers?.collectionId)?.collectionName
+                        }
+                    }
+                }
+            }
+
         }
     }
 
@@ -263,6 +365,7 @@ class NoteTakingFragment : Fragment() {
                             val data = it.data as Long
                             Log.d("$TAG@129", "$data")
 
+
                             noteTakingFragmentViewModel.noteId.value = data.toInt()
                         }
 
@@ -272,6 +375,7 @@ class NoteTakingFragment : Fragment() {
             // }
         }
     }
+
     /**
      * function [update] is used to update existing note with declared id
      * */
@@ -312,6 +416,30 @@ class NoteTakingFragment : Fragment() {
         }
     }
 
+    private fun FragmentNoteTakingNewBinding.setUpRecyclers(data: Note?) {
+
+        Log.d("$TAG@418", "${data?.attachmentAndOthers?.fileUri}")
+        if (data?.attachmentAndOthers?.fileUri != emptyList<String>() && data?.attachmentAndOthers?.fileUri?.isNotEmpty() == true) {
+            fNTNAttachmentRecycler.visibility = View.VISIBLE
+            attachmentAdapter.addList(data.attachmentAndOthers.fileUri.toList().map { it!! })
+        }
+    }
+
+    private fun FragmentNoteTakingNewBinding.setUpPinButton(data: Note?) {
+        if (data != null && data.attachmentAndOthers?.pinned == true) {
+            fNTNPinButton.isSelected = true
+        } else if (data == null || data.attachmentAndOthers?.pinned == false) {
+            fNTNPinButton.isSelected = false
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+
+        Log.d("$TAG@353", "ON DETACH calling null")
+        noteTakingFragmentViewModel.uriListener.value = null
+
+    }
 
     private fun reFormatter(text: CharSequence): String? {
         var formattedText: String? = text.toString()

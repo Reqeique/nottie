@@ -2,5 +2,6 @@
 <resources>
     <attr name="colorTertiary" format="reference"/>
     <attr name="colorSurfaceSecondary" format="reference"/>
-
+    <attr name="collectionStyle" format="reference"/>
+    <attr name="colorSurfaceTertiary" format="reference"/>
 </resources>

@@ -10,16 +10,13 @@ import androidx.room.PrimaryKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.parcelize.Parcelize
 
-
-data class Notes(
-    val notes : Flow<Note?>?
-)
 @Parcelize
 data class NoteAttachmentAndOther(
     val archived: Boolean?,
+    val collectionId: Int?,
     val pinned: Boolean?,
-    val fileUri: String?,
-    val imageUri: String?,
+    val fileUri: List<String?>,
+
     val color: String?,
 ): Parcelable
 
