@@ -272,8 +272,8 @@ class MainFragment : Fragment() {
                                             NoteCollections(
                                                 0,
                                                 text.toString(),
-                                                false,
-                                                 true
+                                                deleted = false,
+                                                isVisible = true
                                             )
                                         ).observe(viewLifecycleOwner) {
                                             when (it) {
@@ -287,6 +287,7 @@ class MainFragment : Fragment() {
                                                     dismiss()
 
                                                 }
+
                                             }
                                         }
 

@@ -9,7 +9,6 @@ import coil.fetch.VideoFrameUriFetcher
 import coil.request.ImageRequest
 import com.ultraone.nottie.databinding.RmNoteTakingAttachementsBinding
 import com.ultraone.nottie.util.*
-import com.ultraone.nottie.util.NormalFrameUriFetcher
 
 class NoteTakingAttachmentAdapter(): RecyclerView.Adapter<NoteTakingAttachmentAdapter.ViewHolder>() {
     var onItemClick: ((uri: String ,pos: Int,v: View) -> Unit)? = null
@@ -35,13 +34,15 @@ class NoteTakingAttachmentAdapter(): RecyclerView.Adapter<NoteTakingAttachmentAd
         when(data.fileType(holder.itemView.context)) {
             is AUDIO -> {
                 holder.binding.imageView.loadPreview(data) {
-                    fetcher(NormalFrameUriFetcher(holder.itemView.context))
+                    fetcher(SongFrameUriFetcher(holder.itemView.context))
                 }
 
 
             }
             is DOCUMENT -> {
-
+                holder.binding.imageView.loadPreview(data){
+                    fetcher(DocumentFrameUriFetcher(holder.itemView.context, ""))
+                }
             }
             is IMAGE -> {
                 holder.binding.imageView.loadPreview(data)
@@ -49,7 +50,7 @@ class NoteTakingAttachmentAdapter(): RecyclerView.Adapter<NoteTakingAttachmentAd
             is Other -> TODO()
             is VIDEO -> {
                 holder.binding.imageView.apply {
-                    scaleType = ImageView.ScaleType.FIT_CENTER
+                    scaleType = ImageView.ScaleType.CENTER_CROP
                     loadPreview(data) {
                         fetcher(VideoFrameUriFetcher(context))
                     }

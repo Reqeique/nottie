@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/shp_rd_10dp"
+    android:minWidth="250dp"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:textSize="16sp"
+        style="@style/primaryTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:text="Choose Color">
+
+    </TextView>
+    <GridLayout
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:useDefaultMargins="true"
+        android:columnCount="4"
+        android:rowCount="4"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/f_n_t_n_c_c_d_red"
+            app:cardElevation="0dp"
+
+            app:cardCornerRadius="10dp"
+            app:cardBackgroundColor="@color/red_500"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/f_n_t_n_c_c_d_pink"
+            app:cardElevation="0dp"
+
+            app:cardCornerRadius="10dp"
+            app:cardBackgroundColor="@color/pink_500"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/f_n_t_n_c_c_d_blue"
+            app:cardElevation="0dp"
+
+            app:cardCornerRadius="10dp"
+            app:cardBackgroundColor="@color/blue_500"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            />
+        <androidx.cardview.widget.CardView
+            app:cardElevation="0dp"
+
+            app:cardCornerRadius="10dp"
+            app:cardBackgroundColor="@color/purble_500"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            />
+        <androidx.cardview.widget.CardView
+            app:cardElevation="0dp"
+
+            app:cardCornerRadius="10dp"
+            app:cardBackgroundColor="@color/yellow_500"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            />
+        <androidx.cardview.widget.CardView
+            app:cardElevation="0dp"
+
+            app:cardCornerRadius="10dp"
+            app:cardBackgroundColor="@color/green_500"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            />
+    </GridLayout>
+    <LinearLayout
+        android:gravity="end"
+        android:layout_margin="16dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <TextView
+            android:textStyle="bold"
+            android:layout_gravity="end"
+            android:padding="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CANCEL"/>
+        <TextView
+            android:textStyle="bold"
+            android:id="@+id/fragment_main_add_collection_dialog_add_button"
+            android:padding="16dp"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ADD"/>
+    </LinearLayout>
+
+
+</LinearLayout>

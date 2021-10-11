@@ -88,15 +88,18 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
         <com.google.android.material.card.MaterialCardView
+
             app:cardCornerRadius="10dp"
             app:cardElevation="0dp"
             android:layout_margin="16dp"
+            app:backgroundColor="?attr/colorPrimary"
             style="@style/editTextStyleCard"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -128,6 +131,34 @@
 
 <!--                </androidx.appcompat.widget.AppCompatImageView>-->
 
+                <androidx.cardview.widget.CardView
+                    android:translationZ="1dp"
+                    android:clickable="true"
+
+                    app:cardElevation="0dp"
+                    app:cardCornerRadius="10dp"
+                    app:cardBackgroundColor="@android:color/transparent"
+
+                    android:id="@+id/imageButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+
+
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" >
+                    <ImageView
+                        android:id="@+id/fragment_note_taking_new_choose_color"
+
+                        android:background="@android:color/transparent"
+                        android:backgroundTint="@android:color/transparent"
+                        android:src="#DCDCDC"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+                </androidx.cardview.widget.CardView>
+
                 <androidx.recyclerview.widget.RecyclerView
 
                     android:id="@+id/f_n_t_n_attachment_recycler"
@@ -136,7 +167,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="125dp"
 
-                    android:layoutMode="opticalBounds"
+
 
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -206,6 +237,8 @@
                     app:layout_constraintTop_toBottomOf="@id/f_n_t_n_attachment_recycler" />
 
                 <EditText
+
+
                     android:id="@+id/f_n_t_n_notes"
 
                     style="@style/editTextStyle"

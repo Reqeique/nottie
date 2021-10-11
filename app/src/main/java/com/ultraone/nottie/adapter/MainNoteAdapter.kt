@@ -155,6 +155,7 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
         val root: MaterialCardView
         val title: TextView
         val date: TextView
+        val pin: ImageView
         val indicator: MaterialCardView
         val imageView: ImageView
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
@@ -170,6 +171,7 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
 
         init {
             val x = 0
+            pin = binding.rmMainNoteSmallPin
             card = binding.card
             imageView = binding.rMNSImageView
             root = binding.rmMainNoteSmallRoot
@@ -185,21 +187,37 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        this.parent.smoothScrollToPosition(position+((1..3).random()))
+        this.parent.smoothScrollToPosition(position + ((1..3).random()))
         val p = position
         holder.apply {
             note.text = datas[p].mainNote
             title.text = datas[p].title
             //todo uncomment the code below
-            if(datas[p].attachmentAndOthers?.fileUri?.isEmpty() == true) {
+
+             if(datas[p].attachmentAndOthers != null && datas[p].attachmentAndOthers?.color != null)  root.setCardBackgroundColor(
+                 ColorStateList.valueOf(datas[p].attachmentAndOthers!!.color!!.toInt()))
+            if (datas[p].attachmentAndOthers?.fileUri?.isEmpty() == true && !(datas[p].attachmentAndOthers?.fileUri?.any {
+                    it!!.fileType(itemView.context) is IMAGE
+                })!!) {
                 card.visibility = View.GONE
-            } else if(datas[p].attachmentAndOthers?.fileUri?.isNotEmpty() == true) {
+            } else if (datas[p].attachmentAndOthers?.fileUri?.isNotEmpty() == true && (datas[p].attachmentAndOthers?.fileUri!!.any {
+                    it!!.fileType(itemView.context) is IMAGE
+                })) {
                 card.visibility = View.VISIBLE
                 imageView.setImageURI(datas[p].attachmentAndOthers?.fileUri?.first()?.toUri())
             }
+
+
 //            date.text = datas[p].dateTime?.decodeToTimeAndDate()
             root.transitionName = "createNewNote${datas[p].dateTime}"
-            if(datas[p].attachmentAndOthers?.pinned == true) root.setCardBackgroundColor(root.context.resolver(R.attr.colorPrimary)) else if(datas[p].attachmentAndOthers?.pinned == false) root.setCardBackgroundColor(root.context.resolver(R.attr.colorSurface))
+            pin.visibility = View.GONE
+            if (datas[p].attachmentAndOthers?.pinned == true) {
+                root.setCardBackgroundColor(root.context.resolver(R.attr.colorPrimary))
+                pin.visibility = View.VISIBLE
+            } else if (datas[p].attachmentAndOthers?.pinned == false) {
+                pin.visibility = View.GONE
+                root.setCardBackgroundColor(root.context.resolver(R.attr.colorSurface))
+            }
             when {
                 tracker?.isSelected((datas[p].id).toLong()) == true -> {
                     @ColorInt val color = holder.itemView.context.resolver(R.attr.colorPrimary)
@@ -237,6 +255,7 @@ class DateTimeAdapter : RecyclerView.Adapter<DateTimeAdapter.ViewHolder>() {
 
         parent = recyclerView
     }
+
     @SuppressLint("NotifyDataSetChanged")
 
 
@@ -246,7 +265,8 @@ class DateTimeAdapter : RecyclerView.Adapter<DateTimeAdapter.ViewHolder>() {
 
         val date: TextView
         val root2: MaterialCardView
-//        fun byPosition(pos: Int): View{
+
+        //        fun byPosition(pos: Int): View{
 //
 //        }
         init {
@@ -258,11 +278,11 @@ class DateTimeAdapter : RecyclerView.Adapter<DateTimeAdapter.ViewHolder>() {
 
     @SuppressLint("ResourceType")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        this.parent.smoothScrollToPosition(currentTime.decodeDate()+((1..3).random()))
+        this.parent.smoothScrollToPosition(currentTime.decodeDate() + ((1..3).random()))
         val v = parent.findViewHolderForAdapterPosition(currentTime.decodeDate() - 1)?.itemView
         val p = position
-        v?.findViewById<MaterialCardView>(R.id.root2)?.
-            setCardBackgroundColor( ColorStateList.valueOf(holder.itemView.context.resolver(R.attr.colorTertiary)))
+        v?.findViewById<MaterialCardView>(R.id.root2)
+            ?.setCardBackgroundColor(ColorStateList.valueOf(holder.itemView.context.resolver(R.attr.colorTertiary)))
 
         holder {
             date.text = datas[p].toString().toEditable()
@@ -270,9 +290,6 @@ class DateTimeAdapter : RecyclerView.Adapter<DateTimeAdapter.ViewHolder>() {
                 it.shortSnackBar(p.toString())
             }
         }
-
-
-
 
 
     }

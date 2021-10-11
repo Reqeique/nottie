@@ -238,7 +238,13 @@ fun Context.dialog(
     Dialog(this).apply(feature).apply{ setContentView(contentView) }.also (mDialog)
 }
 
-
+fun Context.dialog(
+    feature: Dialog.() -> Unit,
+    contentView: View,
+    mDialog: Dialog.() -> Unit
+){
+    Dialog(this).apply(feature).apply{ setContentView(contentView)}.also(mDialog)
+}
 
 infix fun Note.existIn(notes: List<Note>): Boolean = notes.map(Note::id).contains(this.id)
 

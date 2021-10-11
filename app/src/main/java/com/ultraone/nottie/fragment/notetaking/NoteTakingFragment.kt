@@ -3,6 +3,7 @@ package com.ultraone.nottie.fragment.notetaking
 import android.content.Context
 import io.noties.markwon.editor.MarkwonEditorTextWatcher
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.StyleSpan
@@ -10,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.ImageButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.doOnTextChanged
@@ -24,6 +26,7 @@ import com.ultraone.nottie.R
 import com.ultraone.nottie.adapter.NoteTakingAttachmentAdapter
 
 import com.ultraone.nottie.databinding.FragmentNoteTakingNewBinding
+import com.ultraone.nottie.databinding.FragmentNoteTakingNewColorChooserDialogBinding
 import com.ultraone.nottie.fragment.notetaking.sheet.NoteTakingFragmentSheet
 import com.ultraone.nottie.fragment.notetaking.sheet.NoteTakingFragmentSheetNewCollection
 import com.ultraone.nottie.model.Note
@@ -135,7 +138,7 @@ class NoteTakingFragment : Fragment() {
             binding.fNTNTitle.text = _note?.title?.toEditable()
 
 
-            observeForChanges()
+            observeForChanges(inflater = inflater)
 
         }
 
@@ -157,7 +160,7 @@ class NoteTakingFragment : Fragment() {
                 mutableListOf(),
                 null
             ), false
-        )
+        ), inflater: LayoutInflater
     ) = with(binding) {
         var copyable = note
 
@@ -184,6 +187,37 @@ class NoteTakingFragment : Fragment() {
                 copyable.copy(attachmentAndOthers = copyable.attachmentAndOthers?.copy(pinned = it))
             Log.d("$TAG@154", "pinned = $it, copiable = $copyable")
             updateOrCreateNew(copyable)
+        }
+        fragmentNoteTakingNewChooseColor.setOnClickListener {
+            Log.d(
+                "$TAG@110", "clicked" +
+                        ""
+            )
+            val binding = FragmentNoteTakingNewColorChooserDialogBinding.inflate(inflater)
+
+            requireContext().dialog(
+                { requestWindowFeature(Window.FEATURE_NO_TITLE) },
+                binding.root,
+                {
+                    window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                    val views = arrayOf(binding.fNTNCCDBlue, binding.fNTNCCDRed, binding.fNTNCCDPink)
+                    val clr = arrayOf(resources.getColor(R.color.blue_500), resources.getColor(R.color.red_500), resources.getColor(R.color.pink_500))
+                    views.forEachIndexed { index, cardView ->
+                        val color = clr[index]
+                        cardView.setOnClickListener {
+
+                                updateOrCreateNew(
+                                    copyable.copy(
+                                        attachmentAndOthers = copyable.attachmentAndOthers?.copy(
+                                            color = color.toString()
+                                        )
+                                    )
+                                )
+
+                        }
+                    }
+                    show()
+                })
         }
         lifecycleScope.launch {
             launch {
@@ -438,6 +472,13 @@ class NoteTakingFragment : Fragment() {
 
         Log.d("$TAG@353", "ON DETACH calling null")
         noteTakingFragmentViewModel.uriListener.value = null
+
+    }
+
+    private fun FragmentNoteTakingNewBinding.setUpColorChooser(
+        inflater: LayoutInflater,
+        note: Note
+    ) {
 
     }
 
