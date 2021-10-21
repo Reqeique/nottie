@@ -129,15 +129,17 @@
 
         <com.google.android.material.card.MaterialCardView
 
-            app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
-            android:layout_margin="16dp"
-            app:backgroundColor="?attr/colorPrimary"
+            android:id="@+id/root_card"
             style="@style/editTextStyleCard"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_margin="16dp"
+            app:backgroundColor="?attr/colorPrimary"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="16dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/root2"
@@ -153,25 +155,24 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0">
 
-<!--                <androidx.appcompat.widget.AppCompatImageView-->
-<!--                    android:scaleType="centerCrop"-->
-<!--                    android:id="@+id/f_n_t_n_image_view"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="150dp"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"-->
-<!--                    tools:srcCompat="@tools:sample/avatars">-->
+                <!--                <androidx.appcompat.widget.AppCompatImageView-->
+                <!--                    android:scaleType="centerCrop"-->
+                <!--                    android:id="@+id/f_n_t_n_image_view"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="150dp"-->
+                <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                <!--                    app:layout_constraintTop_toTopOf="parent"-->
+                <!--                    tools:srcCompat="@tools:sample/avatars">-->
 
-<!--                </androidx.appcompat.widget.AppCompatImageView>-->
+                <!--                </androidx.appcompat.widget.AppCompatImageView>-->
 
                 <androidx.recyclerview.widget.RecyclerView
 
                     android:id="@+id/f_n_t_n_attachment_recycler"
-                    android:minHeight="125dp"
-
                     android:layout_width="match_parent"
-                    android:layout_height="125dp"
 
+                    android:layout_height="125dp"
+                    android:minHeight="125dp"
 
 
                     android:orientation="horizontal"
@@ -221,13 +222,14 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <EditText
+                    android:background="@null"
                     android:id="@+id/f_n_t_n_title"
 
                     style="@style/editTextStyle2"
 
 
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:fontFamily="@font/sofia_pro_regular"
                     android:gravity="start"
                     android:hint="Title"
@@ -242,8 +244,8 @@
                     app:layout_constraintTop_toBottomOf="@id/f_n_t_n_attachment_recycler" />
 
                 <EditText
-
-
+                    android:paddingTop="8dp"
+                    android:background="@null"
                     android:id="@+id/f_n_t_n_notes"
 
                     style="@style/editTextStyle"

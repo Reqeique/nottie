@@ -340,6 +340,7 @@ class NoteTakingFragment : Fragment() {
                         setUpCollection(data)
                         setUpRecyclers(data)
                         setUpPinButton(data)
+                        setUpRootCardView(data)
 
 
                     }
@@ -448,6 +449,15 @@ class NoteTakingFragment : Fragment() {
             }
 
         }
+    }
+
+    private fun FragmentNoteTakingNewBinding.setUpRootCardView(data: Note?){
+        val attachmentAndOthers = data?.attachmentAndOthers ?: return
+        if(attachmentAndOthers.color != null){
+            val color = requireContext().resolver(attachmentAndOthers.color.toInt())
+            rootCard.setCardBackgroundColor(Color.parseColor(ColorTransparentUtils.convertIntoColor(color, 50)))
+        }
+
     }
 
     private fun FragmentNoteTakingNewBinding.setUpRecyclers(data: Note?) {
