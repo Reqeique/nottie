@@ -200,8 +200,8 @@ class NoteTakingFragment : Fragment() {
                 binding.root,
                 {
                     window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    val views = arrayOf(binding.fNTNCCDBlue, binding.fNTNCCDRed, binding.fNTNCCDPink)
-                    val clr = arrayOf(resources.getColor(R.color.blue_500), resources.getColor(R.color.red_500), resources.getColor(R.color.pink_500))
+                    val views = arrayOf(binding.fNTNCCDBlue, binding.fNTNCCDRed, binding.fNTNCCDPink, binding.fNTNCCDBrown,binding.fNTNCCDGreen, binding.fNTNCCDIndigo,binding.fNTNCCDPurple,binding.fNTNCCDYellow)
+                    val clr = arrayOf((R.attr.colorPrimary), (R.attr.red), (R.attr.pink), (R.attr.brown), (R.attr.green), (R.attr.indigo), (R.attr.purple), (R.attr.yellow))
                     views.forEachIndexed { index, cardView ->
                         val color = clr[index]
                         cardView.setOnClickListener {

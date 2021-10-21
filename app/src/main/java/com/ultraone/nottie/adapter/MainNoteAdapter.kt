@@ -2,6 +2,7 @@ package com.ultraone.nottie.adapter
 
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -185,6 +186,37 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
         }
     }
 
+    private fun ViewHolder.setUpAttachments(p: Int){
+        val attachmentAndOthers = (datas[p].attachmentAndOthers) ?: return
+        //Log.d("")
+        if (attachmentAndOthers.color != null) {
+
+            root.setCardBackgroundColor(
+                itemView.context.resolver(attachmentAndOthers.color.toInt())
+            )
+        }
+        if (attachmentAndOthers.fileUri.isEmpty() || !(attachmentAndOthers.fileUri.any {
+                it!!.fileType(itemView.context) is IMAGE
+            })) {
+            card.visibility = View.GONE
+        } else if (attachmentAndOthers.fileUri.isNotEmpty() && attachmentAndOthers.fileUri.any {
+                it!!.fileType(itemView.context) is IMAGE
+            }) {
+            card.visibility = View.VISIBLE
+            imageView.setImageURI(attachmentAndOthers.fileUri.first{
+                it!!.fileType(itemView.context) is IMAGE
+            }?.toUri())
+        }
+        if (attachmentAndOthers.pinned == true) {
+            root.setCardBackgroundColor(root.context.resolver(R.attr.colorPrimary))
+            pin.visibility = View.VISIBLE
+        } else if (attachmentAndOthers.pinned == false) {
+            pin.visibility = View.GONE
+            if(attachmentAndOthers.color != null) return
+            root.setCardBackgroundColor(root.context.resolver(R.attr.colorSurface))
+        }
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         this.parent.smoothScrollToPosition(position + ((1..3).random()))
@@ -193,31 +225,12 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
             note.text = datas[p].mainNote
             title.text = datas[p].title
             //todo uncomment the code below
-
-             if(datas[p].attachmentAndOthers != null && datas[p].attachmentAndOthers?.color != null)  root.setCardBackgroundColor(
-                 ColorStateList.valueOf(datas[p].attachmentAndOthers!!.color!!.toInt()))
-            if (datas[p].attachmentAndOthers?.fileUri?.isEmpty() == true && !(datas[p].attachmentAndOthers?.fileUri?.any {
-                    it!!.fileType(itemView.context) is IMAGE
-                })!!) {
-                card.visibility = View.GONE
-            } else if (datas[p].attachmentAndOthers?.fileUri?.isNotEmpty() == true && (datas[p].attachmentAndOthers?.fileUri!!.any {
-                    it!!.fileType(itemView.context) is IMAGE
-                })) {
-                card.visibility = View.VISIBLE
-                imageView.setImageURI(datas[p].attachmentAndOthers?.fileUri?.first()?.toUri())
-            }
-
+            setUpAttachments(p)
 
 //            date.text = datas[p].dateTime?.decodeToTimeAndDate()
             root.transitionName = "createNewNote${datas[p].dateTime}"
             pin.visibility = View.GONE
-            if (datas[p].attachmentAndOthers?.pinned == true) {
-                root.setCardBackgroundColor(root.context.resolver(R.attr.colorPrimary))
-                pin.visibility = View.VISIBLE
-            } else if (datas[p].attachmentAndOthers?.pinned == false) {
-                pin.visibility = View.GONE
-                root.setCardBackgroundColor(root.context.resolver(R.attr.colorSurface))
-            }
+
             when {
                 tracker?.isSelected((datas[p].id).toLong()) == true -> {
                     @ColorInt val color = holder.itemView.context.resolver(R.attr.colorPrimary)

@@ -40,8 +40,15 @@
 <!--        <item name="android:textStyle">bold</item>-->
         <item name="android:textColor">@color/blue_500</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
-
-
+        <!--  set up Colors -->
+        <item name="indigo">@color/indigo_500</item>
+        <item name="brown">@color/brown_500</item>
+        <item name="red">@color/red_500</item>
+        <item name="pink">@color/pink_500</item>
+        <item name="purple">@color/purple_500</item>
+        <item name="green">@color/green_500</item>
+        <item name="yellow">@color/yellow_500</item>
+        <!--        -->
         <item name="collectionStyle">@color/darkTertiaryTextColor</item>
     </style>
 

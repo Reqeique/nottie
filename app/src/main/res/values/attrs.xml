@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <attr name="red" format="reference"/>
+    <attr name="pink" format="reference"/>
+    <attr name="purple" format="reference"/>
+    <attr name="indigo" format="reference"/>
+    <attr name="brown" format="reference"/>
+    <attr name="green" format="reference"/>
+    <attr name="yellow" format="reference"/>
     <attr name="colorTertiary" format="reference"/>
     <attr name="colorSurfaceSecondary" format="reference"/>
     <attr name="collectionStyle" format="reference"/>

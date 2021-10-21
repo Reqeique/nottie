@@ -29,6 +29,17 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <item name="collectionStyle">@color/lightTertiaryTextColor</item>
+
+
+        <!-- set up color        -->
+        <item name="indigo">@color/indigo_200</item>
+        <item name="brown">@color/brown_200</item>
+        <item name="red">@color/red_200</item>
+        <item name="pink">@color/pink_200</item>
+        <item name="purple">@color/purple_200</item>
+        <item name="green">@color/green_200</item>
+        <item name="yellow">@color/yellow_200</item>
+        <!--        -->
     </style>
     <style name="chipText" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textSize">16sp</item>

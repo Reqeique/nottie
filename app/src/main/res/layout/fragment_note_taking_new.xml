@@ -84,6 +84,39 @@
                 app:layout_constraintTop_toTopOf="parent">
 
             </ImageView>
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/imageButton"
+                android:layout_width="24dp"
+
+                android:layout_height="0dp"
+
+                android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:translationZ="1dp"
+                app:cardBackgroundColor="@android:color/transparent"
+                app:cardCornerRadius="10dp"
+
+
+                app:cardElevation="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/f_n_t_n_pin_button"
+                app:layout_constraintEnd_toStartOf="@+id/f_n_t_n_pin_button"
+                app:layout_constraintTop_toTopOf="@+id/f_n_t_n_pin_button">
+
+                <ImageView
+                    android:id="@+id/fragment_note_taking_new_choose_color"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:backgroundTint="@android:color/transparent"
+                    android:src="#DCDCDC"
+                    tools:layout_editor_absoluteX="118dp"
+                    tools:layout_editor_absoluteY="3dp" />
+
+
+            </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -130,34 +163,6 @@
 <!--                    tools:srcCompat="@tools:sample/avatars">-->
 
 <!--                </androidx.appcompat.widget.AppCompatImageView>-->
-
-                <androidx.cardview.widget.CardView
-                    android:translationZ="1dp"
-                    android:clickable="true"
-
-                    app:cardElevation="0dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardBackgroundColor="@android:color/transparent"
-
-                    android:id="@+id/imageButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="16dp"
-
-
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" >
-                    <ImageView
-                        android:id="@+id/fragment_note_taking_new_choose_color"
-
-                        android:background="@android:color/transparent"
-                        android:backgroundTint="@android:color/transparent"
-                        android:src="#DCDCDC"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        />
-                </androidx.cardview.widget.CardView>
 
                 <androidx.recyclerview.widget.RecyclerView
 
