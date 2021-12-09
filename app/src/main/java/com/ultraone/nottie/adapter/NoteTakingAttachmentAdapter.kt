@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import coil.fetch.VideoFrameUriFetcher
 import coil.request.ImageRequest
@@ -30,7 +31,7 @@ class NoteTakingAttachmentAdapter(): RecyclerView.Adapter<NoteTakingAttachmentAd
       //  when()
         val data = (datas[position])
         val builder = ImageRequest.Builder(holder.itemView.context)
-
+        holder.binding.imageView.scaleType = ImageView.ScaleType.CENTER_CROP
         when(data.fileType(holder.itemView.context)) {
             is AUDIO -> {
                 holder.binding.imageView.loadPreview(data) {
@@ -43,9 +44,14 @@ class NoteTakingAttachmentAdapter(): RecyclerView.Adapter<NoteTakingAttachmentAd
                 holder.binding.imageView.loadPreview(data){
                     fetcher(DocumentFrameUriFetcher(holder.itemView.context, ""))
                 }
+//                TODO()
             }
             is IMAGE -> {
-                holder.binding.imageView.loadPreview(data)
+                holder.binding.imageView.apply {
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+
+                   loadPreview(data)
+                }
             }
             is Other -> TODO()
             is VIDEO -> {

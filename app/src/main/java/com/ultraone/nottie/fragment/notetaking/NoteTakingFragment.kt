@@ -1,6 +1,7 @@
 package com.ultraone.nottie.fragment.notetaking
 
 import android.content.Context
+import android.content.res.ColorStateList
 import io.noties.markwon.editor.MarkwonEditorTextWatcher
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -21,6 +22,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.discord.simpleast.core.simple.SimpleRenderer
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.transition.MaterialContainerTransform
 import com.ultraone.nottie.R
 import com.ultraone.nottie.adapter.NoteTakingAttachmentAdapter
@@ -71,6 +73,7 @@ class NoteTakingFragment : Fragment() {
     //    private lateinit var changingTitle: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             drawingViewId = R.id.fragmentContainerViewerMain
             duration = 300L
@@ -104,7 +107,8 @@ class NoteTakingFragment : Fragment() {
 
 //            requireActivity().window.navigationBarColor = ContextCompat.getColor(requireActivity(), R.color.gray_00)
 
-        lifecycleScope.launch(Main) {
+        lifecycleScope.launchWhenStarted {
+            delay(400L)
             attachmentAdapter = NoteTakingAttachmentAdapter()
             binding.fNTNAttachmentRecycler.adapter = attachmentAdapter
 
@@ -193,28 +197,53 @@ class NoteTakingFragment : Fragment() {
                 "$TAG@110", "clicked" +
                         ""
             )
+
+            fun MaterialCardView.initialBoxConfiguration() {
+                strokeWidth = 0
+            }
+            fun MaterialCardView.maxedBoxConfiguration(){
+              
+                strokeWidth = 3
+                strokeColor = context.resolver(R.attr.colorPrimary)
+
+            }
             val binding = FragmentNoteTakingNewColorChooserDialogBinding.inflate(inflater)
 
             requireContext().dialog(
                 { requestWindowFeature(Window.FEATURE_NO_TITLE) },
                 binding.root,
                 {
+                    var globalColor: Int? = null
                     window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                     val views = arrayOf(binding.fNTNCCDBlue, binding.fNTNCCDRed, binding.fNTNCCDPink, binding.fNTNCCDBrown,binding.fNTNCCDGreen, binding.fNTNCCDIndigo,binding.fNTNCCDPurple,binding.fNTNCCDYellow)
                     val clr = arrayOf((R.attr.colorPrimary), (R.attr.red), (R.attr.pink), (R.attr.brown), (R.attr.green), (R.attr.indigo), (R.attr.purple), (R.attr.yellow))
                     views.forEachIndexed { index, cardView ->
+                        val filtered = views.filterNot {
+                            views.indexOf(it) == index
+                        }
                         val color = clr[index]
                         cardView.setOnClickListener {
-
-                                updateOrCreateNew(
-                                    copyable.copy(
-                                        attachmentAndOthers = copyable.attachmentAndOthers?.copy(
-                                            color = color.toString()
-                                        )
-                                    )
-                                )
+                            globalColor = color
+//                            filtered.forEach { filteredCards->
+//                                filteredCards.initialBoxConfiguration()
+//                            }
+//                            cardView.setStrokeColor(ColorStateList.valueOf(context.resolver(R.attr.colorPrimary)))
+//                            cardView.setStrokeWidth(4)
+//                            cardView.invalidate()
+                            cardView.maxedBoxConfiguration()
 
                         }
+                    }
+                    binding.fragmentMainAddCollectionDialogAddButton.setOnClickListener {
+                        if(globalColor == null) return@setOnClickListener
+                        updateOrCreateNew(
+                            copyable.copy(
+                                attachmentAndOthers = copyable.attachmentAndOthers?.copy(
+                                    color = globalColor.toString()
+                                )
+                            )
+                        )
+
                     }
                     show()
                 })
@@ -454,17 +483,23 @@ class NoteTakingFragment : Fragment() {
     private fun FragmentNoteTakingNewBinding.setUpRootCardView(data: Note?){
         val attachmentAndOthers = data?.attachmentAndOthers ?: return
         if(attachmentAndOthers.color != null){
-            val color = requireContext().resolver(attachmentAndOthers.color.toInt())
-            rootCard.setCardBackgroundColor(Color.parseColor(ColorTransparentUtils.convertIntoColor(color, 50)))
+            val color = Color.parseColor(ColorTransparentUtils.convertIntoColor(requireContext().resolver(attachmentAndOthers.color.toInt()), 50))
+            rootCard.setCardBackgroundColor(color)
+            setUpColorChooserButton(color)
         }
 
     }
-
+   private fun FragmentNoteTakingNewBinding.setUpColorChooserButton(color: Int){
+       imageButton.setCardBackgroundColor(color)
+   }
     private fun FragmentNoteTakingNewBinding.setUpRecyclers(data: Note?) {
 
         Log.d("$TAG@418", "${data?.attachmentAndOthers?.fileUri}")
         if (data?.attachmentAndOthers?.fileUri != emptyList<String>() && data?.attachmentAndOthers?.fileUri?.isNotEmpty() == true) {
             fNTNAttachmentRecycler.visibility = View.VISIBLE
+//            when(data.attachmentAndOthers.fileUri.toList().map { it!! }.size){
+//                fNTNAttachmentRecycler.layoutr
+//            }
             attachmentAdapter.addList(data.attachmentAndOthers.fileUri.toList().map { it!! })
         }
     }
@@ -479,6 +514,7 @@ class NoteTakingFragment : Fragment() {
 
     override fun onDetach() {
         super.onDetach()
+     //   lifecycleScope.cancel()
 
         Log.d("$TAG@353", "ON DETACH calling null")
         noteTakingFragmentViewModel.uriListener.value = null

@@ -34,9 +34,12 @@ import com.ultraone.nottie.model.Result
 import com.ultraone.nottie.util.*
 import com.ultraone.nottie.viewmodel.DataProviderViewModel
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 //ERROR java.lang.IllegalArgumentException: Navigation action/destination com.ultraone.nottie:id/action_noteTakingFragment_to_mainFragment cannot be found from the current destination Destination(com.ultraone.nottie:id/mainFragment) label=MainFragment class=com.ultraone.nottie.fragment.main.MainFragment
@@ -74,6 +77,7 @@ class MainFragment : Fragment() {
         binding = FragmentMainBinding.inflate(inflater, container, false)
 
             lifecycleScope.launch(Main) {
+                delay(400L)
 
                 binding.setUpNotes()
                 binding.setUpCollections()
@@ -156,21 +160,27 @@ class MainFragment : Fragment() {
     }
 
     private fun setNoteRecyclerItemClickListener() {
-        trans()
 
+        trans()
         NoteAdapter.onItemClick = { note, pos, view ->
             view as MaterialCardView
             val name = "createNewNote"
             Log.d("$TAG@95", "- ${view.transitionName}")
-            val extras = FragmentNavigatorExtras(view to name)
 
-            findNavController().navigate(
-                MainFragmentDirections.actionMainFragmentToNoteTakingFragment(
-                    pos,
-                    note.id,
-                    note
-                ), extras
-            )
+
+//            findNavController().navigate(
+//                MainFragmentDirections.actionMainFragmentToSearchFragment()
+//            )
+                val extras = FragmentNavigatorExtras(view to name)
+
+                findNavController().navigate(
+                    MainFragmentDirections.actionMainFragmentToNoteTakingFragment(
+                        pos,
+                        note.id,
+                        note
+                    ), extras
+                )
+
 
         }
     }
@@ -187,6 +197,8 @@ class MainFragment : Fragment() {
                                 it.deleted == false
                             })
                         }
+                        dataProvider.getAllNotes().removeObservers(viewLifecycleOwner)
+
 
 
                     }
@@ -305,6 +317,7 @@ class MainFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         requireActivity().window.navigationBarColor = requireContext().resolver(R.attr.colorSurface)
+        lifecycleScope.cancel()
         Log.i("$TAG@59", "Detached")
     }
 
@@ -318,6 +331,10 @@ class MainFragment : Fragment() {
         super.onDestroyView()
         requireActivity().window.navigationBarColor = requireContext().resolver(R.attr.colorSurface)
         Log.i("$TAG@71", "DestroyedView")
+    }
+    override fun onStop(){
+        super.onStop()
+
     }
 
     override fun onPause() {

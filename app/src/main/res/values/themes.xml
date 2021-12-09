@@ -99,6 +99,9 @@
         <item name="android:textColor">@color/darkSecondaryTextColor</item>
         <item name="android:backgroundTint">#f4f4f4</item>
     </style>
+    <style name="DialogStyle">
+        <item name="android:background">?attr/colorSurfaceSecondary</item>
+    </style>
     <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="android:fitsSystemWindows">true</item>
         <item name="android:windowIsFloating">false</item>

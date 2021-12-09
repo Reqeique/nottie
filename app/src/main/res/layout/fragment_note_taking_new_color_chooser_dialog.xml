@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/shp_rd_10dp"
     android:minWidth="250dp"
+    style="@style/DialogStyle"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
@@ -25,7 +26,8 @@
         android:rowCount="4"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
+
             android:id="@+id/f_n_t_n_c_c_d_red"
             app:cardElevation="0dp"
 
@@ -34,7 +36,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             />
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/f_n_t_n_c_c_d_pink"
             app:cardElevation="0dp"
 
@@ -43,7 +45,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             />
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/f_n_t_n_c_c_d_blue"
             app:cardElevation="0dp"
 
@@ -52,7 +54,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             />
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/f_n_t_n_c_c_d_purple"
             app:cardElevation="0dp"
 
@@ -61,7 +63,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             />
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/f_n_t_n_c_c_d_yellow"
             app:cardElevation="0dp"
 
@@ -70,7 +72,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             />
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/f_n_t_n_c_c_d_green"
             app:cardElevation="0dp"
 
@@ -79,7 +81,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             />
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/f_n_t_n_c_c_d_brown"
             app:cardElevation="0dp"
 
@@ -88,7 +90,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             />
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/f_n_t_n_c_c_d_indigo"
             app:cardElevation="0dp"
 
@@ -112,6 +114,7 @@
             android:layout_height="wrap_content"
             android:text="CANCEL"/>
         <TextView
+
             android:textStyle="bold"
             android:id="@+id/fragment_main_add_collection_dialog_add_button"
             android:padding="16dp"

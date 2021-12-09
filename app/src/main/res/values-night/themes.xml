@@ -102,6 +102,10 @@
         <item name="android:textColor">@color/lightSecondaryTextColor</item>
         <item name="android:backgroundTint">@color/gray_01</item>
     </style>
+    <style name="DialogStyle">
+        <item name="android:elevation">0dp</item>
+        <item name="android:backgroundTint">@color/gray_02</item>
+    </style>
     <style name="AppBottomSheetDialogTheme" parent="Theme.Design.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:elevation">0dp</item>

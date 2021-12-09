@@ -89,6 +89,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.card.MaterialCardView
+                    android:visibility="gone"
                     android:id="@+id/rm_main_note_small_indicator"
                     android:layout_width="20dp"
                     android:layout_height="10dp"
@@ -103,6 +104,46 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <!--     0921930874-->
+
+                <ImageView
+                    android:id="@+id/rm_main_note_small_audio"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_outline_audiotrack_24" />
+
+                <ImageView
+                    android:id="@+id/rm_main_note_small_video"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="16dp"
+
+                    app:layout_constraintEnd_toStartOf="@+id/rm_main_note_small_audio"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_movie_24" />
+
+                <ImageView
+
+                    android:id="@+id/rm_main_note_small_image"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toStartOf="@+id/rm_main_note_small_video"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_image_24" />
+
+                <ImageView
+                    android:id="@+id/rm_main_note_small_file"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toStartOf="@+id/rm_main_note_small_image"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_insert_drive_file_24" />
+
                 <TextView
                     android:id="@+id/rm_main_note_small_note"
                     android:layout_width="wrap_content"

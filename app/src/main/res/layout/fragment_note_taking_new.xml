@@ -168,18 +168,19 @@
 
                 <androidx.recyclerview.widget.RecyclerView
 
+
                     android:id="@+id/f_n_t_n_attachment_recycler"
                     android:layout_width="match_parent"
 
                     android:layout_height="125dp"
                     android:minHeight="125dp"
-
+                    app:spanCount="1"
 
                     android:orientation="horizontal"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layoutManager="com.ultraone.nottie.util.SpanningLinearLayoutManager"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:itemCount="1"
+                    tools:itemCount="2"
                     tools:listitem="@layout/rm_note_taking_new">
 
                 </androidx.recyclerview.widget.RecyclerView>

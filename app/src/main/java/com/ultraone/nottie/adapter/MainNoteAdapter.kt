@@ -1,6 +1,7 @@
 package com.ultraone.nottie.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.TypedValue
@@ -157,6 +158,10 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
         val title: TextView
         val date: TextView
         val pin: ImageView
+        val image: ImageView
+        val document: ImageView
+        val video: ImageView
+        val audio: ImageView
         val indicator: MaterialCardView
         val imageView: ImageView
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
@@ -172,6 +177,10 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
 
         init {
             val x = 0
+            image = binding.rmMainNoteSmallImage
+            document = binding.rmMainNoteSmallFile
+            video = binding.rmMainNoteSmallVideo
+            audio = binding.rmMainNoteSmallAudio
             pin = binding.rmMainNoteSmallPin
             card = binding.card
             imageView = binding.rMNSImageView
@@ -185,6 +194,13 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
             }
         }
     }
+    inline fun  <reified T: FileType> List<String>.containsFile(context: Context): Boolean{
+
+        return any {
+
+            it.fileType(context) is T
+        }
+    }
 
     private fun ViewHolder.setUpAttachments(p: Int){
         val attachmentAndOthers = (datas[p].attachmentAndOthers) ?: return
@@ -195,18 +211,78 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
                 itemView.context.resolver(attachmentAndOthers.color.toInt())
             )
         }
-        if (attachmentAndOthers.fileUri.isEmpty() || !(attachmentAndOthers.fileUri.any {
-                it!!.fileType(itemView.context) is IMAGE
-            })) {
+        image.visibility = View.GONE
+        card.visibility = View.GONE
+        document.visibility = View.GONE
+        video.visibility = View.GONE
+        audio.visibility = View.GONE
+
+        if(attachmentAndOthers.fileUri.isNotEmpty()){
+            val uri = attachmentAndOthers.fileUri.map {it!!}
+
+                if(uri.containsFile<IMAGE>(itemView.context) ){
+                    image.visibility = View.VISIBLE
+                    card.visibility = View.VISIBLE
+                    imageView.setImageURI(attachmentAndOthers.fileUri.first{
+                        it!!.fileType(itemView.context) is IMAGE
+                    }?.toUri())
+                }
+                if(uri.containsFile<AUDIO>(itemView.context)) {
+                    audio.visibility = View.VISIBLE
+                }
+
+                if(uri.containsFile<VIDEO>(itemView.context)) {
+                    video.visibility = View.VISIBLE
+                }
+
+                if(uri.containsFile<DOCUMENT>(itemView.context)) {
+
+                    document.visibility = View.VISIBLE
+                }
+
+
+
+        }else if(attachmentAndOthers.fileUri.isEmpty()){
+            image.visibility = View.GONE
             card.visibility = View.GONE
-        } else if (attachmentAndOthers.fileUri.isNotEmpty() && attachmentAndOthers.fileUri.any {
-                it!!.fileType(itemView.context) is IMAGE
-            }) {
-            card.visibility = View.VISIBLE
-            imageView.setImageURI(attachmentAndOthers.fileUri.first{
-                it!!.fileType(itemView.context) is IMAGE
-            }?.toUri())
+            document.visibility = View.GONE
+            video.visibility = View.GONE
+            audio.visibility = View.GONE
         }
+
+//        if (attachmentAndOthers.fileUri.isEmpty() || !(attachmentAndOthers.fileUri.any {
+//                it!!.fileType(itemView.context) is DOCUMENT
+//            })) {
+//                document.visibility = View.GONE
+//
+//        } else if (attachmentAndOthers.fileUri.isNotEmpty() && attachmentAndOthers.fileUri.any {
+//                it!!.fileType(itemView.context) is DOCUMENT
+//            }) {
+//
+//
+//        }
+//        if (attachmentAndOthers.fileUri.isEmpty() || !(attachmentAndOthers.fileUri.any {
+//            it!!.fileType(itemView.context) is VIDEO
+//        })) {
+//
+//
+//        } else if (attachmentAndOthers.fileUri.isNotEmpty() && attachmentAndOthers.fileUri.any {
+//            it!!.fileType(itemView.context) is VIDEO
+//        }) {
+//            video.visibility = View.VISIBLE
+//
+//        }
+//        if (attachmentAndOthers.fileUri.isEmpty() || !(attachmentAndOthers.fileUri.any {
+//            it!!.fileType(itemView.context) is AUDIO
+//        })) {
+//
+//
+//        } else if (attachmentAndOthers.fileUri.isNotEmpty() && attachmentAndOthers.fileUri.any {
+//            it!!.fileType(itemView.context) is AUDIO
+//        }) {
+//            audio.visibility = View.VISIBLE
+//
+//        }
         if (attachmentAndOthers.pinned == true) {
             root.setCardBackgroundColor(root.context.resolver(R.attr.colorPrimary))
             pin.visibility = View.VISIBLE
