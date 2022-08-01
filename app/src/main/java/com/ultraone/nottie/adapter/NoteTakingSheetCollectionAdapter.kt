@@ -20,7 +20,10 @@ class NoteTakingSheetCollectionAdapter: RecyclerView.Adapter<NoteTakingSheetColl
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = RmNoteTakingSheetNewCollectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val x = (1..9 ).toList()
+
         return ViewHolder(binding)
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

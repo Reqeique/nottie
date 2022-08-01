@@ -42,7 +42,7 @@ class SearchFragment: Fragment() {
     ): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         binding {
-
+            fSSB.dispatchSetSelected(true)
         }
         return binding.root
     }
