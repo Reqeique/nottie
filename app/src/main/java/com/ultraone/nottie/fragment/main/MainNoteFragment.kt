@@ -106,7 +106,7 @@ class MainNoteFragment : Fragment() {
             }
             val extras = FragmentNavigatorExtras(fMNS to "test")
             findNavController().navigate(
-                MainNoteFragmentDirections.actionMainNoteFragmentToSearchFragment(),
+                MainNoteFragmentDirections.actionMainNoteFragmentToSearchFragment2(),
                 extras
             )
         }

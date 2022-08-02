@@ -7,9 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.transition.MaterialElevationScale
 import com.ultraone.nottie.adapter.MainNoteAdapter
 import com.ultraone.nottie.databinding.FragmentNoteCollectionNoteBinding
+import com.ultraone.nottie.fragment.main.MainNoteFragmentDirections
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.Result
 import com.ultraone.nottie.viewmodel.DataProviderViewModel
@@ -57,6 +61,16 @@ class NoteCollectionNoteFragment : Fragment() {
                           }
                       }
                   }
+            }
+            binding.fNCNS.setOnClickListener {
+                enterTransition = MaterialElevationScale(true).apply{
+                    duration = 300
+                }
+                val extras = FragmentNavigatorExtras(binding.fNCNS to "test")
+                findNavController().navigate(
+                    NoteCollectionNoteFragmentDirections.actionNoteCollectionNoteFragmentToSearchFragment2(-21),
+                    extras
+                )
             }
         }
         return binding.root

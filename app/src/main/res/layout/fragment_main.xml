@@ -65,6 +65,7 @@
                     app:layout_constraintStart_toStartOf="parent">
 
                     <androidx.appcompat.widget.SearchView
+                        android:transitionName="f_m_s_t"
 
                         android:layout_height="50dp"
                         android:layout_width="match_parent"

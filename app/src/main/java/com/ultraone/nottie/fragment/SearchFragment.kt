@@ -11,12 +11,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialElevationScale
 import com.ultraone.nottie.R
 import com.ultraone.nottie.adapter.MainNoteAdapter
 import com.ultraone.nottie.databinding.FragmentSearchBinding
+import com.ultraone.nottie.fragment.main.MainNoteFragmentDirections
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.Result
 import com.ultraone.nottie.util.invoke
@@ -30,6 +34,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
+    val args: SearchFragmentArgs by navArgs()
     val adapter by lazy {
         MainNoteAdapter()
     }
@@ -90,17 +95,29 @@ class SearchFragment : Fragment() {
                     }
 
                     override fun onQueryTextChange(newText: String?): Boolean {
-                        Log.d("SFKt", "Coroutine $newText")
+                        when(args.type) {
+                            -22 -> {
+                                Log.d("SFKt", "Coroutine $newText")
 
-                            Log.d("SFKt", "test")
-                            if (newText == null) return true
+                                Log.d("SFKt", "test")
+                                if (newText == null) return true
 
                                 adapter.addList(note.filterNot { it.deleted == true }.filter {
                                     it.mainNote?.contains(newText) == true || it.title?.contains(
                                         newText
                                     ) == true
                                 }.distinctBy { it })
-                               adapter.notifyDataSetChanged()
+                                adapter.notifyDataSetChanged()
+                            }
+                            -21 -> {
+
+                                if (newText == null && newText?.toIntOrNull()  == null) return true
+                                adapter.addList(note.filterNot { it.deleted == true }.filter {
+                                    it.attachmentAndOthers!!.collectionId == newText.toInt()
+                                }.distinctBy { it })
+                                adapter.notifyDataSetChanged()
+                            }
+                        }
 
 
                         return false
@@ -109,7 +126,12 @@ class SearchFragment : Fragment() {
                 })
                 observeNote(adapter)
                 fSSB.setOnCloseListener {
-                    findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToMainFragment())
+                    exitTransition = MaterialElevationScale(true).apply{
+                        duration = 300
+                    }
+                    val extras = FragmentNavigatorExtras(fSSB to "f_m_s_t")
+
+                    findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToMainFragment(), extras)
 
                     false
                 }
@@ -118,6 +140,7 @@ class SearchFragment : Fragment() {
         }
         return binding.root
     }
+
 
     private suspend fun observeNote(adapter: MainNoteAdapter) {
 
