@@ -62,13 +62,20 @@
         <action
             android:id="@+id/action_mainNoteFragment_to_noteTakingFragment"
             app:destination="@id/noteTakingFragment" />
+        <action
+            android:id="@+id/action_mainNoteFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
 
     </fragment>
     <fragment
         tools:layout="@layout/fragment_search"
         android:id="@+id/searchFragment"
         android:name="com.ultraone.nottie.fragment.SearchFragment"
-        android:label="SearchFragment" />
+        android:label="SearchFragment" >
+        <action
+            android:id="@+id/action_searchFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
     <fragment
         tools:layout="@layout/fragment_note_collection_note"
         android:id="@+id/noteCollectionNoteFragment"
@@ -95,6 +102,9 @@
             app:nullable="true"
             android:name="noteCollections"
             app:argType="com.ultraone.nottie.model.NoteCollections"/>
+        <action
+            android:id="@+id/action_noteCollectionNoteFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
 
 </navigation>

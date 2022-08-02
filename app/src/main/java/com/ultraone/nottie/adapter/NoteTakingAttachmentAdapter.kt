@@ -53,7 +53,9 @@ class NoteTakingAttachmentAdapter(): RecyclerView.Adapter<NoteTakingAttachmentAd
                    loadPreview(data)
                 }
             }
-            is Other -> TODO()
+            is Other -> {
+                
+            }
             is VIDEO -> {
                 holder.binding.imageView.apply {
                     scaleType = ImageView.ScaleType.CENTER_CROP

@@ -100,6 +100,16 @@ class MainNoteFragment : Fragment() {
             )
 
         }
+        fMNS.setOnClickListener {
+            enterTransition = MaterialElevationScale(true).apply{
+                duration = 300
+            }
+            val extras = FragmentNavigatorExtras(fMNS to "test")
+            findNavController().navigate(
+                MainNoteFragmentDirections.actionMainNoteFragmentToSearchFragment(),
+                extras
+            )
+        }
     }
 
     private fun onSwipeHandler() {
