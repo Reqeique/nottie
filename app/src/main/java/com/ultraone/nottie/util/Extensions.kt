@@ -338,3 +338,14 @@ fun getAlbumArtBitmap(context: Context, uri: Uri): Bitmap? {
 }
 
 fun Context.getDrawableCompat(@DrawableRes resId: Int) = ContextCompat.getDrawable(this, resId)
+
+
+fun View.setVisible() {
+    this.visibility = View.VISIBLE
+}
+fun View.setGone(){
+    visibility = View.GONE
+}
+fun View.setInvisible(){
+    visibility = View.INVISIBLE
+}

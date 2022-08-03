@@ -75,11 +75,26 @@
         <action
             android:id="@+id/action_searchFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+
         <argument
-            android:name="type"
-            android:defaultValue="-22"
-            app:nullable="false"
-            app:argType="integer"/>
+            android:defaultValue="@null"
+            app:nullable="true"
+            android:name="notes"
+            app:argType="com.ultraone.nottie.model.Note[]"
+
+            />
+        <argument
+            app:argType="com.ultraone.nottie.model.NoteCollections"
+            app:nullable="true"
+            android:defaultValue="@null"
+            android:name="noteCollection"
+            />
+        <argument
+            android:defaultValue="@null"
+            app:nullable="true"
+            android:name="noteCollections"
+            app:argType="com.ultraone.nottie.model.NoteCollections[]"
+            />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_note_collection_note"

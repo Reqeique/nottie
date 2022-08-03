@@ -42,6 +42,7 @@ class MainNoteFragment : Fragment() {
     private lateinit var changingTitle : String
     private val dataProvider: DataProviderViewModel by activityViewModels()
     private lateinit var dataClient: List<Note>
+    private var cacheNote: MutableList<Note> = mutableListOf()
     private lateinit var adapter: MainNoteAdapter
     private lateinit var binding: FragmentMainNoteBinding
 
@@ -106,7 +107,7 @@ class MainNoteFragment : Fragment() {
             }
             val extras = FragmentNavigatorExtras(fMNS to "test")
             findNavController().navigate(
-                MainNoteFragmentDirections.actionMainNoteFragmentToSearchFragment2(),
+                MainNoteFragmentDirections.actionMainNoteFragmentToSearchFragment2(cacheNote.toTypedArray()),
                 extras
             )
         }
@@ -190,6 +191,7 @@ class MainNoteFragment : Fragment() {
                                         val filtered = it.filter { note ->
                                             note.deleted == false
                                         }
+
                                         dataClient = filtered
                                         adapter.addList(filtered)
                                         Log.d("$TAG@198", "$isChecked + $filtered")
@@ -199,6 +201,8 @@ class MainNoteFragment : Fragment() {
                                     note.deleted == false
                                 }
                                 dataClient = filtered
+                                cacheNote.clear()
+                                cacheNote.addAll(filtered)
                                 adapter.addList(filtered)
 
 

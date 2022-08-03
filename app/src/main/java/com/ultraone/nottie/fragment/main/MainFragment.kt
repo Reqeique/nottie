@@ -48,6 +48,8 @@ class MainFragment : Fragment() {
     companion object {
         const val TAG = "::MainFragment"
     }
+    var cacheNote: MutableList<Note> = mutableListOf()
+    var cacheCollection: MutableList<NoteCollections> = mutableListOf()
 
     lateinit var collectionsAdapter: NoteCollectionsAdapter
     lateinit var dateTimeAdapter: DateTimeAdapter
@@ -76,7 +78,11 @@ class MainFragment : Fragment() {
         }
         binding = FragmentMainBinding.inflate(inflater, container, false)
 
-            lifecycleScope.launch(Main) {
+            lifecycleScope.launchWhenCreated {
+
+                binding.fragmentMainRecyclerNote.addRecyclerListener {
+                    it.setIsRecyclable(false)
+                }
                 delay(400L)
 
                 binding.setUpNotes()
@@ -116,7 +122,7 @@ class MainFragment : Fragment() {
             val name = "fragmentSearchRootTransition"
             val extras = FragmentNavigatorExtras(view to name)
             findNavController().navigate(
-                MainFragmentDirections.actionMainFragmentToSearchFragment(),
+                MainFragmentDirections.actionMainFragmentToSearchFragment(cacheNote.toTypedArray(), noteCollections =  cacheCollection.toTypedArray()),
                 extras
             )
 
@@ -187,12 +193,13 @@ class MainFragment : Fragment() {
 
     private suspend fun observeNote() {
         dataProvider.getAllNotes().observe(viewLifecycleOwner) {
-            lifecycleScope.launch(Main) {
+            lifecycleScope.launchWhenCreated {
                 when (it) {
                     is Result.SUCCESS<*> -> {
                         it.data as Flow<List<Note>>
                         it.data.collect { datas ->
-
+                            cacheNote.clear()
+                            cacheNote.addAll(datas.filter { it.deleted == false})
                             NoteAdapter.addList(datas.filter {
                                 it.deleted == false
                             })
@@ -257,7 +264,8 @@ class MainFragment : Fragment() {
                                     isVisible = false
                                 )).observe(viewLifecycleOwner)
                             }
-
+                            cacheCollection.clear()
+                            cacheCollection.addAll(datas.filterNot { it.deleted})
                             collectionsAdapter.addList(datas.filter{ it.isVisible }.filterNot { it.deleted })
                         }
                     }
@@ -339,6 +347,7 @@ class MainFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        lifecycleScope
         Log.i("$TAG@76", "Paused")
     }
 
