@@ -41,6 +41,18 @@
 
                 </ImageView>
 
+                <ImageView
+
+                    android:id="@+id/f_n_c_n_e_b"
+                    android:backgroundTint="?attr/colorPrimary"
+                    android:layout_marginEnd="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_outline_edit_24"
+                    app:layout_constraintBottom_toBottomOf="@+id/f_n_c_n_collection_title"
+                    app:layout_constraintEnd_toStartOf="@+id/f_n_c_n_collection_title"
+                    app:layout_constraintTop_toTopOf="@+id/f_n_c_n_collection_title" />
+
                 <TextView
                     style="@style/primaryTextStyle"
                     android:id="@+id/f_n_c_n_collection_title"

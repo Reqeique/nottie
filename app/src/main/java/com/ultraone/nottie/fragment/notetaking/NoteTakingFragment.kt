@@ -481,7 +481,12 @@ class NoteTakingFragment : Fragment() {
     }
 
     private fun FragmentNoteTakingNewBinding.setUpRootCardView(data: Note?){
-        val attachmentAndOthers = data?.attachmentAndOthers ?: return
+
+        val attachmentAndOthers = data?.attachmentAndOthers  ?: return
+        Log.d(this::class.simpleName, "attachmentAndOthers.toString() ${attachmentAndOthers.fileUri.any { it == null}}")
+        if(!attachmentAndOthers.fileUri.any { it != null}){
+            binding.fNTNAttachmentRecycler.setGone()
+        }
         if(attachmentAndOthers.color != null){
             val color = Color.parseColor(ColorTransparentUtils.convertIntoColor(requireContext().resolver(attachmentAndOthers.color.toInt()), 50))
             rootCard.setCardBackgroundColor(color)

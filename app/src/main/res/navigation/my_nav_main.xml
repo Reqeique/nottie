@@ -95,6 +95,12 @@
             android:name="noteCollections"
             app:argType="com.ultraone.nottie.model.NoteCollections[]"
             />
+        <action
+            android:id="@+id/action_searchFragment_to_noteTakingFragment"
+            app:destination="@id/noteTakingFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_noteCollectionNoteFragment"
+            app:destination="@id/noteCollectionNoteFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_note_collection_note"
@@ -125,6 +131,9 @@
         <action
             android:id="@+id/action_noteCollectionNoteFragment_to_searchFragment2"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_noteCollectionNoteFragment_to_noteTakingFragment"
+            app:destination="@id/noteTakingFragment" />
     </fragment>
 
 </navigation>

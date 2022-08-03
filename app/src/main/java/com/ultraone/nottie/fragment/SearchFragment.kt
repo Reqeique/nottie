@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
@@ -77,10 +79,8 @@ class SearchFragment : Fragment() {
 
                 fSNRV.adapter = noteAdapter
                 fSCRV.adapter = collectionAdapter
-                //   adapter.addList()
 
-
-
+                setRecyclerClickListener()
                 binding.setUpViews()
 
                searBarListener()
@@ -89,6 +89,25 @@ class SearchFragment : Fragment() {
 
         }
         return binding.root
+    }
+    private fun setRecyclerClickListener(){
+        noteAdapter.onItemClick =  {n, i, v ->
+            v as MaterialCardView
+            val extras = FragmentNavigatorExtras(v to "createNewNote")
+            findNavController().navigate(
+                SearchFragmentDirections.actionSearchFragmentToNoteTakingFragment(
+                i,
+                n.id,
+                n),
+                extras
+            )
+
+        }
+        collectionAdapter.onItemClick = {nC, p, v ->
+//            v as MaterialCardView
+       //     val extras = FragmentNavigatorExtras(v to "createNewNote")
+            findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToNoteCollectionNoteFragment(p,nC.id,nC)                                )
+        }
     }
     private fun setSearchBarClickListener(){
         binding.fSSB.setOnCloseListener {
@@ -157,14 +176,32 @@ class SearchFragment : Fragment() {
                             chip4.setVisible()
                         }
 
-                        binding.chip5.setOnClickListener {
-                            binding.fSC1.setVisible()
-                            binding.fSC2.setGone()
+                        binding.chip5.setOnCheckedChangeListener { _, p1 ->
+                            when (p1) {
+                                true -> {
+                                    binding.fSC1.setVisible()
+                                    binding.fSC2.setGone()
+                                }
+                                false -> {
+                                    binding.fSC1.setGone()
+                                    binding.fSC2.setVisible()
+                                }
+
+                            }
                         }
-                        binding.chip4.setOnClickListener {
-                            binding.fSC1.setGone()
-                            binding.fSC2.setVisible()
+                        binding.chip4.setOnCheckedChangeListener { _, b ->
+                            when(b){
+                                true -> {
+                                    binding.fSC1.setGone()
+                                    binding.fSC2.setVisible()
+                                }
+                                false -> {
+                                    binding.fSC1.setVisible()
+                                    binding.fSC2.setGone()
+                                }
+                            }
                         }
+
                     }
                     args.notes != null && args.noteCollection != null  && args.noteCollections == null  -> /** [NoteCollectionNoteFragment] */ {
                         if(newText == null) return true

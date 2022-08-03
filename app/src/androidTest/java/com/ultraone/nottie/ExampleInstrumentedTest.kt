@@ -1,5 +1,9 @@
 package com.ultraone.nottie
 
+import android.view.View
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 
@@ -20,5 +24,6 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.ultraone.nottie", appContext.packageName)
+        onView(withId(R.id.f_m_n_s))
     }
 }
