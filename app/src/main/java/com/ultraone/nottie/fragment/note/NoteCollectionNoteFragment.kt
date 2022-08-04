@@ -155,6 +155,7 @@ class NoteCollectionNoteFragment : Fragment() {
                     |cacheN $cacheNotes
                     |""".trimMargin())
             }
+            handleBackButton()
         }
         return binding.root
     }
@@ -170,6 +171,11 @@ class NoteCollectionNoteFragment : Fragment() {
                 extras
             )
 
+        }
+    }
+    private fun handleBackButton(){
+        binding.fNCNBackButton.setOnClickListener {
+            findNavController().popBackStack()
         }
     }
 }

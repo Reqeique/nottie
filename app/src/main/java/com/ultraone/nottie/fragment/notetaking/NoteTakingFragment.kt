@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.discord.simpleast.core.simple.SimpleRenderer
 import com.google.android.material.card.MaterialCardView
@@ -136,7 +137,7 @@ class NoteTakingFragment : Fragment() {
                 )
             }
 
-
+            handleBackButton()
             val _note = args.note
             binding.fNTNNotes.text = _note?.mainNote?.toEditable()
             binding.fNTNTitle.text = _note?.title?.toEditable()
@@ -479,7 +480,11 @@ class NoteTakingFragment : Fragment() {
 
         }
     }
-
+    private fun handleBackButton(){
+        binding.fNTNBackButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
+    }
     private fun FragmentNoteTakingNewBinding.setUpRootCardView(data: Note?){
 
         val attachmentAndOthers = data?.attachmentAndOthers  ?: return

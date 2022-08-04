@@ -36,12 +36,20 @@ class MainCollectionFragment: Fragment() {
             binding.fMCRV.adapter = collectionAdapter
             observeCollections()
             handleSearchButton()
+            handleBackButton()
         }
         return binding.root
     }
     private fun handleSearchButton(){
         binding.fMCSB.setOnClickListener {
             findNavController().navigate(MainCollectionFragmentDirections.actionMainCollectionFragmentToSearchFragment(noteCollections = cacheCollections.toTypedArray()))
+
+        }
+
+    }
+    private fun handleBackButton(){
+        binding.fMCBackButton.setOnClickListener {
+            findNavController().popBackStack()
         }
     }
     private suspend fun observeCollections(){
