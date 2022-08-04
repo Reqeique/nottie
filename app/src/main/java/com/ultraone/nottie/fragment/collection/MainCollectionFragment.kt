@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.ultraone.nottie.adapter.NoteCollectionsAdapter
 import com.ultraone.nottie.databinding.FragmentMainCollectionBinding
@@ -22,6 +23,7 @@ class MainCollectionFragment: Fragment() {
     private val collectionAdapter by lazy {
         NoteCollectionsAdapter()
     }
+    private val cacheCollections: MutableList<NoteCollections> = mutableListOf()
     private val dataProvider: DataProviderViewModel by activityViewModels()
     lateinit var binding: FragmentMainCollectionBinding
     override fun onCreateView(
@@ -33,8 +35,14 @@ class MainCollectionFragment: Fragment() {
         lifecycleScope.launch(Main){
             binding.fMCRV.adapter = collectionAdapter
             observeCollections()
+            handleSearchButton()
         }
         return binding.root
+    }
+    private fun handleSearchButton(){
+        binding.fMCSB.setOnClickListener {
+            findNavController().navigate(MainCollectionFragmentDirections.actionMainCollectionFragmentToSearchFragment(noteCollections = cacheCollections.toTypedArray()))
+        }
     }
     private suspend fun observeCollections(){
         dataProvider.getAllCollections().observe(viewLifecycleOwner){
@@ -52,6 +60,8 @@ class MainCollectionFragment: Fragment() {
                     it.data as Flow<List<NoteCollections>>
                     lifecycleScope.launch {
                         it.data.collect { nc ->
+                            cacheCollections.clear()
+                            cacheCollections.addAll(nc)
                             collectionAdapter.addList(nc.filter { it.isVisible })
                         }
                     }
