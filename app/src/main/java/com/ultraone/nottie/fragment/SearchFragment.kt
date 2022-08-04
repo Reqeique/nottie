@@ -104,6 +104,9 @@ class SearchFragment : Fragment() {
             exitTransition = MaterialElevationScale(true).apply{
                 duration = 300
             }
+            reenterTransition = MaterialElevationScale(true).apply {
+                duration = 300
+            }
             val extras = FragmentNavigatorExtras(binding.fSSB to "fragmentSearchRootTransition")
 
             findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToMainFragment(), extras)
@@ -160,12 +163,25 @@ class SearchFragment : Fragment() {
                         if(newText == null) return true
                         noteAdapter.addList(args.notes!!.filterNot { it.deleted == true }.filter { it.mainNote?.lowercase()?.contains(newText.lowercase()) == true || it.title?.lowercase()?.contains(newText.lowercase()) == true}.distinctBy { it })
                         noteAdapter.notifyDataSetChanged()
-                        collectionAdapter.addList(args.noteCollections!!.filterNot { it.deleted }.filter { it.collectionName.contains(newText) }.distinctBy { it})
+                       collectionAdapter.addList(args.noteCollections!!.filterNot { it.deleted }.filter { it.collectionName.contains(newText) }.distinctBy { it})
                         binding {
                             fSC2.setVisible()
                             fSC1.setVisible()
                             chip5.setVisible()
                             chip4.setVisible()
+                        }
+                        binding.chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+                            when {
+                                checkedIds.all { it == 1} -> {
+                                    Log.d(this::class.simpleName, group.toString())
+                                }
+                                checkedIds.all { it == 2} -> {
+                                    Log.d(this::class.simpleName, group.toString())
+                                }
+                                checkedIds.containsAll(listOf(1,2)) -> {
+                                    Log.d(this::class.simpleName, group.toString())
+                                }
+                            }
                         }
                         Log.d(this::class.qualifiedName, "${args.notes!!.filterNot { it.deleted == true}.filter { it.mainNote?.contains(newText) == true || it.title?.contains(newText)== true}.distinctBy{it}}")
 

@@ -116,15 +116,15 @@
         app:layout_constraintTop_toBottomOf="@id/f_s_c_1">
 
         <TextView
-            android:textStyle="bold"
-            android:textSize="16sp"
-            style="@style/secondaryTextStyle"
-
-            android:layout_margin="16dp"
             android:id="@+id/tv"
+            style="@style/secondaryTextStyle"
             android:layout_width="wrap_content"
+
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:text="Notes"
+            android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -134,7 +134,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv"
