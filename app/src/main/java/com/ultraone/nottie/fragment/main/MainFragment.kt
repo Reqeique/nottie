@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -22,6 +23,7 @@ import androidx.recyclerview.selection.StableIdKeyProvider
 import androidx.recyclerview.selection.StorageStrategy
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.transition.MaterialElevationScale
+import com.google.android.material.transition.MaterialSharedAxis
 import com.ultraone.nottie.R
 import com.ultraone.nottie.adapter.DateTimeAdapter
 import com.ultraone.nottie.adapter.MyItemDetailLookup
@@ -71,15 +73,13 @@ class MainFragment : Fragment() {
 
         requireActivity().window.apply {
             navigationBarColor =
-                requireContext().resolver(R.attr.colorSurfaceSecondary)
-
-
+                requireContext().resolver(R.attr.colorSurfaceTertiary)
 
         }
         binding = FragmentMainBinding.inflate(inflater, container, false)
 
             lifecycleScope.launchWhenCreated {
-
+                Log.d(this::class.simpleName, "lifecycle called ")
                 binding.fragmentMainRecyclerNote.addRecyclerListener {
                     it.setIsRecyclable(false)
                 }
@@ -113,6 +113,10 @@ class MainFragment : Fragment() {
 
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+    }
+
     /**
      * [setSearchCardClickListener] used to apply transition and click listener to [FragmentMainBinding.fragmentMainSearchCard]
      */
@@ -121,6 +125,9 @@ class MainFragment : Fragment() {
         fragmentMainSearchCard.setOnClickListener { view ->
             val name = "fragmentSearchRootTransition"
             val extras = FragmentNavigatorExtras(view to name)
+            val op = NavOptions.Builder().setRestoreState(true)
+
+          //  findNavController().popBackStack(R.id.action_mainFragment_to_searchFragment, false)
             findNavController().navigate(
                 MainFragmentDirections.actionMainFragmentToSearchFragment(cacheNote.toTypedArray(), noteCollections =  cacheCollection.toTypedArray()),
                 extras
@@ -230,6 +237,7 @@ class MainFragment : Fragment() {
         observeNoteCollection()
         setNoteCollectionRecyclerItemClickListener()
         setCollectionAddListener()
+        handleOpenCollection()
     }
     private fun setNoteCollectionRecyclerItemClickListener(){
         collectionsAdapter.onItemClick = {noteCollection, pos, v ->
@@ -273,7 +281,21 @@ class MainFragment : Fragment() {
             }
         }
     }
+    private fun handleOpenCollection(){
+        binding.fragmentMainOpenCollection.setOnClickListener {
+           val anim = MaterialSharedAxis(MaterialSharedAxis.X, true).apply{
+               duration = 300L
+           }
+            reenterTransition = anim
 
+            exitTransition = anim
+            enterTransition = anim
+            val extras  = FragmentNavigatorExtras(binding.root to "f_m_c_t")
+            findNavController().apply {
+                (this@apply).saveState()
+            }.navigate(MainFragmentDirections.actionMainFragmentToMainCollectionFragment(), extras)
+        }
+    }
     private fun FragmentMainBinding.setCollectionAddListener() {
         fragmentMainAddCollection.setOnClickListener {
             requireContext().dialog({
@@ -352,6 +374,9 @@ class MainFragment : Fragment() {
     }
 
     private fun trans() {
+       MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
+            duration = 300L
+        }
         enterTransition = MaterialElevationScale(true).apply {
             duration = 300L
         }

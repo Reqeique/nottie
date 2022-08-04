@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_note_taking_new"/>
     <fragment
         android:id="@+id/notes"
-        android:name="com.ultraone.nottie.fragment.main.MainNoteFragment"
+        android:name="com.ultraone.nottie.fragment.note.MainNoteFragment"
         android:label="MainFragment"
         tools:layout="@layout/fragment_main_note">
 

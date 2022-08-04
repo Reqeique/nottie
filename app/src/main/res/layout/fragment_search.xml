@@ -86,7 +86,7 @@
             android:layout_margin="16dp"
             android:fontFamily="@font/sofia_pro_regular"
             android:text="Collections"
-            android:textSize="14sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -117,7 +117,7 @@
 
         <TextView
             android:textStyle="bold"
-            android:textSize="14sp"
+            android:textSize="16sp"
             style="@style/secondaryTextStyle"
 
             android:layout_margin="16dp"

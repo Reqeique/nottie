@@ -1,4 +1,4 @@
-package com.ultraone.nottie.fragment
+package com.ultraone.nottie.fragment.note
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -23,7 +23,6 @@ import com.google.android.material.transition.MaterialElevationScale
 import com.ultraone.nottie.R
 import com.ultraone.nottie.adapter.MainNoteAdapter
 import com.ultraone.nottie.databinding.FragmentNoteCollectionNoteBinding
-import com.ultraone.nottie.fragment.main.MainNoteFragmentDirections
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.NoteCollections
 import com.ultraone.nottie.model.Result
@@ -31,7 +30,6 @@ import com.ultraone.nottie.util.dialog
 import com.ultraone.nottie.viewmodel.DataProviderViewModel
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class NoteCollectionNoteFragment : Fragment() {

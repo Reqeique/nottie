@@ -1,39 +1,28 @@
 package com.ultraone.nottie.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import com.ultraone.nottie.R
 import com.ultraone.nottie.adapter.MainNoteAdapter
 import com.ultraone.nottie.adapter.NoteCollectionsAdapter
 import com.ultraone.nottie.databinding.FragmentSearchBinding
-import com.ultraone.nottie.fragment.main.MainNoteFragmentDirections
-import com.ultraone.nottie.model.Note
-import com.ultraone.nottie.model.NoteCollections
-import com.ultraone.nottie.model.Result
 import com.ultraone.nottie.util.*
-import com.ultraone.nottie.viewmodel.DataProviderViewModel
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
@@ -111,6 +100,7 @@ class SearchFragment : Fragment() {
     }
     private fun setSearchBarClickListener(){
         binding.fSSB.setOnCloseListener {
+
             exitTransition = MaterialElevationScale(true).apply{
                 duration = 300
             }
@@ -147,18 +137,19 @@ class SearchFragment : Fragment() {
                 return true
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             override fun onQueryTextChange(newText: String?): Boolean {
                 when {
                     args.noteCollections != null && args.notes == null && args.noteCollection == null -> {
                         if (newText == null) return true
-                        collectionAdapter.addList(args.noteCollections!!.filterNot { it.deleted }.filter { it.collectionName.contains(newText) }.distinctBy { it})
+                        collectionAdapter.addList(args.noteCollections!!.filterNot { it.deleted }.filter { it.collectionName.lowercase().contains(newText) }.distinctBy { it})
                         binding.fSC2.setGone()
                         binding.fSC1.setVisible()
                     }
                     args.notes != null && args.noteCollections == null && args.noteCollection == null-> /** [main.MainNoteFragment]*/{
                         if(newText == null) return true
 
-                        noteAdapter.addList(args.notes!!.filterNot { it.deleted == true }.filter { it.mainNote?.contains(newText) == true || it.title?.contains(newText) == true}.distinctBy { it })
+                        noteAdapter.addList(args.notes!!.filterNot { it.deleted == true }.filter { it.mainNote?.lowercase()?.contains(newText.lowercase()) == true || it.title?.lowercase()?.contains(newText.lowercase()) == true}.distinctBy { it })
                         binding {
                             fSC1.setGone()
                             fSC2.setVisible()
@@ -167,7 +158,8 @@ class SearchFragment : Fragment() {
                     }
                     args.notes != null && args.noteCollections != null && args.noteCollection == null /** [main.MainFragment]*/-> {
                         if(newText == null) return true
-                        noteAdapter.addList(args.notes!!.filterNot { it.deleted == true}.filter { it.mainNote?.contains(newText) == true || it.title?.contains(newText)== true}.distinctBy{it})
+                        noteAdapter.addList(args.notes!!.filterNot { it.deleted == true }.filter { it.mainNote?.lowercase()?.contains(newText.lowercase()) == true || it.title?.lowercase()?.contains(newText.lowercase()) == true}.distinctBy { it })
+                        noteAdapter.notifyDataSetChanged()
                         collectionAdapter.addList(args.noteCollections!!.filterNot { it.deleted }.filter { it.collectionName.contains(newText) }.distinctBy { it})
                         binding {
                             fSC2.setVisible()
@@ -175,33 +167,34 @@ class SearchFragment : Fragment() {
                             chip5.setVisible()
                             chip4.setVisible()
                         }
+                        Log.d(this::class.qualifiedName, "${args.notes!!.filterNot { it.deleted == true}.filter { it.mainNote?.contains(newText) == true || it.title?.contains(newText)== true}.distinctBy{it}}")
 
-                        binding.chip5.setOnCheckedChangeListener { _, p1 ->
-                            when (p1) {
-                                true -> {
-                                    binding.fSC1.setVisible()
-                                    binding.fSC2.setGone()
-                                }
-                                false -> {
-                                    binding.fSC1.setGone()
-                                    binding.fSC2.setVisible()
-                                }
-
-                            }
-                        }
-                        binding.chip4.setOnCheckedChangeListener { _, b ->
-                            when(b){
-                                true -> {
-                                    binding.fSC1.setGone()
-                                    binding.fSC2.setVisible()
-                                }
-                                false -> {
-                                    binding.fSC1.setVisible()
-                                    binding.fSC2.setGone()
-                                }
-                            }
-                        }
-
+//                        binding.chip5.setOnCheckedChangeListener { _, p1 ->
+//                            when (p1) {
+//                                true -> {
+//                                    binding.fSC1.setVisible()
+//                                    binding.fSC2.setGone()
+//                                }
+//                                false -> {
+//                                    binding.fSC1.setGone()
+//                                    binding.fSC2.setVisible()
+//                                }
+//
+//                            }
+//                        }
+//                        binding.chip4.setOnCheckedChangeListener { _, b ->
+//                            when(b){
+//                                true -> {
+//                                    binding.fSC1.setGone()
+//                                    binding.fSC2.setVisible()
+//                                }
+//                                false -> {
+//                                    binding.fSC1.setVisible()
+//                                    binding.fSC2.setGone()
+//                                }
+//                            }
+//                        }
+//
                     }
                     args.notes != null && args.noteCollection != null  && args.noteCollections == null  -> /** [NoteCollectionNoteFragment] */ {
                         if(newText == null) return true

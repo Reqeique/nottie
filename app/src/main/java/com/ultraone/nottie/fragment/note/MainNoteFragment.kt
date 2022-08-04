@@ -1,4 +1,4 @@
-package com.ultraone.nottie.fragment.main
+package com.ultraone.nottie.fragment.note
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -26,7 +26,6 @@ import com.ultraone.nottie.viewmodel.DataProviderViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 
 
 class MainNoteFragment : Fragment() {
