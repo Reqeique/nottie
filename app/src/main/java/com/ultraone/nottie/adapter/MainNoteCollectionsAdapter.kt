@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import com.ultraone.nottie.databinding.RmMainCollectionSmallBinding
 import com.ultraone.nottie.databinding.RmMainNoteSmallBinding
 import com.ultraone.nottie.model.Note
@@ -40,17 +41,19 @@ class NoteCollectionsAdapter: RecyclerView.Adapter< NoteCollectionsAdapter.ViewH
         return ViewHolder(binding)
     }
     inner class ViewHolder(binding: RmMainCollectionSmallBinding) : RecyclerView.ViewHolder(binding.root) {
+        val root: MaterialCardView
         val collectionName : TextView
         init {
-            val x = 0
+            root = binding.rmMainCollectionSmallRoot
             collectionName = binding.rmMainCollectionSmallName
             binding.root.setOnClickListener {
-                onItemClick?.invoke(datas[adapterPosition], adapterPosition, parent)
+                onItemClick?.invoke(datas[adapterPosition], adapterPosition, it)
             }
         }
     }
     override fun onBindViewHolder(holder: NoteCollectionsAdapter.ViewHolder, position: Int) {
         holder {
+            root.transitionName = "createNewCollection-${datas[position].id}"
             collectionName.text = datas[position].collectionName
         }
     }

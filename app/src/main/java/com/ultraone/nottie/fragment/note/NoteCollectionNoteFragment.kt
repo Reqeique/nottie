@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -19,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import com.ultraone.nottie.R
 import com.ultraone.nottie.adapter.MainNoteAdapter
@@ -26,19 +28,43 @@ import com.ultraone.nottie.databinding.FragmentNoteCollectionNoteBinding
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.NoteCollections
 import com.ultraone.nottie.model.Result
+import com.ultraone.nottie.util.NULL_VALUE_INT
 import com.ultraone.nottie.util.dialog
+import com.ultraone.nottie.util.resolver
 import com.ultraone.nottie.viewmodel.DataProviderViewModel
+import com.ultraone.nottie.viewmodel.NoteTakingFragmentViewModel
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class NoteCollectionNoteFragment : Fragment() {
-    private val cacheNotes: MutableList<Note> =mutableListOf()
+    private val noteTakingFragmentViewModel: NoteTakingFragmentViewModel by activityViewModels()
+    private val cacheNotes: MutableList<Note> = mutableListOf()
     lateinit var cacheCollection: NoteCollections
     private lateinit var adapter: MainNoteAdapter
     private lateinit var binding: FragmentNoteCollectionNoteBinding
     private val dataProvider: DataProviderViewModel by viewModels()
     private val args: NoteCollectionNoteFragmentArgs by navArgs()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.fragmentContainerViewerMain
+            duration = 300L
+
+            scrimColor = Color.TRANSPARENT
+            setAllContainerColors(requireContext().resolver(R.attr.colorSurface))
+        }
+        sharedElementReturnTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.fragmentContainerViewerMain
+            duration = 300L
+
+            scrimColor = Color.TRANSPARENT
+            setAllContainerColors(requireContext().resolver(R.attr.colorSurface))
+        }
+
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,42 +74,48 @@ class NoteCollectionNoteFragment : Fragment() {
         lifecycleScope.launch(Main) {
             adapter = MainNoteAdapter()
             binding.fNCNRecycler.adapter = adapter
+            enterTransition = MaterialElevationScale(true).apply {
+                duration = 300L
+            }
+            exitTransition = MaterialElevationScale(true).apply {
+                duration = 300L
+            }
             binding.fNCNCollectionTitle.text = args.noteCollections?.collectionName
             setRecyclerClickListener()
             dataProvider.getAllNotes().observe(viewLifecycleOwner) {
-                  when(it){
-                      is Result.FAILED -> {
-
-                      }
-                      is Result.LOADING -> {
-
-                      }
-                      is Result.NULL_VALUE -> {
-
-                      }
-                      is Result.SUCCESS<*> -> {
-                          val notesFlow = it.data as Flow<List<Note>>
-                          lifecycleScope.launch {
-                              notesFlow.collect { notes ->
-                                  val note = notes.filter { it1 ->
-                                      it1.attachmentAndOthers?.collectionId == args.id
-                                  }
-
-                                  cacheNotes.clear()
-                                  cacheNotes.addAll(notes)
-                                  adapter.addList(note)
-
-                              }
-                          }
-                      }
-                  }
-            }
-            dataProvider.getAllCollections().observe(viewLifecycleOwner) {
-                when(it){
+                when (it) {
                     is Result.FAILED -> {
 
                     }
-                    Result.LOADING ->  {
+                    is Result.LOADING -> {
+
+                    }
+                    is Result.NULL_VALUE -> {
+
+                    }
+                    is Result.SUCCESS<*> -> {
+                        val notesFlow = it.data as Flow<List<Note>>
+                        lifecycleScope.launch {
+                            notesFlow.collect { notes ->
+                                val note = notes.filter { it1 ->
+                                    it1.attachmentAndOthers?.collectionId == args.id
+                                }
+
+                                cacheNotes.clear()
+                                cacheNotes.addAll(notes)
+                                adapter.addList(note)
+
+                            }
+                        }
+                    }
+                }
+            }
+            dataProvider.getAllCollections().observe(viewLifecycleOwner) {
+                when (it) {
+                    is Result.FAILED -> {
+
+                    }
+                    Result.LOADING -> {
 
                     }
                     Result.NULL_VALUE -> {
@@ -92,90 +124,126 @@ class NoteCollectionNoteFragment : Fragment() {
                     is Result.SUCCESS<*> -> {
                         it.data as Flow<List<NoteCollections>>
                         lifecycleScope.launch {
-                            it.data.collect {it1 ->
-                                binding.fNCNCollectionTitle.text = it1.first { c -> c.id == args.id }.collectionName
-                                cacheCollection =  it1.first { c -> c.id == args.id}
+                            it.data.collect { it1 ->
+                                binding.fNCNCollectionTitle.text =
+                                    it1.first { c -> c.id == args.id }.collectionName
+                                cacheCollection = it1.first { c -> c.id == args.id }
                             }
                         }
                     }
                 }
             }
+            setUpFabClickListener()
             binding.fNCNEB.setOnClickListener {
                 requireContext().dialog({
-                           requestWindowFeature(Window.FEATURE_NO_TITLE)
-                }, R.layout.fragment_main_add_collection_dialog,{
+                    requestWindowFeature(Window.FEATURE_NO_TITLE)
+                }, R.layout.fragment_main_add_collection_dialog, {
                     window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    findViewById<EditText>(R.id.fragment_main_add_collection_dialog_collection_name).apply { setText(cacheCollection.collectionName) }.doOnTextChanged { text, start, before, count ->
-                        if(!text.isNullOrEmpty()){
+                    findViewById<EditText>(R.id.fragment_main_add_collection_dialog_collection_name).apply {
+                        setText(
+                            cacheCollection.collectionName
+                        )
+                    }.doOnTextChanged { text, start, before, count ->
+                        if (!text.isNullOrEmpty()) {
 
-                           findViewById<TextView>(R.id.fragment_main_add_collection_dialog_add_button).apply { setText("Edit")}.setOnClickListener { it as TextView
+                            findViewById<TextView>(R.id.fragment_main_add_collection_dialog_add_button).apply {
+                                setText(
+                                    "Edit"
+                                )
+                            }.setOnClickListener {
+                                it as TextView
 
-                                   lifecycleScope.launch {
-                                       dataProvider.updateCollections(
-                                           cacheCollection.copy(
-                                               collectionName = text.toString()
-                                           )
-                                       ).observe(viewLifecycleOwner){
-                                           when(it){
-                                               is Result.FAILED -> {
-                                                   Snackbar.make(binding.root, "message: ${it.throwable.localizedMessage}", Snackbar.LENGTH_SHORT).show()
-                                               }
-                                               Result.LOADING -> {
+                                lifecycleScope.launch {
+                                    dataProvider.updateCollections(
+                                        cacheCollection.copy(
+                                            collectionName = text.toString()
+                                        )
+                                    ).observe(viewLifecycleOwner) {
+                                        when (it) {
+                                            is Result.FAILED -> {
+                                                Snackbar.make(
+                                                    binding.root,
+                                                    "message: ${it.throwable.localizedMessage}",
+                                                    Snackbar.LENGTH_SHORT
+                                                ).show()
+                                            }
+                                            Result.LOADING -> {
 
-                                               }
-                                               Result.NULL_VALUE -> {
+                                            }
+                                            Result.NULL_VALUE -> {
 
-                                               }
-                                               is Result.SUCCESS<*> -> {
-                                                   dismiss()
-                                               }
-                                           }
-                                       }
-                                   }
+                                            }
+                                            is Result.SUCCESS<*> -> {
+                                                dismiss()
+                                            }
+                                        }
+                                    }
+                                }
 
-                           }
+                            }
                         }
                     }
                     show()
                 })
             }
             binding.fNCNS.setOnClickListener {
-                if(!::cacheCollection.isInitialized) return@setOnClickListener
-                enterTransition = MaterialElevationScale(true).apply{
+                if (!::cacheCollection.isInitialized) return@setOnClickListener
+                enterTransition = MaterialElevationScale(true).apply {
                     duration = 300
                 }
                 val extras = FragmentNavigatorExtras(binding.fNCNS to "test")
                 findNavController().navigate(
-                    NoteCollectionNoteFragmentDirections.actionNoteCollectionNoteFragmentToSearchFragment2(cacheNotes.toTypedArray(), cacheCollection),
+                    NoteCollectionNoteFragmentDirections.actionNoteCollectionNoteFragmentToSearchFragment2(
+                        cacheNotes.toTypedArray(),
+                        cacheCollection
+                    ),
                     extras
                 )
-                Log.d(this@NoteCollectionNoteFragment::class.simpleName, """
+                Log.d(
+                    this@NoteCollectionNoteFragment::class.simpleName, """
                     |onCreateView: cacheC $cacheCollection 
                     |
                     |cacheN $cacheNotes
-                    |""".trimMargin())
+                    |""".trimMargin()
+                )
             }
             handleBackButton()
         }
         return binding.root
     }
-    private fun setRecyclerClickListener(){
-        adapter.onItemClick =  {n, i, v ->
+
+    private fun setRecyclerClickListener() {
+        adapter.onItemClick = { n, i, v ->
             v as MaterialCardView
             val extras = FragmentNavigatorExtras(v to "createNewNote")
             findNavController().navigate(
                 NoteCollectionNoteFragmentDirections.actionNoteCollectionNoteFragmentToNoteTakingFragment(//.actionSearchFragmentToNoteTakingFragment(
                     i,
                     n.id,
-                    n),
+                    n
+                ),
                 extras
             )
 
         }
     }
-    private fun handleBackButton(){
+
+    private fun handleBackButton() {
         binding.fNCNBackButton.setOnClickListener {
             findNavController().popBackStack()
+        }
+    }
+
+    private fun setUpFabClickListener() {
+        binding.fNCFab.setOnClickListener { v ->
+            lifecycleScope.launch {
+                findNavController().navigate(
+                    NoteCollectionNoteFragmentDirections.actionNoteCollectionNoteFragmentToNoteTakingFragment(
+                        NULL_VALUE_INT, NULL_VALUE_INT
+                    )
+                )
+                noteTakingFragmentViewModel.collectionId2.emit(args.id)
+            }
         }
     }
 }

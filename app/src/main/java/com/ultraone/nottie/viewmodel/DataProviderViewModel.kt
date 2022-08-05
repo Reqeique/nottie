@@ -55,15 +55,16 @@ class DataProviderViewModel(application: Application) : AndroidViewModel(applica
                 noteRepo.getAllNotes.collect { notes ->
                     if (note existIn notes) {
                         updateNote(note).asFlow().collect {
+
                             when (it) {
                                 is Result.FAILED -> {
-
+                                    emit(Result.FAILED(it.throwable))
                                 }
                                 is Result.LOADING -> {
-
+                                   emit(Result.LOADING)
                                 }
                                 is Result.NULL_VALUE -> {
-
+                                    emit(Result.NULL_VALUE)
                                 }
                                 is Result.SUCCESS<*> -> {
                                     emit(Result.SUCCESS(it.data.toString()))
@@ -77,13 +78,13 @@ class DataProviderViewModel(application: Application) : AndroidViewModel(applica
                         addNote(note).asFlow().collect {
                             when (it) {
                                 is Result.FAILED -> {
-
+                                    emit(Result.FAILED(it.throwable))
                                 }
                                 is Result.LOADING -> {
-
+                                     emit(Result.LOADING)
                                 }
                                 is Result.NULL_VALUE -> {
-
+                                     emit(Result.NULL_VALUE)
                                 }
                                 is Result.SUCCESS<*> -> {
                                     emit(Result.SUCCESS(it.data.toString()))

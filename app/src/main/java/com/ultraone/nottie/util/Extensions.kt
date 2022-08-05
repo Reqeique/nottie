@@ -73,10 +73,10 @@ fun safeDataStorePreference(
  * usage
  * ```kt
  * context.invoke {
- *    //todo
+ *
  * }
  * context{
- *    //todo
+ *
  * }
  * ```
  */

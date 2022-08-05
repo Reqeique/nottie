@@ -148,6 +148,11 @@ class SearchFragment : Fragment() {
                         collectionAdapter.addList(args.noteCollections!!.filterNot { it.deleted }.filter { it.collectionName.lowercase().contains(newText) }.distinctBy { it})
                         binding.fSC2.setGone()
                         binding.fSC1.setVisible()
+                        binding.chip5.setVisible()
+                        binding.chip4.setGone()
+                        binding.chip5.setOnCloseIconClickListener {
+                            it.setGone()
+                        }
                     }
                     args.notes != null && args.noteCollections == null && args.noteCollection == null-> /** [main.MainNoteFragment]*/{
                         if(newText == null) return true
@@ -156,6 +161,11 @@ class SearchFragment : Fragment() {
                         binding {
                             fSC1.setGone()
                             fSC2.setVisible()
+                        }
+                        binding.chip5.setGone()
+                        binding.chip4.setVisible()
+                        binding.chip4.setOnCloseIconClickListener {
+                            it.setGone()
                         }
 
                     }
@@ -170,19 +180,19 @@ class SearchFragment : Fragment() {
                             chip5.setVisible()
                             chip4.setVisible()
                         }
-                        binding.chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
-                            when {
-                                checkedIds.all { it == 1} -> {
-                                    Log.d(this::class.simpleName, group.toString())
-                                }
-                                checkedIds.all { it == 2} -> {
-                                    Log.d(this::class.simpleName, group.toString())
-                                }
-                                checkedIds.containsAll(listOf(1,2)) -> {
-                                    Log.d(this::class.simpleName, group.toString())
-                                }
-                            }
-                        }
+//                        binding.chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+//                            when {
+//                                checkedIds.all { it == 1} -> {
+//                                    Log.d(this::class.simpleName, group.toString())
+//                                }
+//                                checkedIds.all { it == 2} -> {
+//                                    Log.d(this::class.simpleName, group.toString())
+//                                }
+//                                checkedIds.containsAll(listOf(1,2)) -> {
+//                                    Log.d(this::class.simpleName, group.toString())
+//                                }
+//                            }
+//                        }
                         Log.d(this::class.qualifiedName, "${args.notes!!.filterNot { it.deleted == true}.filter { it.mainNote?.contains(newText) == true || it.title?.contains(newText)== true}.distinctBy{it}}")
 
 //                        binding.chip5.setOnCheckedChangeListener { _, p1 ->

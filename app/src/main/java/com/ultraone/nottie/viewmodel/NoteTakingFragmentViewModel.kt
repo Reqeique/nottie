@@ -10,5 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class NoteTakingFragmentViewModel: ViewModel() {
     val noteId: MutableStateFlow<Int?> = MutableStateFlow(null)
     val collectionId: MutableStateFlow<Int?> = MutableStateFlow(null)
+    val collectionId2: MutableStateFlow<Int?> = MutableStateFlow(null)
     val uriListener: MutableStateFlow<Request?> = MutableStateFlow(null)
 }

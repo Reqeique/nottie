@@ -4,9 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.25925925925925924" />
+        <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable/appbar_bg.xml" value="0.2845" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable/gradient.xml" value="0.1" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable/gradient_color_selector.xml" value="0.1" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable/ic_add_24px.xml" value="0.3764102564102564" />
+        <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable/ic_baseline_note_24.xml" value="0.2845" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable/ic_baseline_push_pin_24.xml" value="0.38229166666666664" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable/ic_edit_black_24dp.xml" value="0.3635" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable/ic_outline_account_circle_24.xml" value="0.3764102564102564" />
@@ -15,25 +17,26 @@
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable/ic_outline_edit_24.xml" value="0.2845" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable/ic_outline_lock_24.xml" value="0.3635" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable/ic_outline_push_pin_24.xml" value="0.3635" />
+        <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable/ic_outline_vpn_key_24.xml" value="0.3" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/drawable/ic_pin_selected_unselected.xml" value="0.38229166666666664" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/activity_main.xml" value="0.484548825710754" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/activity_note_taking.xml" value="0.22894736842105262" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/activity_spash_screen.xml" value="0.25" />
-        <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_main.xml" value="0.2" />
+        <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_main.xml" value="0.5" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_main_account.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_main_add_collection_dialog.xml" value="0.5" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_main_collection.xml" value="0.34057971014492755" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_main_note.xml" value="0.22" />
-        <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_note_collection_note.xml" value="0.16" />
+        <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_note_collection_note.xml" value="0.19157894736842104" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_note_taking_new.xml" value="0.48910751932536894" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_note_taking_new_color_chooser_dialog.xml" value="0.5" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_note_taking_sheet.xml" value="0.67" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_note_taking_sheet_new_collection.xml" value="0.5" />
-        <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_search.xml" value="0.42962962962962964" />
+        <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/fragment_search.xml" value="0.5" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/rm_date_time.xml" value="0.17806484295845998" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/rm_main_collection_small.xml" value="0.17806484295845998" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/rm_main_note.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/rm_main_note_small.xml" value="0.67" />
+        <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/rm_main_note_small.xml" value="0.4106666666666667" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/rm_note_taking_attachements.xml" value="0.14" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/rm_note_taking_new.xml" value="0.18" />
         <entry key="..\:/Users/Ananiya/AndroidStudioProjects - Copy/Nottie3/app/src/main/res/layout/rm_note_taking_sheet_new_collection.xml" value="0.1" />

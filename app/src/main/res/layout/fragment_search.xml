@@ -27,6 +27,7 @@
 
                 <androidx.appcompat.widget.SearchView
 
+                    app:queryBackground="@drawable/shp_rd_10dp"
 
                     android:id="@+id/f_s_s_b"
                     android:layout_width="match_parent"
@@ -62,8 +63,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
 
+
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/f_s_s_b">
+
 
                         <com.google.android.material.chip.Chip
 
@@ -114,7 +117,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
-        app:behavior_ovelapTop="16dp"
+        app:behavior_overlapTop="16dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

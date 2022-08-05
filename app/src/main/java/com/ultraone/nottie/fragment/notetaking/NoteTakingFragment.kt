@@ -300,7 +300,7 @@ class NoteTakingFragment : Fragment() {
                     note.copy(
                         dateTime = currentTime,
                         attachmentAndOthers = note.attachmentAndOthers?.copy(
-                            collectionId = 1,
+                            collectionId = noteTakingFragmentViewModel.collectionId2.value ?: 1,
                             fileUri = mutableListOf()
                         )
                     )

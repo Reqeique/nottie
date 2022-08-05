@@ -225,6 +225,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
 
+
                 android:id="@+id/fragment_main_root_collection"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -234,7 +235,33 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/fragment_main_root_note">
 
+                <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/f_m_c_i_v"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_margin="30dp"
+
+                                   android:src="@drawable/collection"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                <TextView
+                    android:visibility="gone"
+                    style="@style/secondaryTextStyle"
+                    android:fontFamily="@font/sofia_pro_bold"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="@id/f_m_c_i_v"
+                    app:layout_constraintStart_toStartOf="@id/f_m_c_i_v"
+                    app:layout_constraintTop_toBottomOf="@id/f_m_c_i_v"
+                    android:text="No Personal  Collection YET!"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
                 <androidx.recyclerview.widget.RecyclerView
+                    android:visibility="visible"
                     android:id="@+id/fragment_main_recycler_collection"
                     android:layout_height="match_parent"
                     android:layout_width="match_parent"
@@ -324,8 +351,9 @@
                     app:layout_constraintTop_toTopOf="parent" />
                 <ImageView
 
+
                     app:layout_constraintTop_toBottomOf="@id/textView51"
-                    android:src="@drawable/ic_outline_lock_24"
+                    app:srcCompat="@drawable/archive"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     />

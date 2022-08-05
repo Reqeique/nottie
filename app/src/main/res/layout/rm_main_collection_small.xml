@@ -4,6 +4,7 @@
     android:layout_margin="10dp"
     app:cardElevation="02dp"
     android:layout_width="175dp"
+    android:transitionGroup="true"
 
     android:maxHeight="200dp"
 

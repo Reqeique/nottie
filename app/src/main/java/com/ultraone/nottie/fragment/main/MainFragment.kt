@@ -112,8 +112,6 @@ class MainFragment : Fragment() {
         return binding.root
 
     }
-
-
     /**
      * [setSearchCardClickListener] used to apply transition and click listener to [FragmentMainBinding.fragmentMainSearchCard]
      */
@@ -237,8 +235,10 @@ class MainFragment : Fragment() {
         handleOpenCollection()
     }
     private fun setNoteCollectionRecyclerItemClickListener(){
+        trans()
         collectionsAdapter.onItemClick = {noteCollection, pos, v ->
-            findNavController().navigate(MainFragmentDirections.actionMainFragmentToNoteCollectionNoteFragment(pos,noteCollection.id,noteCollection))
+            val extras = FragmentNavigatorExtras(v to "createNewCollectionf")
+            findNavController().navigate(MainFragmentDirections.actionMainFragmentToNoteCollectionNoteFragment(pos,noteCollection.id,noteCollection), extras)
 
         }
     }
@@ -280,12 +280,14 @@ class MainFragment : Fragment() {
     }
     private fun handleOpenCollection(){
         binding.fragmentMainOpenCollection.setOnClickListener {
-           val anim = MaterialSharedAxis(MaterialSharedAxis.X, true).apply{
+           val anim = MaterialSharedAxis(MaterialSharedAxis.X, false).apply{
                duration = 300L
            }
             reenterTransition = anim
 
-            exitTransition = anim
+            exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
+                duration = 300L
+            }
             enterTransition = anim
             val extras  = FragmentNavigatorExtras(binding.root to "f_m_c_t")
             findNavController().apply {
@@ -344,7 +346,7 @@ class MainFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         requireActivity().window.navigationBarColor = requireContext().resolver(R.attr.colorSurface)
-    //    lifecycleScope.cancel()
+        lifecycleScope.cancel()
         Log.i("$TAG@59", "Detached")
     }
 

@@ -7,13 +7,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.MaterialElevationScale
 import com.ultraone.nottie.adapter.NoteCollectionsAdapter
 import com.ultraone.nottie.databinding.FragmentMainCollectionBinding
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.NoteCollections
 import com.ultraone.nottie.model.Result
+import com.ultraone.nottie.util.invoke
 import com.ultraone.nottie.viewmodel.DataProviderViewModel
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.flow.Flow
@@ -38,8 +42,10 @@ class MainCollectionFragment: Fragment() {
             handleSearchButton()
             handleBackButton()
         }
+        setUpRecyclerViewClickListener()
         return binding.root
     }
+
     private fun handleSearchButton(){
         binding.fMCSB.setOnClickListener {
             findNavController().navigate(MainCollectionFragmentDirections.actionMainCollectionFragmentToSearchFragment(noteCollections = cacheCollections.toTypedArray()))
@@ -75,6 +81,29 @@ class MainCollectionFragment: Fragment() {
                     }
                 }
             }
+        }
+    }
+    private fun setUpRecyclerViewClickListener(){
+
+       collectionAdapter.onItemClick = { nC, p, v ->
+           materialElevationTransition(300)
+           v as MaterialCardView
+           val extras = FragmentNavigatorExtras(v to "createNewCollectionf")
+           findNavController().navigate(
+               MainCollectionFragmentDirections.actionMainCollectionFragmentToNoteCollectionNoteFragment(noteCollections = nC, position = p, id = nC.id),
+               extras
+           )
+       }
+    }
+    private fun materialElevationTransition(duration: Long){
+        enterTransition = MaterialElevationScale(true).apply {
+            this.duration = duration
+        }
+        reenterTransition = MaterialElevationScale(true).apply {
+            this.duration = duration
+        }
+        exitTransition = MaterialElevationScale(false).apply {
+            this.duration = duration
         }
     }
 }

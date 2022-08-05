@@ -1,7 +1,11 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:transitionName="createNewCollectionf"
+
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -154,7 +158,18 @@
             android:id="@+id/f_n_c_n_recycler"
             app:spanCount="2"
             tools:listitem="@layout/rm_main_note" />
+
     </androidx.core.widget.NestedScrollView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_margin="16dp"
+        android:id="@+id/f_n_c_fab"
+        android:transitionName="f_n_c_fab_transition"
+        android:src="@drawable/ic_add_24px"
+        android:layout_width="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_height="wrap_content">
+
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
