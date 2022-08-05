@@ -61,7 +61,7 @@
                         android:id="@+id/chipGroup"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingStart="16dp"
+
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/f_s_s_b">
 
