@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialElevationScale
 import com.ultraone.nottie.adapter.MainNoteAdapter
 import com.ultraone.nottie.databinding.FragmentMainNoteBinding
+import com.ultraone.nottie.fragment.main.MainFragment
 
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.Result
@@ -211,6 +212,11 @@ class MainNoteFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.i("${this::class.simpleName}@71", "DestroyedView")
     }
 
     fun addNote(it: Result) {

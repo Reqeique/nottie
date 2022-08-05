@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
 
@@ -7,139 +7,194 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.SearchView
+    <com.google.android.material.appbar.AppBarLayout
+        app:elevation="0dp"
+        android:background="?attr/colorSurface"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-
-        android:transitionName="test"
-        android:id="@+id/f_s_s_b"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-
-
-    </androidx.appcompat.widget.SearchView>
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroup"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:paddingStart="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/f_s_s_b">
-
-        <com.google.android.material.chip.Chip
-
-
-            style="@style/Widget.MaterialComponents.Chip.Filter"
-            android:fontFamily="@font/sofia_pro_regular"
-
-            android:id="@+id/chip5"
-
-            android:includeFontPadding="false"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="Collection"
-            android:textAppearance="@style/chipText"
-            android:textColor="?android:textColorSecondary"
-            android:textSize="16sp" />
-
-        <com.google.android.material.chip.Chip
-            style="@style/Widget.MaterialComponents.Chip.Filter"
-            android:fontFamily="@font/sofia_pro_regular"
-
-            android:id="@+id/chip4"
-
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:text="Note"
-            android:textAppearance="@style/chipText"
-            android:textColor="?android:textColorSecondary"
-            android:textSize="16sp" />
-        <com.google.android.material.chip.Chip
-            style="@style/Widget.MaterialComponents.Chip.Entry"
-            android:id="@+id/chip3"
-            android:textSize="16sp"
-            android:textColor="?android:textColorSecondary"
-            android:textAppearance="@style/chipText"
-            android:fontFamily="@font/sofia_pro_regular"
-            android:text="Collection 1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-    </com.google.android.material.chip.ChipGroup>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/f_s_c_1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroup">
-
-        <TextView
-            android:id="@+id/textView6"
-            style="@style/secondaryTextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:fontFamily="@font/sofia_pro_regular"
-            android:text="Collections"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-
-            android:id="@+id/f_s_c_r_v"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_height="match_parent">
 
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@+id/textView6"
-            tools:listitem="@layout/rm_main_collection_small">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </androidx.recyclerview.widget.RecyclerView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/f_s_c_2"
-
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/f_s_c_1">
-
-        <TextView
-            android:id="@+id/tv"
-            style="@style/secondaryTextStyle"
-            android:layout_width="wrap_content"
-
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Notes"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-
-            android:id="@+id/f_s_n_r_v"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv"
-            app:spanCount="2"
-            tools:listitem="@layout/rm_main_note" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.appcompat.widget.SearchView
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                    android:id="@+id/f_s_s_b"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:transitionName="test"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+                </androidx.appcompat.widget.SearchView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:elevation="0dp"
+                app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+
+                app:contentScrim="?attr/colorAccent"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar3"
+                    android:elevation="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                 >
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chipGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingStart="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/f_s_s_b">
+
+                        <com.google.android.material.chip.Chip
+
+
+                            android:id="@+id/chip5"
+                            style="@style/Widget.MaterialComponents.Chip.Filter"
+
+                            android:layout_width="wrap_content"
+
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/sofia_pro_regular"
+                            android:includeFontPadding="false"
+                            android:text="Collection"
+                            android:textAppearance="@style/chipText"
+                            android:textColor="?android:textColorSecondary"
+                            android:textSize="16sp" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip4"
+                            style="@style/Widget.MaterialComponents.Chip.Filter"
+
+                            android:layout_width="wrap_content"
+
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/sofia_pro_regular"
+                            android:text="Note"
+                            android:textAppearance="@style/chipText"
+                            android:textColor="?android:textColorSecondary"
+                            android:textSize="16sp" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip3"
+                            style="@style/Widget.MaterialComponents.Chip.Entry"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/sofia_pro_regular"
+                            android:text="Collection 1"
+                            android:textAppearance="@style/chipText"
+                            android:textColor="?android:textColorSecondary"
+                            android:textSize="16sp" />
+                    </com.google.android.material.chip.ChipGroup>
+                </androidx.appcompat.widget.Toolbar>
+
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        app:behavior_ovelapTop="16dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+         <androidx.constraintlayout.widget.ConstraintLayout
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+
+             <androidx.constraintlayout.widget.ConstraintLayout
+                 android:id="@+id/f_s_c_1"
+                 android:layout_width="0dp"
+                 android:layout_height="wrap_content"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintTop_toTopOf="parent">
+
+                 <TextView
+                     android:id="@+id/textView6"
+                     style="@style/secondaryTextStyle"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_margin="16dp"
+                     android:fontFamily="@font/sofia_pro_regular"
+                     android:text="Collections"
+                     android:textSize="16sp"
+                     android:textStyle="bold"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toTopOf="parent" />
+
+                 <androidx.recyclerview.widget.RecyclerView
+
+                     android:id="@+id/f_s_c_r_v"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:orientation="horizontal"
+                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                     app:layout_constraintTop_toBottomOf="@+id/textView6"
+                     tools:listitem="@layout/rm_main_collection_small">
+
+                 </androidx.recyclerview.widget.RecyclerView>
+             </androidx.constraintlayout.widget.ConstraintLayout>
+
+             <androidx.constraintlayout.widget.ConstraintLayout
+                 android:id="@+id/f_s_c_2"
+
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 app:layout_constraintBottom_toBottomOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintTop_toBottomOf="@id/f_s_c_1">
+
+                 <TextView
+                     android:id="@+id/tv"
+                     style="@style/secondaryTextStyle"
+                     android:layout_width="wrap_content"
+
+                     android:layout_height="wrap_content"
+                     android:layout_margin="16dp"
+                     android:text="Notes"
+                     android:textSize="16sp"
+                     android:textStyle="bold"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toTopOf="parent" />
+
+                 <androidx.recyclerview.widget.RecyclerView
+
+                     android:id="@+id/f_s_n_r_v"
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                     app:layout_constraintBottom_toBottomOf="parent"
+                     app:layout_constraintStart_toStartOf="parent"
+                     app:layout_constraintTop_toBottomOf="@+id/tv"
+                     app:spanCount="2"
+                     tools:listitem="@layout/rm_main_note" />
+             </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+         </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
