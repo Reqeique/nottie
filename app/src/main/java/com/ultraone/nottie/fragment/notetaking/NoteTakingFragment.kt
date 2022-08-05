@@ -158,7 +158,7 @@ class NoteTakingFragment : Fragment() {
         note: Note = Note(
             0, null, null, null, NoteAttachmentAndOther(
                 null,
-                1,
+                1 ,
                 null,
 
 
@@ -280,6 +280,7 @@ class NoteTakingFragment : Fragment() {
 
                     updateOrCreateNew(copyable)
                 }
+
             }
 
         }
@@ -291,7 +292,7 @@ class NoteTakingFragment : Fragment() {
      * function [updateOrCreateNew] used to weather create new or update existing note based on [NoteTakingFragmentViewModel.noteId]
      * */
     private fun updateOrCreateNew(note: Note) {
-
+        Log.d("update", "${noteTakingFragmentViewModel.collectionId2.value}")
         when {
             noteTakingFragmentViewModel.noteId.value == NULL_VALUE_INT -> {
                 //ADD
@@ -300,7 +301,7 @@ class NoteTakingFragment : Fragment() {
                     note.copy(
                         dateTime = currentTime,
                         attachmentAndOthers = note.attachmentAndOthers?.copy(
-                            collectionId = noteTakingFragmentViewModel.collectionId2.value ?: 1,
+                            collectionId =  1,
                             fileUri = mutableListOf()
                         )
                     )
@@ -329,8 +330,8 @@ class NoteTakingFragment : Fragment() {
                                 attachmentAndOthers = NoteAttachmentAndOther(
                                     note.attachmentAndOthers?.archived
                                         ?: itNote.attachmentAndOthers?.archived,
-                                    note.attachmentAndOthers?.collectionId
-                                        ?: itNote.attachmentAndOthers?.collectionId ?: 1,
+                                    noteTakingFragmentViewModel.collectionId2.value ?: note.attachmentAndOthers?.collectionId
+                                        ?: itNote.attachmentAndOthers?.collectionId  ?: 1,
                                     note.attachmentAndOthers?.pinned
                                         ?: itNote.attachmentAndOthers?.pinned,
                                     note.attachmentAndOthers?.fileUri.takeIf { it!!.isNotEmpty() }

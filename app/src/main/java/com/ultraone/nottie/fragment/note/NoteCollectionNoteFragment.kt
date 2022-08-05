@@ -242,7 +242,7 @@ class NoteCollectionNoteFragment : Fragment() {
                         NULL_VALUE_INT, NULL_VALUE_INT
                     )
                 )
-                noteTakingFragmentViewModel.collectionId2.emit(args.id)
+               noteTakingFragmentViewModel.collectionId2.emit(args.id)
             }
         }
     }
