@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_mainFragment_to_mainCollectionFragment"
             app:destination="@id/mainCollectionFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_mainArchiveFragment"
+            app:destination="@id/mainArchiveFragment" />
 
     </fragment>
     <fragment
@@ -161,6 +164,15 @@
         <action
             android:id="@+id/action_mainCollectionFragment_to_noteCollectionNoteFragment"
             app:destination="@id/noteCollectionNoteFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_main_archive"
+        android:id="@+id/mainArchiveFragment"
+        android:name="com.ultraone.nottie.fragment.archive.MainArchiveFragment"
+        android:label="MainArchiveFragment" >
+        <action
+            android:id="@+id/action_mainArchiveFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
 
 </navigation>

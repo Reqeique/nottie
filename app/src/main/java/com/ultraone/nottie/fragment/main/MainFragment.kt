@@ -90,6 +90,8 @@ class MainFragment : Fragment() {
                 binding.setUpNotes()
                 binding.setUpCollections()
                 binding.setSearchCardClickListener()
+
+                handleOpenArchive()
                 dateTimeAdapter = DateTimeAdapter()
 
                 binding.fragmentMainRecyclerDateTime.adapter = dateTimeAdapter
@@ -296,6 +298,13 @@ class MainFragment : Fragment() {
             findNavController().apply {
                 (this@apply).saveState()
             }.navigate(MainFragmentDirections.actionMainFragmentToMainCollectionFragment(), extras)
+        }
+    }
+    private fun handleOpenArchive(){
+        binding.fragmentMainOpenArchive.setOnClickListener {
+            trans()
+            val extras = FragmentNavigatorExtras(it to "f_m_a_r_t")
+            findNavController().navigate(MainFragmentDirections.actionMainFragmentToMainArchiveFragment(), extras)
         }
     }
     private fun FragmentMainBinding.setCollectionAddListener() {
