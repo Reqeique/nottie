@@ -152,8 +152,8 @@ app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingVi
 </androidx.core.widget.NestedScrollView>
 <com.google.android.material.floatingactionbutton.FloatingActionButton
 android:layout_margin="16dp"
-android:id="@+id/f_n_c_fab"
-android:transitionName="f_n_c_fab_transition"
+android:id="@+id/f_m_a_fab"
+android:transitionName="f_m_a_fab_transition"
 android:src="@drawable/ic_add_24px"
 android:layout_width="wrap_content"
 android:layout_gravity="bottom|end"

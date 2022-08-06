@@ -60,6 +60,9 @@
             android:name="note"
             app:argType="com.ultraone.nottie.model.Note"
             />
+        <action
+            android:id="@+id/action_noteTakingFragment_to_mainArchiveFragment"
+            app:destination="@id/mainArchiveFragment" />
 
     </fragment>
     <fragment
@@ -173,6 +176,9 @@
         <action
             android:id="@+id/action_mainArchiveFragment_to_mainFragment"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_mainArchiveFragment_to_noteTakingFragment"
+            app:destination="@id/noteTakingFragment" />
     </fragment>
 
 </navigation>

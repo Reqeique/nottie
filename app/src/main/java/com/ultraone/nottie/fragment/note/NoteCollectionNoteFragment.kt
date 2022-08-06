@@ -26,6 +26,7 @@ import com.ultraone.nottie.R
 import com.ultraone.nottie.adapter.MainNoteAdapter
 import com.ultraone.nottie.databinding.FragmentNoteCollectionNoteBinding
 import com.ultraone.nottie.model.Note
+import com.ultraone.nottie.model.NoteAttachmentAndOther
 import com.ultraone.nottie.model.NoteCollections
 import com.ultraone.nottie.model.Result
 import com.ultraone.nottie.util.NULL_VALUE_INT
@@ -239,7 +240,7 @@ class NoteCollectionNoteFragment : Fragment() {
             lifecycleScope.launch {
                 findNavController().navigate(
                     NoteCollectionNoteFragmentDirections.actionNoteCollectionNoteFragmentToNoteTakingFragment(
-                        NULL_VALUE_INT, NULL_VALUE_INT
+                        note = Note(0,null, null, null, attachmentAndOthers = NoteAttachmentAndOther(false, args.id, false, mutableListOf(),null), false)
                     )
                 )
                noteTakingFragmentViewModel.collectionId2.emit(args.id)

@@ -178,7 +178,7 @@ class NoteTakingFragment : Fragment() {
                 "$TAG@134",
                 noteTakingFragmentViewModel.noteId.value.toString() + text.toString()
             )
-            copyable = copyable.copy(title = text.toString())
+            copyable = copyable.copy(title = text.toString(), attachmentAndOthers = copyable.attachmentAndOthers?.copy(collectionId = noteTakingFragmentViewModel.collectionId2.value))
             updateOrCreateNew(copyable)
 
 
@@ -282,7 +282,7 @@ class NoteTakingFragment : Fragment() {
             launch {
                 dataProvider.getAllCollections()
                 noteTakingFragmentViewModel.collectionId.collect { id ->
-                    if (id == null) return@collect
+                    if (id == null || copyable.attachmentAndOthers?.collectionId == id) return@collect
                     copyable = copyable.copy(
                         attachmentAndOthers = copyable.attachmentAndOthers?.copy(collectionId = id)
                     )
@@ -409,7 +409,7 @@ class NoteTakingFragment : Fragment() {
 
     private suspend fun FragmentNoteTakingNewBinding.setUpCollection(data: Note?) {
         noteTakingFragmentViewModel.collectionId.emit(
-           data?.attachmentAndOthers?.collectionId ?: 1
+           noteTakingFragmentViewModel.collectionId2.value ?: data?.attachmentAndOthers?.collectionId ?: 1
         )
         dataProvider.getAllCollections().observe(viewLifecycleOwner) { result ->
             when (result) {
