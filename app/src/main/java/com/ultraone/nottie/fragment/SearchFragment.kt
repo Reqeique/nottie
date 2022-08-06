@@ -249,6 +249,10 @@ class SearchFragment : Fragment() {
     }
     override fun onDetach() {
         super.onDetach()
+        //TODO Implement progressbar with different color
+        //TODO Implement archive support
+        //TODO Implement tag support
+        //TODO Implement graphics support
         //note.removeAll { true }
     }
 }

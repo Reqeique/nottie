@@ -169,7 +169,9 @@ class NoteTakingFragment : Fragment() {
     ) = with(binding) {
         var copyable = note
 
-
+        /**
+         * used to listen for title change and upload [updateOrCreateNew] note
+         * */
         fNTNTitle.doOnTextChanged { text, _, _, _ ->
             if (text.isNullOrBlank()) return@doOnTextChanged
             Log.d(
@@ -181,18 +183,26 @@ class NoteTakingFragment : Fragment() {
 
 
         }
+        /**
+         * used to listen for main note change and update the note
+         * */
         fNTNNotes.doOnTextChanged { text, _, _, _ ->
             if (text == null) return@doOnTextChanged
             copyable = copyable.copy(mainNote = text.toString())
             updateOrCreateNew(copyable)
         }
 
+        /**
+         * used to listen for change in state of pin and update with resulting note
+         * */
         fNTNPinButton.invokeSelectableState<ImageButton> {
             copyable =
                 copyable.copy(attachmentAndOthers = copyable.attachmentAndOthers?.copy(pinned = it))
             Log.d("$TAG@154", "pinned = $it, copiable = $copyable")
             updateOrCreateNew(copyable)
         }
+
+
         fragmentNoteTakingNewChooseColor.setOnClickListener {
             Log.d(
                 "$TAG@110", "clicked" +
@@ -282,6 +292,18 @@ class NoteTakingFragment : Fragment() {
                 }
 
             }
+            launch {
+                noteTakingFragmentViewModel.collectionId2.collect {id ->
+                    if(id == null) return@collect
+                    copyable = copyable.copy(
+                        attachmentAndOthers = copyable.attachmentAndOthers?.copy(collectionId = id)
+                    )
+                    Log.d("NTF@301", "$id goes brr")
+                    noteTakingFragmentViewModel.collectionId.emit(id)
+
+                    updateOrCreateNew(copyable)
+                }
+            }
 
         }
 
@@ -292,7 +314,9 @@ class NoteTakingFragment : Fragment() {
      * function [updateOrCreateNew] used to weather create new or update existing note based on [NoteTakingFragmentViewModel.noteId]
      * */
     private fun updateOrCreateNew(note: Note) {
-        Log.d("update", "${noteTakingFragmentViewModel.collectionId2.value}")
+        if(note.title == null) return
+       // println("$"+ "{hello}")
+        Log.d("update", "${ noteTakingFragmentViewModel.noteId.value} ${noteTakingFragmentViewModel.collectionId2.value } $note")
         when {
             noteTakingFragmentViewModel.noteId.value == NULL_VALUE_INT -> {
                 //ADD
@@ -330,7 +354,7 @@ class NoteTakingFragment : Fragment() {
                                 attachmentAndOthers = NoteAttachmentAndOther(
                                     note.attachmentAndOthers?.archived
                                         ?: itNote.attachmentAndOthers?.archived,
-                                    noteTakingFragmentViewModel.collectionId2.value ?: note.attachmentAndOthers?.collectionId
+                                     note.attachmentAndOthers?.collectionId
                                         ?: itNote.attachmentAndOthers?.collectionId  ?: 1,
                                     note.attachmentAndOthers?.pinned
                                         ?: itNote.attachmentAndOthers?.pinned,
@@ -383,7 +407,7 @@ class NoteTakingFragment : Fragment() {
 
     private suspend fun FragmentNoteTakingNewBinding.setUpCollection(data: Note?) {
         noteTakingFragmentViewModel.collectionId.emit(
-            data?.attachmentAndOthers?.collectionId ?: 1
+            noteTakingFragmentViewModel.collectionId2.value ?: data?.attachmentAndOthers?.collectionId ?: 1
         )
         dataProvider.getAllCollections().observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -420,6 +444,7 @@ class NoteTakingFragment : Fragment() {
      * */
     private fun FragmentNoteTakingNewBinding.new(note: Note) = with(lifecycleScope) {
         launch {
+
             //if(args.id == NULL_VALUE_INT){
             dataProvider.addNote(note).observe(viewLifecycleOwner) {
                 lifecycleScope.launch(Main) {
@@ -431,7 +456,7 @@ class NoteTakingFragment : Fragment() {
                             val data = it.data as Long
                             Log.d("$TAG@129", "$data")
 
-
+                            Log.d("NTF@453", "${data.toInt()}")
                             noteTakingFragmentViewModel.noteId.value = data.toInt()
                         }
 
@@ -526,7 +551,7 @@ class NoteTakingFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
      //   lifecycleScope.cancel()
-
+        noteTakingFragmentViewModel.collectionId2.value = null
         Log.d("$TAG@353", "ON DETACH calling null")
         noteTakingFragmentViewModel.uriListener.value = null
 
@@ -536,6 +561,11 @@ class NoteTakingFragment : Fragment() {
         inflater: LayoutInflater,
         note: Note
     ) {
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
 
     }
 

@@ -35,6 +35,7 @@ import com.ultraone.nottie.model.NoteCollections
 import com.ultraone.nottie.model.Result
 import com.ultraone.nottie.util.*
 import com.ultraone.nottie.viewmodel.DataProviderViewModel
+import com.ultraone.nottie.viewmodel.NoteTakingFragmentViewModel
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -59,6 +60,7 @@ class MainFragment : Fragment() {
     val dataProvider by activityViewModels<DataProviderViewModel>()
     lateinit var controller: NavController
     lateinit var config: AppBarConfiguration
+    val noteTakingFragmentViewModel: NoteTakingFragmentViewModel by activityViewModels()
     private val month = 1..31
 
     private var tracker: SelectionTracker<Long>? = null
@@ -154,6 +156,7 @@ class MainFragment : Fragment() {
                     NULL_VALUE_INT
                 )
             )
+
         }
 
     }
