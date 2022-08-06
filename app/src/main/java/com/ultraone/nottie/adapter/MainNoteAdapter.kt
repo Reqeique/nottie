@@ -194,7 +194,7 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
             }
         }
     }
-    inline fun  <reified T: FileType> List<String>.containsFile(context: Context): Boolean{
+    private inline fun  <reified T: FileType> List<String>.containsFile(context: Context): Boolean{
 
         return any {
 

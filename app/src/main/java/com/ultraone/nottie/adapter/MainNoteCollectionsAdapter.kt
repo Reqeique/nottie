@@ -1,27 +1,34 @@
 package com.ultraone.nottie.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
+import com.ultraone.nottie.R
 import com.ultraone.nottie.databinding.RmMainCollectionSmallBinding
 import com.ultraone.nottie.databinding.RmMainNoteSmallBinding
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.NoteCollections
-import com.ultraone.nottie.util.invoke
+import com.ultraone.nottie.util.*
+import com.ultraone.nottie.viewmodel.DataProviderViewModel
 
 class NoteCollectionsAdapter: RecyclerView.Adapter< NoteCollectionsAdapter.ViewHolder>()  {
     var onItemClick: ((noteCollection: NoteCollections,pos: Int,v: View) -> Unit)? = null
+
     private var datas = listOf<NoteCollections>()
 
     lateinit var parent: RecyclerView
 
+    private var listNotes = listOf<Note>()
+
     @SuppressLint("NotifyDataSetChanged")
-    fun addList(datas: List<NoteCollections>) {
+    fun addList(datas: List<NoteCollections>, note: List<Note>) {
         this.datas = datas
+        this.listNotes = note
         notifyDataSetChanged()
         if (datas.isNotEmpty()) {
             //   this.parent.smoothScrollToPosition(datas.size)
@@ -42,8 +49,10 @@ class NoteCollectionsAdapter: RecyclerView.Adapter< NoteCollectionsAdapter.ViewH
     }
     inner class ViewHolder(binding: RmMainCollectionSmallBinding) : RecyclerView.ViewHolder(binding.root) {
         val root: MaterialCardView
+        val pb: UAProgressBar
         val collectionName : TextView
         init {
+            pb = binding.rMCSPB
             root = binding.rmMainCollectionSmallRoot
             collectionName = binding.rmMainCollectionSmallName
             binding.root.setOnClickListener {
@@ -54,9 +63,29 @@ class NoteCollectionsAdapter: RecyclerView.Adapter< NoteCollectionsAdapter.ViewH
     override fun onBindViewHolder(holder: NoteCollectionsAdapter.ViewHolder, position: Int) {
         holder {
             root.transitionName = "createNewCollection-${datas[position].id}"
+            pb.thumb.mutate().alpha = 0
+            val kv = listNotes.filter { it.attachmentAndOthers?.collectionId == datas[position].id}.map {
+                (itemView.context.resolver(it.attachmentAndOthers?.color?.toIntOrNull()
+                    ?: R.attr.colorPrimary)) to listNotes.filter {  it1 -> it1.attachmentAndOthers?.collectionId == datas[position].id && it1.attachmentAndOthers.color == it.attachmentAndOthers?.color }.size
+            }
+            initData(kv, listNotes.filter { it.attachmentAndOthers?.collectionId == datas[position].id}.size, pb)
             collectionName.text = datas[position].collectionName
         }
     }
+    private fun initData(colorsAndItemSize: List<Pair<Int,Int>>, allItemSize: Int, seekBar: UAProgressBar ){
+        val pIs = mutableListOf<ProgressItem>()
+        //vaval pI = ProgressItem()
+        colorsAndItemSize.forEach {
 
+            val colors = it.first
+            val itemSize = it.second
+            Log.d("MNCA@75", "${itemSize.toFloat()/allItemSize.toFloat()}")
+            val pI = ProgressItem(colors ,((itemSize.toFloat()/allItemSize.toFloat())*100).toFloat())
+            pIs.add(pI)
+        }
+        Log.d("MNCA@78", "${arrayListOf(* (pIs.toTypedArray())).toList()}")
+        seekBar.initData(arrayListOf(*(pIs.toTypedArray())))
+       seekBar.invalidate()
+    }
     override fun getItemCount(): Int = datas.size
 }

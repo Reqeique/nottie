@@ -274,7 +274,7 @@ class MainFragment : Fragment() {
                             }
                             cacheCollection.clear()
                             cacheCollection.addAll(datas.filterNot { it.deleted})
-                            collectionsAdapter.addList(datas.filter{ it.isVisible }.filterNot { it.deleted })
+                            collectionsAdapter.addList(datas.filter{ it.isVisible }.filterNot { it.deleted }, cacheNote)
                         }
                     }
                 }

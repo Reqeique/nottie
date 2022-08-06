@@ -9,20 +9,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import com.ultraone.nottie.R
 import com.ultraone.nottie.adapter.MainNoteAdapter
 import com.ultraone.nottie.adapter.NoteCollectionsAdapter
 import com.ultraone.nottie.databinding.FragmentSearchBinding
+import com.ultraone.nottie.model.Note
+import com.ultraone.nottie.model.Result
 import com.ultraone.nottie.util.*
+import com.ultraone.nottie.viewmodel.DataProviderViewModel
 import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
@@ -33,7 +39,8 @@ class SearchFragment : Fragment() {
     val collectionAdapter by lazy {
         NoteCollectionsAdapter()
     }
-
+    private val cacheNote: MutableList<Note> = mutableListOf()
+    private val dataProviderViewModel: DataProviderViewModel by activityViewModels()
 
     private lateinit var binding: FragmentSearchBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +63,8 @@ class SearchFragment : Fragment() {
 
     }
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,10 +83,37 @@ class SearchFragment : Fragment() {
 
                searBarListener()
                 setSearchBarClickListener()
+                observeNote()
             }
 
         }
         return binding.root
+    }
+    private fun observeNote(){
+        lifecycleScope.launch {
+            dataProviderViewModel.getAllNotes().observe(viewLifecycleOwner) {
+                lifecycleScope.launch {
+                    when(it){
+                        is Result.FAILED -> {
+                            Snackbar.make(binding.root, "error: ${it.throwable.localizedMessage}", Snackbar.LENGTH_SHORT).show()
+                        }
+                        is Result.LOADING -> {
+
+                        }
+                        is Result.NULL_VALUE -> {
+
+                        }
+                        is Result.SUCCESS<*> -> {
+                            it.data as Flow<List<Note>>
+                            it.data.collect {
+                                cacheNote.clear()
+                                cacheNote.addAll(it)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     private fun setRecyclerClickListener(){
         noteAdapter.onItemClick =  {n, i, v ->
@@ -145,7 +181,7 @@ class SearchFragment : Fragment() {
                 when {
                     args.noteCollections != null && args.notes == null && args.noteCollection == null -> {
                         if (newText == null) return true
-                        collectionAdapter.addList(args.noteCollections!!.filterNot { it.deleted }.filter { it.collectionName.lowercase().contains(newText) }.distinctBy { it})
+                        collectionAdapter.addList(args.noteCollections!!.filterNot { it.deleted }.filter { it.collectionName.lowercase().contains(newText) }.distinctBy { it}, cacheNote)
                         binding.fSC2.setGone()
                         binding.fSC1.setVisible()
                         binding.chip5.setVisible()
@@ -173,7 +209,7 @@ class SearchFragment : Fragment() {
                         if(newText == null) return true
                         noteAdapter.addList(args.notes!!.filterNot { it.deleted == true }.filter { it.mainNote?.lowercase()?.contains(newText.lowercase()) == true || it.title?.lowercase()?.contains(newText.lowercase()) == true}.distinctBy { it })
                         noteAdapter.notifyDataSetChanged()
-                       collectionAdapter.addList(args.noteCollections!!.filterNot { it.deleted }.filter { it.collectionName.contains(newText) }.distinctBy { it})
+                       collectionAdapter.addList(args.noteCollections!!.filterNot { it.deleted }.filter { it.collectionName.contains(newText) }.distinctBy { it}, cacheNote)
                         binding {
                             fSC2.setVisible()
                             fSC1.setVisible()

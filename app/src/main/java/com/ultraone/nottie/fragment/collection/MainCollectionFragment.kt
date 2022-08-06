@@ -27,6 +27,7 @@ class MainCollectionFragment: Fragment() {
     private val collectionAdapter by lazy {
         NoteCollectionsAdapter()
     }
+    private val cacheNote: MutableList<Note> = mutableListOf()
     private val cacheCollections: MutableList<NoteCollections> = mutableListOf()
     private val dataProvider: DataProviderViewModel by activityViewModels()
     lateinit var binding: FragmentMainCollectionBinding
@@ -58,6 +59,34 @@ class MainCollectionFragment: Fragment() {
             findNavController().popBackStack()
         }
     }
+    private fun observeNote(){
+
+            lifecycleScope.launch {
+                dataProvider.getAllNotes().observe(viewLifecycleOwner) {
+                    lifecycleScope.launch {
+                        when(it){
+                            is Result.FAILED -> {
+                                Snackbar.make(binding.root, "error: ${it.throwable.localizedMessage}", Snackbar.LENGTH_SHORT).show()
+                            }
+                            is Result.LOADING -> {
+
+                            }
+                            is Result.NULL_VALUE -> {
+
+                            }
+                            is Result.SUCCESS<*> -> {
+                                it.data as Flow<List<Note>>
+                                it.data.collect {
+                                    cacheNote.clear()
+                                    cacheNote.addAll(it)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+    }
     private suspend fun observeCollections(){
         dataProvider.getAllCollections().observe(viewLifecycleOwner){
             when(it){
@@ -76,7 +105,7 @@ class MainCollectionFragment: Fragment() {
                         it.data.collect { nc ->
                             cacheCollections.clear()
                             cacheCollections.addAll(nc)
-                            collectionAdapter.addList(nc.filter { it.isVisible })
+                            collectionAdapter.addList(nc.filter { it.isVisible }, cacheNote)
                         }
                     }
                 }
