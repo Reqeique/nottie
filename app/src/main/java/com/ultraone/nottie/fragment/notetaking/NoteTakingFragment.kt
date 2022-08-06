@@ -292,18 +292,18 @@ class NoteTakingFragment : Fragment() {
                 }
 
             }
-            launch {
-                noteTakingFragmentViewModel.collectionId2.collect {id ->
-                    if(id == null) return@collect
-                    copyable = copyable.copy(
-                        attachmentAndOthers = copyable.attachmentAndOthers?.copy(collectionId = id)
-                    )
-                    Log.d("NTF@301", "$id goes brr")
-                    noteTakingFragmentViewModel.collectionId.emit(id)
-
-                    updateOrCreateNew(copyable)
-                }
-            }
+//            launch {
+//                noteTakingFragmentViewModel.collectionId2.collect {id ->
+//                    if(id == null) return@collect
+//                    copyable = copyable.copy(
+//                        attachmentAndOthers = copyable.attachmentAndOthers?.copy(collectionId = id)
+//                    )
+//                    Log.d("NTF@301", "$id goes brr")
+//                    noteTakingFragmentViewModel.collectionId.emit(id)
+//
+//                    updateOrCreateNew(copyable)
+//                }
+//            }
 
         }
 
@@ -314,22 +314,24 @@ class NoteTakingFragment : Fragment() {
      * function [updateOrCreateNew] used to weather create new or update existing note based on [NoteTakingFragmentViewModel.noteId]
      * */
     private fun updateOrCreateNew(note: Note) {
-        if(note.title == null) return
+        //if(note.title == null) return
        // println("$"+ "{hello}")
         Log.d("update", "${ noteTakingFragmentViewModel.noteId.value} ${noteTakingFragmentViewModel.collectionId2.value } $note")
         when {
             noteTakingFragmentViewModel.noteId.value == NULL_VALUE_INT -> {
                 //ADD
+               // if(note.title == null) {
 
-                binding.new(
-                    note.copy(
-                        dateTime = currentTime,
-                        attachmentAndOthers = note.attachmentAndOthers?.copy(
-                            collectionId =  1,
-                            fileUri = mutableListOf()
+                    binding.new(
+                        note.copy(
+                            dateTime = currentTime,
+                            attachmentAndOthers = note.attachmentAndOthers?.copy(
+                                collectionId = 1,
+                                fileUri = mutableListOf()
+                            )
                         )
                     )
-                )
+               // }
 
             }
             noteTakingFragmentViewModel.noteId.value != NULL_VALUE_INT -> {
@@ -407,7 +409,7 @@ class NoteTakingFragment : Fragment() {
 
     private suspend fun FragmentNoteTakingNewBinding.setUpCollection(data: Note?) {
         noteTakingFragmentViewModel.collectionId.emit(
-            noteTakingFragmentViewModel.collectionId2.value ?: data?.attachmentAndOthers?.collectionId ?: 1
+           data?.attachmentAndOthers?.collectionId ?: 1
         )
         dataProvider.getAllCollections().observe(viewLifecycleOwner) { result ->
             when (result) {
