@@ -8,7 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatSeekBar
 
 class UAProgressBar : AppCompatSeekBar {
-    private var mProgressItemsList: ArrayList<ProgressItem>? = null
+    private var mProgressItemsList: MutableList<ProgressItem>? = null
 
     constructor(context: Context?) : super(context!!) {
         mProgressItemsList = ArrayList<ProgressItem>()
@@ -24,8 +24,10 @@ class UAProgressBar : AppCompatSeekBar {
     ) {
     }
 
-    fun initData(progressItemsList: ArrayList<ProgressItem>?) {
-        mProgressItemsList = progressItemsList as ArrayList<ProgressItem>?
+    fun initData(progressItemsList: MutableList<ProgressItem>?) {
+        mProgressItemsList = progressItemsList?.sortedBy {
+            it.color
+        }?.toMutableList()
     }
 
     @Synchronized
@@ -47,13 +49,14 @@ class UAProgressBar : AppCompatSeekBar {
             var progressItemWidth: Int
             var progressItemRight: Int
             val progressPaint = Paint()
+
             for (i in mProgressItemsList!!.indices) {
 
                 val progressItem: ProgressItem = mProgressItemsList!![i]
 
                 progressPaint.color = progressItem.color
-                progressItemWidth = (progressItem.progressItemPercentage
-                        * progressBarWidth / 100).toInt()
+                progressItemWidth = ((progressItem.progressItemPercentage
+                        * progressBarWidth )/ 100).toInt()
                 progressItemRight = lastProgressX + progressItemWidth
 
                 // for last item give right to progress item to the width

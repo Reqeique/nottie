@@ -66,9 +66,10 @@ class NoteCollectionsAdapter: RecyclerView.Adapter< NoteCollectionsAdapter.ViewH
             pb.thumb.mutate().alpha = 0
             val kv = listNotes.filter { it.attachmentAndOthers?.collectionId == datas[position].id}.map {
                 (itemView.context.resolver(it.attachmentAndOthers?.color?.toIntOrNull()
-                    ?: R.attr.colorPrimary)) to listNotes.filter {  it1 -> it1.attachmentAndOthers?.collectionId == datas[position].id && it1.attachmentAndOthers.color == it.attachmentAndOthers?.color }.size
+                    ?: R.attr.colorPrimary)) to listNotes.filter {  it1 -> it1.attachmentAndOthers?.collectionId == datas[position].id}.filter { it1 -> it1.attachmentAndOthers?.color == it.attachmentAndOthers?.color} .size
             }
-            initData(kv, listNotes.filter { it.attachmentAndOthers?.collectionId == datas[position].id}.size, pb)
+            val allItemSize = kv.map { it.second }.sum()
+            initData(kv, allItemSize, pb)
             collectionName.text = datas[position].collectionName
         }
     }
@@ -79,12 +80,12 @@ class NoteCollectionsAdapter: RecyclerView.Adapter< NoteCollectionsAdapter.ViewH
 
             val colors = it.first
             val itemSize = it.second
-            Log.d("MNCA@75", "${itemSize.toFloat()/allItemSize.toFloat()}")
+            Log.d("MNCA@75", "${itemSize.toFloat()/allItemSize.toFloat()} $itemSize, $allItemSize")
             val pI = ProgressItem(colors ,((itemSize.toFloat()/allItemSize.toFloat())*100).toFloat())
             pIs.add(pI)
         }
         Log.d("MNCA@78", "${arrayListOf(* (pIs.toTypedArray())).toList()}")
-        seekBar.initData(arrayListOf(*(pIs.toTypedArray())))
+        seekBar.initData(mutableListOf(*(pIs.toTypedArray())))
        seekBar.invalidate()
     }
     override fun getItemCount(): Int = datas.size
