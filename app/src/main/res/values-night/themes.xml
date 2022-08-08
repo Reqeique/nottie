@@ -118,4 +118,12 @@
         <item name="android:backgroundTint">@color/gray_02</item>
         <item name="android:background">@drawable/ic_bg_main</item>
     </style>
+    <style name="Theme.Nottie.NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:background">?attr/colorSurface</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:textColor">@color/blue_500</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
 </resources>

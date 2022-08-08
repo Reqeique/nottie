@@ -63,6 +63,9 @@
         <action
             android:id="@+id/action_noteTakingFragment_to_mainArchiveFragment"
             app:destination="@id/mainArchiveFragment" />
+        <action
+            android:id="@+id/action_noteTakingFragment_to_openAttachmentFragment"
+            app:destination="@id/openAttachmentFragment" />
 
     </fragment>
     <fragment
@@ -178,6 +181,22 @@
             app:destination="@id/mainFragment" />
         <action
             android:id="@+id/action_mainArchiveFragment_to_noteTakingFragment"
+            app:destination="@id/noteTakingFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_open_attachment"
+        android:id="@+id/openAttachmentFragment"
+        android:name="com.ultraone.nottie.fragment.notetaking.OpenAttachmentFragment"
+        android:label="OpenAttachmentFragment" >
+        <argument
+            app:argType="string"
+            app:nullable="false"
+            android:defaultValue=" "
+            android:name="uri"
+            />
+
+        <action
+            android:id="@+id/action_openAttachmentFragment_to_noteTakingFragment"
             app:destination="@id/noteTakingFragment" />
     </fragment>
 

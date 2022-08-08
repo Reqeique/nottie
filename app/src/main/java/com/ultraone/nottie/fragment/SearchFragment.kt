@@ -286,9 +286,11 @@ class SearchFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
 
-        //TODO Implement archive support
+
         //TODO Implement tag support
         //TODO Implement graphics support
+        //TODO Calendar
+        //TODO Implement a fragment to open attachment
         //note.removeAll { true }
     }
 }

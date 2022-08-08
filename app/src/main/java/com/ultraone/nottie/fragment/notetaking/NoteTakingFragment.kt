@@ -136,6 +136,7 @@ class NoteTakingFragment : Fragment() {
                     NoteTakingFragmentSheetNewCollection().tag
                 )
             }
+            handleAttachmentItemClickListener()
 
             handleBackButton()
             val _note = args.note
@@ -148,6 +149,13 @@ class NoteTakingFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun handleAttachmentItemClickListener(){
+        attachmentAdapter.onItemClick = { uri, pos, v ->
+            findNavController().navigate(NoteTakingFragmentDirections.actionNoteTakingFragmentToOpenAttachmentFragment(uri))
+
+        }
     }
 
     /**
