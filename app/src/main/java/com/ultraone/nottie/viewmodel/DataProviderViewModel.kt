@@ -4,14 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
-import com.ultraone.nottie.database.MainDatabase
-import com.ultraone.nottie.database.NoteCollectionsRepositories
-import com.ultraone.nottie.database.NoteRepositories
+import com.ultraone.nottie.database.*
+import com.ultraone.nottie.model.*
 
-import com.ultraone.nottie.model.Note
-import com.ultraone.nottie.model.NoteAttachmentAndOther
-import com.ultraone.nottie.model.NoteCollections
-import com.ultraone.nottie.model.Result
 import com.ultraone.nottie.util.existIn
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
@@ -26,6 +21,7 @@ class DataProviderViewModel(application: Application) : AndroidViewModel(applica
     }
 
     private val noteRepo: NoteRepositories
+    val snippieRepo: SnippieRepositories
     private val noteCollectionsRepo: NoteCollectionsRepositories
     private val context = getApplication<Application>().applicationContext
 
@@ -34,6 +30,7 @@ class DataProviderViewModel(application: Application) : AndroidViewModel(applica
         val noteDao = MainDatabase.getDatabase(application).notesDao()
         noteRepo = NoteRepositories(noteDao)
         noteCollectionsRepo = NoteCollectionsRepositories(MainDatabase.getDatabase(application).collectionDao())
+        snippieRepo = SnippieRepositories(MainDatabase.getDatabase(application).snippieDao())
         viewModelScope.launch(Main) {
             getAllNotes()
 
@@ -122,6 +119,7 @@ class DataProviderViewModel(application: Application) : AndroidViewModel(applica
     val getAllNote : LiveData<Flow<List<Note>>> = liveData {
         emit(noteRepo.getAllNotes)
     }
+
     suspend fun updateNote(note: Note): LiveData<Result> = liveData {
         coroutineScope {
             val mainJob = viewModelScope.async {
@@ -233,5 +231,47 @@ class DataProviderViewModel(application: Application) : AndroidViewModel(applica
 
         }
     }
+
+
+    suspend fun getSnippie() = liveData {
+        coroutineScope {
+            val mainJob = viewModelScope.launch{
+                emit(Result.LOADING)
+                emit(Result.SUCCESS(snippieRepo.getSnippie()))
+            }
+            mainJob.join()
+
+        }
+    }
+    suspend fun updateSnippie(snippie: Snippie) = liveData {
+        coroutineScope {
+            val mainJob = viewModelScope.launch {
+                emit(Result.LOADING)
+                snippieRepo.updateSnippie(snippie)
+            }
+            mainJob.join()
+            mainJob.invokeOnCompletion {
+                launch {
+                    if(it != null) emit(Result.FAILED(it)) else emit(Result.SUCCESS(null))
+                }
+            }
+        }
+    }
+    suspend fun addSnippie(snippie: Snippie) = liveData {
+        coroutineScope {
+            val mainJob = viewModelScope.launch {
+                emit(Result.LOADING)
+                snippieRepo.addSnippie(snippie)
+            }
+            mainJob.join()
+            mainJob.invokeOnCompletion {
+                launch {
+                    if(it != null) emit(Result.FAILED(it)) else emit(Result.SUCCESS(null))
+                }
+            }
+        }
+    }
+    val getSnippie = MutableLiveData<Snippie>()
+
 
 }

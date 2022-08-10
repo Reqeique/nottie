@@ -11,6 +11,8 @@ import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -33,9 +35,11 @@ import com.ultraone.nottie.databinding.FragmentMainBinding
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.NoteCollections
 import com.ultraone.nottie.model.Result
+import com.ultraone.nottie.model.Snippie
 import com.ultraone.nottie.util.*
 import com.ultraone.nottie.viewmodel.DataProviderViewModel
 import com.ultraone.nottie.viewmodel.NoteTakingFragmentViewModel
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -51,9 +55,10 @@ class MainFragment : Fragment() {
     companion object {
         const val TAG = "::MainFragment"
     }
-    var cacheNote: MutableList<Note> = mutableListOf()
-    var cacheCollection: MutableList<NoteCollections> = mutableListOf()
 
+    private var cacheNote: MutableList<Note> = mutableListOf()
+    private var cacheCollection: MutableList<NoteCollections> = mutableListOf()
+    private var cacheSnippie: Snippie? = null
     lateinit var collectionsAdapter: NoteCollectionsAdapter
     lateinit var dateTimeAdapter: DateTimeAdapter
     lateinit var NoteAdapter: NoteAdapter
@@ -80,42 +85,44 @@ class MainFragment : Fragment() {
         }
         binding = FragmentMainBinding.inflate(inflater, container, false)
 
-            lifecycleScope.launchWhenCreated {
-                Log.d(this::class.simpleName, "lifecycle called ")
-                binding.fragmentMainRecyclerNote.addRecyclerListener {
-                    it.setIsRecyclable(false)
-                }
-                delay(400L)
-
-                binding.setUpNotes()
-                binding.setUpCollections()
-                binding.setSearchCardClickListener()
-
-                handleOpenArchive()
-                dateTimeAdapter = DateTimeAdapter()
-
-                binding.fragmentMainRecyclerDateTime.adapter = dateTimeAdapter
-
-
-
-                tracker = SelectionTracker.Builder (
-                    "mySelection",
-                    binding.fragmentMainRecyclerNote,
-                    StableIdKeyProvider(binding.fragmentMainRecyclerNote),
-                    MyItemDetailLookup(binding.fragmentMainRecyclerNote),
-                    StorageStrategy.createLongStorage()
-                ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).also {
-
-                }.build()
-
-                NoteAdapter.tracker = tracker
+        lifecycleScope.launchWhenCreated {
+            Log.d(this::class.simpleName, "lifecycle called ")
+            binding.fragmentMainRecyclerNote.addRecyclerListener {
+                it.setIsRecyclable(false)
             }
+            delay(400L)
+
+            binding.setUpNotes()
+            binding.setUpCollections()
+            binding.setUpSnippie()
+            binding.setSearchCardClickListener()
+
+            handleOpenArchive()
+            dateTimeAdapter = DateTimeAdapter()
+
+            binding.fragmentMainRecyclerDateTime.adapter = dateTimeAdapter
+
+
+
+            tracker = SelectionTracker.Builder(
+                "mySelection",
+                binding.fragmentMainRecyclerNote,
+                StableIdKeyProvider(binding.fragmentMainRecyclerNote),
+                MyItemDetailLookup(binding.fragmentMainRecyclerNote),
+                StorageStrategy.createLongStorage()
+            ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).also {
+
+            }.build()
+
+            NoteAdapter.tracker = tracker
+        }
 
 
 
         return binding.root
 
     }
+
     /**
      * [setSearchCardClickListener] used to apply transition and click listener to [FragmentMainBinding.fragmentMainSearchCard]
      */
@@ -126,9 +133,12 @@ class MainFragment : Fragment() {
             val extras = FragmentNavigatorExtras(view to name)
             val op = NavOptions.Builder().setRestoreState(true)
 
-          //  findNavController().popBackStack(R.id.action_mainFragment_to_searchFragment, false)
+            //  findNavController().popBackStack(R.id.action_mainFragment_to_searchFragment, false)
             findNavController().navigate(
-                MainFragmentDirections.actionMainFragmentToSearchFragment(cacheNote.toTypedArray(), noteCollections =  cacheCollection.toTypedArray()),
+                MainFragmentDirections.actionMainFragmentToSearchFragment(
+                    cacheNote.toTypedArray(),
+                    noteCollections = cacheCollection.toTypedArray()
+                ),
                 extras
             )
 
@@ -184,15 +194,15 @@ class MainFragment : Fragment() {
 //            findNavController().navigate(
 //                MainFragmentDirections.actionMainFragmentToSearchFragment()
 //            )
-                val extras = FragmentNavigatorExtras(view to name)
+            val extras = FragmentNavigatorExtras(view to name)
 
-                findNavController().navigate(
-                    MainFragmentDirections.actionMainFragmentToNoteTakingFragment(
-                        pos,
-                        note.id,
-                        note
-                    ), extras
-                )
+            findNavController().navigate(
+                MainFragmentDirections.actionMainFragmentToNoteTakingFragment(
+                    pos,
+                    note.id,
+                    note
+                ), extras
+            )
 
 
         }
@@ -200,19 +210,18 @@ class MainFragment : Fragment() {
 
     private suspend fun observeNote() {
         dataProvider.getAllNotes().observe(viewLifecycleOwner) {
-            lifecycleScope.launch(Main){
+            lifecycleScope.launch(Main) {
                 when (it) {
                     is Result.SUCCESS<*> -> {
                         it.data as Flow<List<Note>>
                         it.data.collect { datas ->
                             cacheNote.clear()
-                            cacheNote.addAll(datas.filter { it.deleted == false})
+                            cacheNote.addAll(datas.filter { it.deleted == false })
                             NoteAdapter.addList(datas.filter {
                                 it.deleted == false
                             })
                         }
                         dataProvider.getAllNotes().removeObservers(viewLifecycleOwner)
-
 
 
                     }
@@ -239,14 +248,22 @@ class MainFragment : Fragment() {
         setCollectionAddListener()
         handleOpenCollection()
     }
-    private fun setNoteCollectionRecyclerItemClickListener(){
+
+    private fun setNoteCollectionRecyclerItemClickListener() {
         trans()
-        collectionsAdapter.onItemClick = {noteCollection, pos, v ->
+        collectionsAdapter.onItemClick = { noteCollection, pos, v ->
             val extras = FragmentNavigatorExtras(v to "createNewCollectionf")
-            findNavController().navigate(MainFragmentDirections.actionMainFragmentToNoteCollectionNoteFragment(pos,noteCollection.id,noteCollection), extras)
+            findNavController().navigate(
+                MainFragmentDirections.actionMainFragmentToNoteCollectionNoteFragment(
+                    pos,
+                    noteCollection.id,
+                    noteCollection
+                ), extras
+            )
 
         }
     }
+
     private suspend fun observeNoteCollection() {
         dataProvider.getAllCollections().observe(viewLifecycleOwner) {
             lifecycleScope.launch(Main) {
@@ -264,49 +281,59 @@ class MainFragment : Fragment() {
                         it.data as Flow<List<NoteCollections>>
                         it.data.collect { datas ->
 
-                            if(datas.firstOrNull {
-                                it.collectionName == "Untitled Collection" && !it.isVisible
-                            } == null){
-                                dataProvider.addCollection(NoteCollections(
-                                    0,
-                                    "Untitled Collection",
-                                    false,
-                                    isVisible = false
-                                )).observe(viewLifecycleOwner)
+                            if (datas.firstOrNull {
+                                    it.collectionName == "Untitled Collection" && !it.isVisible
+                                } == null) {
+                                dataProvider.addCollection(
+                                    NoteCollections(
+                                        0,
+                                        "Untitled Collection",
+                                        false,
+                                        isVisible = false
+                                    )
+                                ).observe(viewLifecycleOwner)
                             }
                             cacheCollection.clear()
-                            cacheCollection.addAll(datas.filterNot { it.deleted})
-                            collectionsAdapter.addList(datas.filter{ it.isVisible }.filterNot { it.deleted }, cacheNote)
+                            cacheCollection.addAll(datas.filterNot { it.deleted })
+                            collectionsAdapter.addList(datas.filter { it.isVisible }
+                                .filterNot { it.deleted }, cacheNote)
                         }
                     }
                 }
             }
         }
     }
-    private fun handleOpenCollection(){
+
+    private fun handleOpenCollection() {
         binding.fragmentMainOpenCollection.setOnClickListener {
-           val anim = MaterialSharedAxis(MaterialSharedAxis.X, false).apply{
-               duration = 300L
-           }
+            val anim = MaterialSharedAxis(MaterialSharedAxis.X, false).apply {
+                duration = 300L
+            }
             reenterTransition = anim
 
             exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
                 duration = 300L
             }
             enterTransition = anim
-            val extras  = FragmentNavigatorExtras(binding.root to "f_m_c_t")
+            val extras = FragmentNavigatorExtras(binding.root to "f_m_c_t")
             findNavController().apply {
                 (this@apply).saveState()
             }.navigate(MainFragmentDirections.actionMainFragmentToMainCollectionFragment(), extras)
         }
     }
-    private fun handleOpenArchive(){
+
+    private fun handleOpenArchive() {
         binding.fragmentMainOpenArchive.setOnClickListener {
             trans()
             val extras = FragmentNavigatorExtras(it to "f_m_a_r_t")
-            findNavController().navigate(MainFragmentDirections.actionMainFragmentToMainArchiveFragment(), extras)
+            findNavController().navigate(
+                MainFragmentDirections.actionMainFragmentToMainArchiveFragment(),
+                extras
+            )
         }
     }
+
+
     private fun FragmentMainBinding.setCollectionAddListener() {
         fragmentMainAddCollection.setOnClickListener {
             requireContext().dialog({
@@ -354,6 +381,83 @@ class MainFragment : Fragment() {
         }
     }
 
+
+    private suspend fun FragmentMainBinding.setUpSnippie() {
+        observeSnippie()
+        setSnippieChangeListener()
+    }
+
+    private fun setSnippieChangeListener() {
+        lifecycleScope.launch {
+                    val job1 = launch {
+                        dataProvider.getSnippie.asFlow().collect {
+                            binding.fragmentMainSnippie.text = it.mainNote.toString().toEditable()
+                            Log.d("MFKt@395", "$it")
+                        }
+                    }
+
+                    delay(100)
+                    job1.cancel()
+
+
+                    // = dataProvider.getSnippie.value.toString().toEditable()
+
+
+        }
+        binding.fragmentMainSnippie.doOnTextChanged { text, start, before, count ->
+            if(binding.fragmentMainSnippie.hasFocus()) {
+
+                lifecycleScope.launch {
+                    val snippie = Snippie(0, text.toString(), dateTime = currentTime)
+                    if (cacheSnippie == null) {
+                        Log.d("MFkt@376", "text =$text , snippie = $snippie")
+                        dataProvider.addSnippie(
+                            snippie
+                        ).observe(viewLifecycleOwner)
+
+                    } else {
+                        dataProvider.updateSnippie(
+                            cacheSnippie!!.copy(dateTime = currentTime, mainNote = text.toString())
+                        ).observe(viewLifecycleOwner)
+                    }
+                }
+            }
+
+        }
+    }
+
+    private suspend fun observeSnippie() {
+        dataProvider.getSnippie().observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                when (it) {
+                    is Result.FAILED -> {
+
+                    }
+                    Result.LOADING -> {
+
+                    }
+                    Result.NULL_VALUE -> {
+
+                    }
+                    is Result.SUCCESS<*> -> {
+                        it.data as Flow<Snippie?>
+
+                        it.data?.collect {
+                            if(it == null) return@collect
+                            Log.d("MKt@407", it.toString())
+                            cacheSnippie = it
+                            dataProvider.getSnippie.setValue(it)
+                    //        binding.fragmentMainSnippie.text = it.mainNote.toEditable()
+                             dataProvider.getSnippie().removeObservers(viewLifecycleOwner)
+                            //binding.fragmentMainSnippie.text = cacheSnippie!!.mainNote.toEditable()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     /***/
     override fun onDetach() {
         super.onDetach()
@@ -373,7 +477,8 @@ class MainFragment : Fragment() {
         requireActivity().window.navigationBarColor = requireContext().resolver(R.attr.colorSurface)
         Log.i("$TAG@71", "DestroyedView")
     }
-    override fun onStop(){
+
+    override fun onStop() {
         super.onStop()
 
     }
@@ -385,7 +490,7 @@ class MainFragment : Fragment() {
     }
 
     private fun trans() {
-       MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
+        MaterialSharedAxis(MaterialSharedAxis.X, true).apply {
             duration = 300L
         }
         enterTransition = MaterialElevationScale(true).apply {

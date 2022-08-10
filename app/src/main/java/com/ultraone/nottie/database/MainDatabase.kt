@@ -8,13 +8,15 @@ import androidx.room.TypeConverters
 import com.ultraone.nottie.coverters.Converters
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.NoteCollections
+import com.ultraone.nottie.model.Snippie
 
 
-@Database(entities = [Note::class, NoteCollections::class], version =1, exportSchema = false)
+@Database(entities = [Note::class, NoteCollections::class, Snippie::class], version =1, exportSchema = false)
 @TypeConverters(value = [Converters::class])
 abstract class MainDatabase: RoomDatabase() {
     abstract fun notesDao() : NotesDao
     abstract fun collectionDao(): NoteCollectionsDao
+    abstract fun snippieDao(): SnippieDao
     companion object {
         @Volatile
         private var INSTANCE: MainDatabase?  = null

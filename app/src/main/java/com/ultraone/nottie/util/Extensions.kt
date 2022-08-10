@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaMetadataRetriever
 import android.net.Uri
 import android.text.Editable
 import android.util.TypedValue
@@ -12,8 +14,10 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.AttrRes
+import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
-import androidx.core.graphics.drawable.toIcon
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.datastore.core.DataMigration
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
@@ -23,6 +27,9 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import coil.load
+import coil.request.ImageRequest
 import com.google.android.material.snackbar.Snackbar
 import com.ultraone.nottie.R
 import com.ultraone.nottie.model.Note
@@ -30,17 +37,11 @@ import com.ultraone.nottie.model.NoteCollections
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import java.net.URL
+import org.jetbrains.annotations.Nullable
 import java.text.SimpleDateFormat
 import java.util.*
-import android.content.ContentResolver
-import android.graphics.Bitmap
-import android.media.MediaMetadataRetriever
-import androidx.annotation.DrawableRes
-import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
-import coil.load
-import coil.request.ImageRequest
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -349,5 +350,33 @@ fun View.setGone(){
 
 
 fun View.setInvisible(){
+   // androidx.lifecycle.Observer
     visibility = View.INVISIBLE
+}
+
+fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+    observe(lifecycleOwner, object : Observer<T> {
+
+        override fun onChanged(t: T?) {
+            observer.onChanged(t)
+
+            removeObserver(this)
+        }
+    })
+}
+
+@Throws(InterruptedException::class)
+fun <T> getValue(liveData: LiveData<T>): T? {
+    val objects = arrayOfNulls<Any>(1)
+    val latch = CountDownLatch(1)
+    val observer: Observer<Any?> = object : Observer<Any?> {
+        override fun onChanged(@Nullable o: Any?) {
+            objects[0] = o
+            latch.countDown()
+            liveData.removeObserver(this)
+        }
+    }
+    liveData.observeForever(observer as Observer<in T>)
+    latch.await(2, TimeUnit.SECONDS)
+    return objects[0] as T?
 }
