@@ -193,7 +193,7 @@ class SearchFragment : Fragment() {
                     args.notes != null && args.noteCollections == null && args.noteCollection == null-> /** [main.MainNoteFragment]*/{
                         if(newText == null) return true
 
-                        noteAdapter.addList(args.notes!!.filterNot { it.deleted == true }.filter { it.mainNote?.lowercase()?.contains(newText.lowercase()) == true || it.title?.lowercase()?.contains(newText.lowercase()) == true}.distinctBy { it })
+                        noteAdapter.addList(args.notes!!.filterNot { it.deleted == true && it.attachmentAndOthers?.archived == true }.filter { it.mainNote?.lowercase()?.contains(newText.lowercase()) == true || it.title?.lowercase()?.contains(newText.lowercase()) == true}.distinctBy { it })
                         binding {
                             fSC1.setGone()
                             fSC2.setVisible()
@@ -207,7 +207,7 @@ class SearchFragment : Fragment() {
                     }
                     args.notes != null && args.noteCollections != null && args.noteCollection == null /** [main.MainFragment]*/-> {
                         if(newText == null) return true
-                        noteAdapter.addList(args.notes!!.filterNot { it.deleted == true }.filter { it.mainNote?.lowercase()?.contains(newText.lowercase()) == true || it.title?.lowercase()?.contains(newText.lowercase()) == true}.distinctBy { it })
+                        noteAdapter.addList(args.notes!!.filterNot { it.deleted == true && it.attachmentAndOthers?.archived == true}.filter { it.mainNote?.lowercase()?.contains(newText.lowercase()) == true || it.title?.lowercase()?.contains(newText.lowercase()) == true}.distinctBy { it })
                         noteAdapter.notifyDataSetChanged()
                        collectionAdapter.addList(args.noteCollections!!.filterNot { it.deleted }.filter { it.collectionName.contains(newText) }.distinctBy { it}, cacheNote)
                         binding {
@@ -260,7 +260,7 @@ class SearchFragment : Fragment() {
                     }
                     args.notes != null && args.noteCollection != null  && args.noteCollections == null  -> /** [NoteCollectionNoteFragment] */ {
                         if(newText == null) return true
-                        noteAdapter.addList(args.notes!!.filterNot { it.deleted == true}.filter { it.attachmentAndOthers!!.collectionId == args.noteCollection!!.id}.filter{ it.mainNote?.contains(newText) == true || it.title?.contains(newText) == true }.distinctBy { it })
+                        noteAdapter.addList(args.notes!!.filterNot { it.deleted == true && it.attachmentAndOthers?.archived == true }.filter { it.attachmentAndOthers!!.collectionId == args.noteCollection!!.id}.filter{ it.mainNote?.contains(newText) == true || it.title?.contains(newText) == true }.distinctBy { it })
                         Log.d(this@SearchFragment::class.simpleName, "T = ${args}")
 
                         binding {
@@ -270,7 +270,7 @@ class SearchFragment : Fragment() {
                         }
                         binding.chip3.setOnCloseIconClickListener { it as Chip
                             it.setGone()
-                            noteAdapter.addList(args.notes!!.filterNot { it.deleted == true}.filter { it.mainNote?.contains(newText) == true|| it.title?.contains(newText) == true}.distinct())
+                            noteAdapter.addList(args.notes!!.filterNot { it.deleted == true && it.attachmentAndOthers?.archived == true}.filter { it.mainNote?.contains(newText) == true|| it.title?.contains(newText) == true}.distinct())
                             noteAdapter.notifyDataSetChanged()
                         }
                     }

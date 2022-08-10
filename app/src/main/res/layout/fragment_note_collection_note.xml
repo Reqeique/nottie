@@ -120,7 +120,7 @@
                         android:layout_marginStart="5dp"
                         android:fontFamily="@font/sofia_pro_regular"
 
-                        android:text="Default"
+                        android:text="Sorted"
                         android:textAppearance="@style/chipText"
                         android:textColor="?android:textColorSecondary"
 

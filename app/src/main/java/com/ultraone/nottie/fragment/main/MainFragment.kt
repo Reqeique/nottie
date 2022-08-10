@@ -24,13 +24,11 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StableIdKeyProvider
 import androidx.recyclerview.selection.StorageStrategy
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.chip.Chip
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialSharedAxis
 import com.ultraone.nottie.R
-import com.ultraone.nottie.adapter.DateTimeAdapter
-import com.ultraone.nottie.adapter.MyItemDetailLookup
-import com.ultraone.nottie.adapter.NoteAdapter
-import com.ultraone.nottie.adapter.NoteCollectionsAdapter
+import com.ultraone.nottie.adapter.*
 import com.ultraone.nottie.databinding.FragmentMainBinding
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.NoteCollections
@@ -155,6 +153,40 @@ class MainFragment : Fragment() {
         setNoteAddListener()
         setNoteRecyclerItemClickListener()
         setNoteGoClickListener()
+
+    }
+
+    private fun handleMyChip(nc: Chip, pc: Chip, sc: Chip?, it: List<Note>, adapter: NoteAdapter){
+        handleFilters(
+            nc, pc, sc
+        ) { n, p, s ->
+            when {
+                n -> {
+                    val filtered = it.filter { note ->
+                        note.dateTime?.substring(0..7) == currentTime.substring(0..7)
+                    }
+//
+                    adapter.addList(filtered)
+                }
+                p -> {
+                    val filtered = it.filter { note ->
+                        note.deleted == false && note.attachmentAndOthers?.archived == false
+                    }.filter { it.attachmentAndOthers?.pinned == true }
+
+                    adapter.addList(filtered)
+
+                }
+
+                else -> {
+                    val filtered = it.filter { note ->
+                        note.deleted == false && note.attachmentAndOthers?.archived == false
+                    }
+
+                    adapter.addList(filtered)
+                    //   Log.d("$TAG@198", "$isChecked + $filtered")
+                }
+            }
+        }
     }
 
     private fun FragmentMainBinding.setNoteAddListener() {
@@ -215,10 +247,11 @@ class MainFragment : Fragment() {
                     is Result.SUCCESS<*> -> {
                         it.data as Flow<List<Note>>
                         it.data.collect { datas ->
+                            handleMyChip(binding.chip5, binding.chip4,null, datas, NoteAdapter)
                             cacheNote.clear()
-                            cacheNote.addAll(datas.filter { it.deleted == false })
+                            cacheNote.addAll(datas.filter { it.deleted == false && it.attachmentAndOthers?.archived == false })
                             NoteAdapter.addList(datas.filter {
-                                it.deleted == false
+                                it.deleted == false && it.attachmentAndOthers?.archived == false
                             })
                         }
                         dataProvider.getAllNotes().removeObservers(viewLifecycleOwner)
@@ -294,7 +327,7 @@ class MainFragment : Fragment() {
                                 ).observe(viewLifecycleOwner)
                             }
                             cacheCollection.clear()
-                            cacheCollection.addAll(datas.filterNot { it.deleted })
+                            cacheCollection.addAll(datas.filterNot { it.deleted  })
                             collectionsAdapter.addList(datas.filter { it.isVisible }
                                 .filterNot { it.deleted }, cacheNote)
                         }

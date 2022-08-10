@@ -280,16 +280,17 @@
                                     android:fontFamily="@font/sofia_pro_regular"
                                     android:gravity="start"
                                     android:hint="Title"
-                                    android:inputType="textMultiLine"
+                                    android:inputType="textLongMessage"
                                     android:maxHeight="75dp"
                                     android:paddingStart="20dp"
                                     android:paddingTop="20dp"
                                     android:paddingEnd="20dp"
                                     android:textSize="20sp"
                                     android:textStyle="bold"
-                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
 
-                                  />
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
                                 <ScrollView
                                     android:layout_width="0dp"
                                     android:fillViewport="true"
@@ -327,7 +328,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:visibility="gone"
-                                    app:layout_constraintBottom_toBottomOf="@+id/f_n_t_n_notes"
+
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent" />
 

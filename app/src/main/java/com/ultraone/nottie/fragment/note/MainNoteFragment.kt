@@ -13,6 +13,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
 import com.google.android.material.transition.MaterialElevationScale
 import com.ultraone.nottie.adapter.MainNoteAdapter
 import com.ultraone.nottie.databinding.FragmentMainNoteBinding
@@ -20,9 +21,7 @@ import com.ultraone.nottie.fragment.main.MainFragment
 
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.Result
-import com.ultraone.nottie.util.invoke
-import com.ultraone.nottie.util.shortSnackBar
-import com.ultraone.nottie.util.toast
+import com.ultraone.nottie.util.*
 import com.ultraone.nottie.viewmodel.DataProviderViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
@@ -36,10 +35,11 @@ class MainNoteFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-      //  reenterTransition = MaterialSharedAxis()
+        //  reenterTransition = MaterialSharedAxis()
 
     }
-    private lateinit var changingTitle : String
+
+    private lateinit var changingTitle: String
     private val dataProvider: DataProviderViewModel by activityViewModels()
     private lateinit var dataClient: List<Note>
     private var cacheNote: MutableList<Note> = mutableListOf()
@@ -102,7 +102,7 @@ class MainNoteFragment : Fragment() {
 
         }
         fMNS.setOnClickListener {
-            enterTransition = MaterialElevationScale(true).apply{
+            enterTransition = MaterialElevationScale(true).apply {
                 duration = 300
             }
             val extras = FragmentNavigatorExtras(fMNS to "test")
@@ -136,11 +136,11 @@ class MainNoteFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 lifecycleScope.launch {
                     dataClient[viewHolder.adapterPosition].let {
-                        dataProvider.deleteNote(it).observe(viewLifecycleOwner){ it ->
-                            when(it){
-                               is Result.LOADING -> {
+                        dataProvider.deleteNote(it).observe(viewLifecycleOwner) { it ->
+                            when (it) {
+                                is Result.LOADING -> {
 
-                               }
+                                }
                                 is Result.FAILED -> TODO()
                                 is Result.NULL_VALUE -> TODO()
                                 is Result.SUCCESS<*> -> {
@@ -177,28 +177,33 @@ class MainNoteFragment : Fragment() {
                             it.data.collect {
                                 it as List<Note>
 
-                                binding.fMNChipDefault.setOnCheckedChangeListener { view, isChecked ->
-
-                                    if (isChecked) {
-
-                                        val filtered = it.filter { note ->
-                                            note.deleted == false
-                                        }.sortedBy { data -> data.title }
-                                        Log.d("$TAG@185", "$isChecked + $filtered")
-                                        dataClient = filtered
-                                        adapter.addList(filtered)
-                                    } else (!isChecked) {
-                                        val filtered = it.filter { note ->
-                                            note.deleted == false
-                                        }
-
-                                        dataClient = filtered
-                                        adapter.addList(filtered)
-                                        Log.d("$TAG@198", "$isChecked + $filtered")
-                                    }
-                                }
+//                                binding.fMNChipDefault.setOnCheckedChangeListener { view, isChecked ->
+//
+//                                    if (isChecked) {
+//
+//                                        val filtered = it.filter { note ->
+//                                            note.deleted == false && note.attachmentAndOthers?.archived == false
+//                                        }.sortedBy { data -> data.title }
+//                                        Log.d("$TAG@185", "$isChecked + $filtered")
+//                                        dataClient = filtered
+//                                        adapter.addList(filtered)
+//                                    } else (!isChecked) {
+//                                        val filtered = it.filter { note ->
+//                                            note.deleted == false && note.attachmentAndOthers?.archived == false
+//                                        }
+//
+//                                        dataClient = filtered
+//                                        adapter.addList(filtered)
+//                                        Log.d("$TAG@198", "$isChecked + $filtered")
+//                                    }
+//                                }
+//
+//                                binding.fMNChipPinned.setOnCheckedChangeListener {
+//                                    if()
+//                                }
+                                handleMyChip(binding.fMNChipNew, binding.fMNChipPinned, binding.fMNChipDefault, it, adapter)
                                 val filtered = it.filter { note ->
-                                    note.deleted == false
+                                    note.deleted == false && note.attachmentAndOthers?.archived == false
                                 }
                                 dataClient = filtered
                                 cacheNote.clear()
@@ -213,7 +218,48 @@ class MainNoteFragment : Fragment() {
             }
         }
     }
+    private fun handleMyChip(nc: Chip, pc: Chip, sc: Chip, it: List<Note>, adapter: MainNoteAdapter ){
+        handleFilters(
+            nc, pc, sc
+        ) { n, p, s ->
+            when {
+                n -> {
+                    val filtered = it.filter { note ->
+                        note.dateTime?.substring(0..7) == currentTime.substring(0..7)
+                    }
 
+                    dataClient = filtered
+                    adapter.addList(filtered)
+                }
+                p -> {
+                    val filtered = it.filter { note ->
+                        note.deleted == false && note.attachmentAndOthers?.archived == false
+                    }.filter { it.attachmentAndOthers?.pinned == true }
+
+                    dataClient = filtered
+                    adapter.addList(filtered)
+
+                }
+                s == true -> {
+                    val filtered = it.filter { note ->
+                        note.deleted == false && note.attachmentAndOthers?.archived == false
+                    }.sortedBy { it.title }
+
+                    dataClient = filtered
+                    adapter.addList(filtered)
+                }
+                else -> {
+                    val filtered = it.filter { note ->
+                        note.deleted == false && note.attachmentAndOthers?.archived == false
+                    }
+
+                    dataClient = filtered
+                    adapter.addList(filtered)
+                    //   Log.d("$TAG@198", "$isChecked + $filtered")
+                }
+            }
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         Log.i("${this::class.simpleName}@71", "DestroyedView")

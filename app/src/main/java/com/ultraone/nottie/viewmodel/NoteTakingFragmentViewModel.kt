@@ -8,6 +8,7 @@ import com.ultraone.nottie.util.Request
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class NoteTakingFragmentViewModel: ViewModel() {
+    val archiveState: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val noteId: MutableStateFlow<Int?> = MutableStateFlow(null)
     val collectionId: MutableStateFlow<Int?> = MutableStateFlow(null)
     val collectionId2: MutableStateFlow<Int?> = MutableStateFlow(null)

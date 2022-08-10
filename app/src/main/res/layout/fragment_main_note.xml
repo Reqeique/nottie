@@ -66,7 +66,7 @@
                     android:layout_marginStart="5dp"
 
                     android:fontFamily="@font/sofia_pro_regular"
-                    android:text="Default"
+                    android:text="Sorted"
                     android:textAppearance="@style/chipText"
 
                     app:chipIconTint="@color/main_violet" />

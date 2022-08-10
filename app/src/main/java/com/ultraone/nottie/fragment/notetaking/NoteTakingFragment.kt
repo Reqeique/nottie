@@ -191,6 +191,7 @@ class NoteTakingFragment : Fragment() {
 
 
         }
+
         /**
          * used to listen for main note change and update the note
          * */
@@ -285,6 +286,7 @@ class NoteTakingFragment : Fragment() {
 
 
                 }
+
 //           \
             }
             launch {
@@ -299,6 +301,14 @@ class NoteTakingFragment : Fragment() {
                     updateOrCreateNew(copyable)
                 }
 
+            }
+            launch {
+                noteTakingFragmentViewModel.archiveState.collect {
+                    copyable = copyable.copy(
+                        attachmentAndOthers = copyable.attachmentAndOthers?.copy(archived = it)
+                    )
+                    updateOrCreateNew(copyable)
+                }
             }
 //            launch {
 //                noteTakingFragmentViewModel.collectionId2.collect {id ->

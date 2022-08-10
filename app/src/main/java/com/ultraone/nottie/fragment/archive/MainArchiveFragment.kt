@@ -51,7 +51,7 @@ class MainArchiveFragment: Fragment() {
             scrimColor = Color.TRANSPARENT
             setAllContainerColors(requireContext().resolver(R.attr.colorSurface))
         }
-        toNoteTakingFragment()
+
 //        registerForActivityResult(ActivityResultContracts.GetContent()) {
 //            Log.d("${NoteTakingFragment.TAG}@110", "URI = $it")
 //        }
@@ -67,6 +67,7 @@ class MainArchiveFragment: Fragment() {
         lifecycleScope.launchWhenCreated {
             binding.fMARecycler.adapter = noteAdapter
             observeNote()
+            toNoteTakingFragment()
         }
         return binding.root
     }
@@ -100,10 +101,15 @@ class MainArchiveFragment: Fragment() {
     }
     private fun toNoteTakingFragment(){
         noteAdapter.onItemClick = { n, i, v ->
+
             findNavController().navigate(MainArchiveFragmentDirections.actionMainArchiveFragmentToNoteTakingFragment(i, n.id, n))
+
         }
         binding.fMAFab.setOnClickListener {
             findNavController().navigate(MainArchiveFragmentDirections.actionMainArchiveFragmentToNoteTakingFragment(NULL_VALUE_INT, NULL_VALUE_INT))
+            lifecycleScope.launch {
+                noteTakingFragmentViewModel.archiveState.emit(true)
+            }
 
         }
 

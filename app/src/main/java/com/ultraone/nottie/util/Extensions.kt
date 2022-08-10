@@ -30,6 +30,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import coil.load
 import coil.request.ImageRequest
+import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.ultraone.nottie.R
 import com.ultraone.nottie.model.Note
@@ -380,3 +381,24 @@ fun <T> getValue(liveData: LiveData<T>): T? {
     latch.await(2, TimeUnit.SECONDS)
     return objects[0] as T?
 }
+
+inline fun handleFilters(new: Chip, pinned: Chip, sorted: Chip?, crossinline state: (nIsChecked: Boolean, pIsChecked: Boolean, sIsChecked: Boolean?) -> Unit) {
+    new.setOnCheckedChangeListener { button, b ->
+        pinned.isChecked = false
+        sorted?.isChecked = false
+        state(b, false, sorted?.isChecked)
+    }
+    pinned.setOnCheckedChangeListener { button, b ->
+        new.isChecked = false
+        sorted?.isChecked = false
+        state(false, b, sorted?.isChecked)
+    }
+    sorted?.setOnCheckedChangeListener { button, b ->
+        pinned.isChecked = false
+        pinned.isChecked = false
+        state(false, false, b)
+    }
+}
+
+
+

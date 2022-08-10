@@ -19,6 +19,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
@@ -29,9 +30,7 @@ import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.model.NoteAttachmentAndOther
 import com.ultraone.nottie.model.NoteCollections
 import com.ultraone.nottie.model.Result
-import com.ultraone.nottie.util.NULL_VALUE_INT
-import com.ultraone.nottie.util.dialog
-import com.ultraone.nottie.util.resolver
+import com.ultraone.nottie.util.*
 import com.ultraone.nottie.viewmodel.DataProviderViewModel
 import com.ultraone.nottie.viewmodel.NoteTakingFragmentViewModel
 import kotlinx.coroutines.Dispatchers.Main
@@ -99,12 +98,13 @@ class NoteCollectionNoteFragment : Fragment() {
                         lifecycleScope.launch {
                             notesFlow.collect { notes ->
                                 val note = notes.filter { it1 ->
-                                    it1.attachmentAndOthers?.collectionId == args.id
+                                    it1.attachmentAndOthers?.collectionId == args.id && it1.attachmentAndOthers.archived == false && it1.deleted == false
                                 }
+                                handleMyChip(binding.fMNChipNew, binding.fMNChipPinned, binding.fMNChipDefault, note, adapter)
 
                                 cacheNotes.clear()
-                                cacheNotes.addAll(notes)
-                                adapter.addList(note)
+                                cacheNotes.addAll(note.filter { it.deleted == false && it.attachmentAndOthers?.archived == false})
+                                adapter.addList(note.filter { it.deleted == false && it.attachmentAndOthers?.archived == false})
 
                             }
                         }
@@ -234,7 +234,51 @@ class NoteCollectionNoteFragment : Fragment() {
             findNavController().popBackStack()
         }
     }
+    private fun handleMyChip(nc: Chip, pc: Chip, sc: Chip, it: List<Note>, adapter: MainNoteAdapter ){
+        handleFilters(
+            nc, pc, sc
+        ) { n, p, s ->
+            when {
+                n -> {
+                    val filtered = it.filter { note ->
+                        note.dateTime?.substring(0..7) == currentTime.substring(0..7)
+                    }
+                    cacheNotes.clear()
+                    cacheNotes.addAll(filtered)
+                    adapter.addList(filtered)
+                }
+                p -> {
+                    val filtered = it.filter { note ->
+                        note.deleted == false && note.attachmentAndOthers?.archived == false
+                    }.filter { it.attachmentAndOthers?.pinned == true }
 
+                    cacheNotes.clear()
+                    cacheNotes.addAll(filtered)
+                    adapter.addList(filtered)
+
+                }
+                s == true -> {
+                    val filtered = it.filter { note ->
+                        note.deleted == false && note.attachmentAndOthers?.archived == false
+                    }.sortedBy { it.title }
+
+                    cacheNotes.clear()
+                    cacheNotes.addAll(filtered)
+                    adapter.addList(filtered)
+                }
+                else -> {
+                    val filtered = it.filter { note ->
+                        note.deleted == false && note.attachmentAndOthers?.archived == false
+                    }
+
+                    cacheNotes.clear()
+                    cacheNotes.addAll(filtered)
+                    adapter.addList(filtered)
+                    //   Log.d("$TAG@198", "$isChecked + $filtered")
+                }
+            }
+        }
+    }
     private fun setUpFabClickListener() {
         binding.fNCFab.setOnClickListener { v ->
             lifecycleScope.launch {
