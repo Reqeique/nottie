@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:tools="http://schemas.android.com/tools"
-    app:cardCornerRadius="10dp"
+
+
+    app:cardCornerRadius="7.5dp"
     android:layout_margin="10dp"
 
-    app:cardElevation="02dp"
+    app:cardElevation="2dp"
+
 
 
 
@@ -47,7 +50,7 @@
                 android:maxHeight="100dp"
 
 
-                app:cardCornerRadius="10dp"
+                app:cardCornerRadius="3.75dp"
                 app:cardElevation="0dp"
 
                 app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +86,7 @@
                     android:padding="16dp"
                     android:paddingStart="-1dp"
                     android:text="Title"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
 
                     app:layout_constraintStart_toStartOf="parent"
@@ -146,6 +149,7 @@
                     app:srcCompat="@drawable/ic_baseline_insert_drive_file_24" />
 
                 <TextView
+                    style="@style/secondaryTextStyle"
                     android:id="@+id/rm_main_note_small_note"
                     android:layout_width="wrap_content"
 

@@ -483,6 +483,7 @@ class NoteTakingFragment : Fragment() {
         launch {
 
             //if(args.id == NULL_VALUE_INT){
+            if(note.mainNote == null || note.mainNote == "" && note.title == null || note.title == "") return@launch
             dataProvider.addNote(note).observe(viewLifecycleOwner) {
                 lifecycleScope.launch(Main) {
                     when (it) {

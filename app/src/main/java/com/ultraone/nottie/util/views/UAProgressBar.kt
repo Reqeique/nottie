@@ -71,7 +71,7 @@ class UAProgressBar : AppCompatSeekBar {
 
                 progressRect[lastProgressX.toFloat() , (thumboffset / 2).toFloat(), progressItemRight.toFloat()] =
                     (progressBarHeight - thumboffset / 2).toFloat()
-                canvas.drawRoundRect(progressRect, 10f,10f , progressPaint)
+                canvas.drawRect(progressRect, progressPaint)
                 lastProgressX = progressItemRight
             }
 
