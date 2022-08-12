@@ -64,7 +64,7 @@ class NoteCollectionsAdapter: RecyclerView.Adapter< NoteCollectionsAdapter.ViewH
         holder {
             root.transitionName = "createNewCollection-${datas[position].id}"
             pb.thumb.mutate().alpha = 0
-            val kv = listNotes.filter { it.attachmentAndOthers?.collectionId == datas[position].id}.map {
+            val kv = listNotes.filter { it.attachmentAndOthers?.collectionId == datas[position].id && it.deleted == false && it.attachmentAndOthers.archived == false }.map {
                 (itemView.context.resolver(it.attachmentAndOthers?.color?.toIntOrNull()
                     ?: R.attr.colorPrimary)) to listNotes.filter {  it1 -> it1.attachmentAndOthers?.collectionId == datas[position].id}.filter { it1 -> it1.attachmentAndOthers?.color == it.attachmentAndOthers?.color} .size
             }

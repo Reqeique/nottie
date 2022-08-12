@@ -19,11 +19,7 @@ import com.ultraone.nottie.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity(){
-    fun main(arr: Array<String>){
-        //hello
-        print("how to makr")
-        println("heck is goung on")
-    }
+
     lateinit var controller: NavController
     lateinit var config: AppBarConfiguration
     lateinit var binding : ActivityMainBinding

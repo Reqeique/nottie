@@ -216,6 +216,39 @@ class SearchFragment : Fragment() {
                             chip5.setVisible()
                             chip4.setVisible()
                         }
+
+                        binding.chip5.invokeSelectableState<Chip> {
+                            when(it){
+                                true -> {
+                                    binding.chip5.isChecked = false
+                                    binding.fSC1.setVisible()
+                                    binding.fSC2.setGone()
+                                }
+                                false -> {
+                                    binding.fSC2.setVisible()
+
+                                }
+                                null -> {
+                                    TODO()
+                                }
+                            }
+
+                        }
+                        binding.chip4.invokeSelectableState<Chip> {
+                            when(it){
+                                true -> {
+                                    binding.chip4.isChecked = false
+                                    binding.fSC2.setVisible()
+                                    binding.fSC1.setGone()
+                                }
+                                false -> {
+                                    binding.fSC1.setVisible()
+                                }
+                                null -> {
+                                    TODO()
+                                }
+                            }
+                        }
 //                        binding.chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
 //                            when {
 //                                checkedIds.all { it == 1} -> {

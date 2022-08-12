@@ -177,13 +177,16 @@ Ut viverra arcu a justo auctor, sed elementum leo vestibulum. Integer vitae blan
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
-                <ImageView
-                    android:id="@+id/rm_main_note_small_pin"
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/rm_main_note_small_cv"
                     android:layout_marginBottom="8dp"
 
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_baseline_push_pin_24"
+                    android:layout_width="20dp"
+                    android:layout_height="10dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="?attr/colorPrimary"
+                    app:cardCornerRadius="2.5dp"
                     app:layout_constraintBottom_toBottomOf="@+id/rm_main_note_small_date"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/rm_main_note_small_note" />

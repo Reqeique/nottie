@@ -68,8 +68,14 @@ class MainArchiveFragment: Fragment() {
             binding.fMARecycler.adapter = noteAdapter
             observeNote()
             toNoteTakingFragment()
+            handleBackButton()
         }
         return binding.root
+    }
+    private fun handleBackButton(){
+        binding.fMABackButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
     }
     private fun observeNote(){
     lifecycleScope.launch {

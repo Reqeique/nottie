@@ -598,6 +598,7 @@ class NoteTakingFragment : Fragment() {
         noteTakingFragmentViewModel.collectionId2.value = null
         Log.d("$TAG@353", "ON DETACH calling null")
         noteTakingFragmentViewModel.uriListener.value = null
+        noteTakingFragmentViewModel.archiveState.value = false
 
     }
 
