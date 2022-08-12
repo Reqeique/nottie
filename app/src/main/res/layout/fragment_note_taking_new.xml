@@ -33,6 +33,18 @@
                 app:layout_constraintEnd_toStartOf="@+id/f_n_t_n_add_button"
                 app:layout_constraintTop_toTopOf="@+id/f_n_t_n_add_button" />
 
+            <ImageButton
+                android:id="@+id/f_n_t_n_delete_button"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_outline_delete_outline_24"
+                android:tint="?attr/colorControlNormal"
+                app:backgroundTint="@android:color/transparent"
+                app:layout_constraintBottom_toBottomOf="@+id/imageButton"
+                app:layout_constraintEnd_toStartOf="@+id/imageButton"
+                app:layout_constraintTop_toTopOf="@+id/imageButton" />
+
             <ImageView
                 android:id="@+id/f_n_t_n_add_button"
                 android:layout_width="24dp"
@@ -82,6 +94,16 @@
 
             </ImageView>
 
+            <ImageButton
+                android:id="@+id/f_n_t_n_archive_button"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_archive_archived_unarchived"
+                app:backgroundTint="@android:color/transparent"
+                app:layout_constraintBottom_toBottomOf="@+id/f_n_t_n_delete_button"
+                app:layout_constraintEnd_toStartOf="@+id/f_n_t_n_delete_button"
+                app:layout_constraintTop_toTopOf="@+id/f_n_t_n_delete_button" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/imageButton"
@@ -111,6 +133,7 @@
                     android:src="#DCDCDC"
                     tools:layout_editor_absoluteX="118dp"
                     tools:layout_editor_absoluteY="3dp" />
+
 
 
             </androidx.cardview.widget.CardView>

@@ -88,7 +88,7 @@ class MainArchiveFragment: Fragment() {
                     is Result.SUCCESS<*> -> {
                         it.data as Flow<List<Note>>
                         it.data.collect {
-                            noteAdapter.addList(it.filter { it.attachmentAndOthers?.archived == true })
+                            noteAdapter.addList(it.filter { it.deleted == false && it.attachmentAndOthers?.archived == true })
                             cacheNote.clear()
                             cacheNote.addAll(it)
                         }
@@ -103,6 +103,9 @@ class MainArchiveFragment: Fragment() {
         noteAdapter.onItemClick = { n, i, v ->
 
             findNavController().navigate(MainArchiveFragmentDirections.actionMainArchiveFragmentToNoteTakingFragment(i, n.id, n))
+            lifecycleScope.launch {
+                noteTakingFragmentViewModel.archiveState.emit(n.attachmentAndOthers?.archived ?: false)
+            }
 
         }
         binding.fMAFab.setOnClickListener {

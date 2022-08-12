@@ -197,6 +197,7 @@ const val NULL_VALUE_INT = -2
 fun <T : View> View.invokeSelectableState(state: (Boolean?) -> Unit): View {
     var clicks = 0
     setOnClickListener {
+        //if(!isPressed) return@setOnClickListener
         clicks++
 
         when {
@@ -217,6 +218,9 @@ fun <T : View> View.invokeSelectableState(state: (Boolean?) -> Unit): View {
                     isSelected = true
                     state(true)
                 }
+            }
+            else -> {
+                state(null)
             }
         }
 

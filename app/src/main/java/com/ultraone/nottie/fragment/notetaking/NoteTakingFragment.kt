@@ -210,8 +210,23 @@ class NoteTakingFragment : Fragment() {
             Log.d("$TAG@154", "pinned = $it, copiable = $copyable")
             updateOrCreateNew(copyable)
         }
-
-
+//        var clicked = true
+//        fNTNArchiveButton.invokeSelectableState<ImageButton> { clicked = true }
+        fNTNArchiveButton.invokeSelectableState<ImageButton> {
+            Log.d("NTF@216", "$it")
+            if(true) {
+                Log.d("NTF@216", "$it")
+                copyable =
+                    copyable.copy(attachmentAndOthers = copyable.attachmentAndOthers?.copy(archived = it))
+                Log.d("$TAG@154", "pinned = $it, copiable = $copyable")
+                updateOrCreateNew(copyable)
+            }
+        }
+        fNTNDeleteButton.invokeSelectableState<ImageButton> {
+            copyable = copyable.copy(deleted = it)
+            updateOrCreateNew(copyable)
+            findNavController().popBackStack()
+        }
         fragmentNoteTakingNewChooseColor.setOnClickListener {
             Log.d(
                 "$TAG@110", "clicked" +
@@ -304,6 +319,7 @@ class NoteTakingFragment : Fragment() {
             }
             launch {
                 noteTakingFragmentViewModel.archiveState.collect {
+                    Log.d("NTF@317", "it $it")
                     copyable = copyable.copy(
                         attachmentAndOthers = copyable.attachmentAndOthers?.copy(archived = it)
                     )
@@ -415,6 +431,7 @@ class NoteTakingFragment : Fragment() {
                         setUpCollection(data)
                         setUpRecyclers(data)
                         setUpPinButton(data)
+                        setUpArchiveButton(data)
                         setUpRootCardView(data)
 
 
@@ -565,6 +582,13 @@ class NoteTakingFragment : Fragment() {
             fNTNPinButton.isSelected = true
         } else if (data == null || data.attachmentAndOthers?.pinned == false) {
             fNTNPinButton.isSelected = false
+        }
+    }
+    private fun FragmentNoteTakingNewBinding.setUpArchiveButton(data: Note? ){
+        if(data != null && data.attachmentAndOthers?.archived == true){
+            fNTNArchiveButton.isSelected = true
+        } else if (data == null || data.attachmentAndOthers?.archived == false ){
+            fNTNArchiveButton.isSelected = false
         }
     }
 
