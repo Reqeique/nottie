@@ -29,7 +29,7 @@ class  DocumentFrameUriFetcher(val context: Context,extension: String) : Fetcher
 
     override suspend fun fetch(pool: BitmapPool, data: Uri, size: Size, options: Options): FetchResult {
 
-        val defaultDrawable = context.getDrawableCompat(R.drawable.ic_outline_audiotrack_24) ?: ColorDrawable(Color.BLACK)
+        val defaultDrawable = context.getDrawableCompat(R.drawable.ic_outline_insert_drive_file_24) ?: ColorDrawable(Color.BLACK)
         DrawableCompat.setTint(
             defaultDrawable,
             Color.GRAY
@@ -42,6 +42,7 @@ class  DocumentFrameUriFetcher(val context: Context,extension: String) : Fetcher
         )
 
         val rawBitmap = getAlbumArtBitmap(context, data) ?: return defaultResult
+
 
         val srcWidth = (rawBitmap.width - 100)
         val srcHeight = (rawBitmap.height - 100)
