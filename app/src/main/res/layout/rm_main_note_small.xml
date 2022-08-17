@@ -5,7 +5,8 @@
     app:cardCornerRadius="7.5dp"
     android:layout_margin="10dp"
 
-    app:cardElevation="2dp"
+    app:cardElevation="02.5dp"
+    app:strokeColor="?attr/colorControlNormal"
 
 
 
@@ -76,8 +77,9 @@
 
                 <TextView
 
+
                     android:id="@+id/rm_main_note_small_title"
-                    style="@style/primaryTextStyle"
+                    style="@android:style/TextAppearance.Material.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
 

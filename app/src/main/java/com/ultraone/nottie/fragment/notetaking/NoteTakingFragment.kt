@@ -574,7 +574,9 @@ class NoteTakingFragment : Fragment() {
 //            when(data.attachmentAndOthers.fileUri.toList().map { it!! }.size){
 //                fNTNAttachmentRecycler.layoutr
 //            }
-            attachmentAdapter.addList(data.attachmentAndOthers.fileUri.toList().map { it!! })
+
+            attachmentAdapter.addList(data.attachmentAndOthers.fileUri.toList().map { it!! }.distinct())
+            attachmentAdapter.notifyDataSetChanged()
         }
     }
 

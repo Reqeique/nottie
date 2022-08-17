@@ -124,7 +124,7 @@ class DataProviderViewModel(application: Application) : AndroidViewModel(applica
         coroutineScope {
             val mainJob = viewModelScope.async {
                 emit(Result.LOADING)
-                noteRepo.updateNote(note)
+                noteRepo.updateNote(note.copy(attachmentAndOthers = note.attachmentAndOthers?.copy( fileUri = note.attachmentAndOthers.fileUri.distinct())))
             }
             mainJob.join()
             mainJob.invokeOnCompletion {
