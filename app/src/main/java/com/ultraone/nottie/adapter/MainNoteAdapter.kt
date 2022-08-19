@@ -3,8 +3,7 @@ package com.ultraone.nottie.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Color
-import android.util.TypedValue
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -16,8 +15,6 @@ import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
-import androidx.recyclerview.selection.StableIdKeyProvider
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.ultraone.nottie.R
@@ -26,6 +23,10 @@ import com.ultraone.nottie.databinding.RmMainNoteBinding
 import com.ultraone.nottie.databinding.RmMainNoteSmallBinding
 import com.ultraone.nottie.model.Note
 import com.ultraone.nottie.util.*
+import okio.ByteString.Companion.decodeBase64
+import java.text.Format
+import java.text.SimpleDateFormat
+import java.util.*
 
 //class SwipeToDelete : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper) {
 //    override fun onMove(
@@ -194,7 +195,8 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
             }
         }
     }
-    private inline fun  <reified T: FileType> List<String>.containsFile(context: Context): Boolean{
+
+    private inline fun <reified T : FileType> List<String>.containsFile(context: Context): Boolean {
 
         return any {
 
@@ -202,12 +204,12 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
         }
     }
 
-    private fun ViewHolder.setUpAttachments(p: Int){
+    private fun ViewHolder.setUpAttachments(p: Int) {
         val attachmentAndOthers = (datas[p].attachmentAndOthers) ?: return
         //Log.d("")
         if (attachmentAndOthers.color != null) {
 
-             cv.setCardBackgroundColor(
+            cv.setCardBackgroundColor(
                 itemView.context.resolver(attachmentAndOthers.color.toInt())
             )
         }
@@ -217,32 +219,31 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
         video.visibility = View.GONE
         audio.visibility = View.GONE
 
-        if(attachmentAndOthers.fileUri.isNotEmpty()){
-            val uri = attachmentAndOthers.fileUri.map {it!!}
+        if (attachmentAndOthers.fileUri.isNotEmpty()) {
+            val uri = attachmentAndOthers.fileUri.map { it!! }
 
-                if(uri.containsFile<IMAGE>(itemView.context) ){
-                    image.visibility = View.VISIBLE
-                    card.visibility = View.VISIBLE
-                    imageView.setImageURI(attachmentAndOthers.fileUri.first{
-                        it!!.fileType(itemView.context) is IMAGE
-                    }?.toUri())
-                }
-                if(uri.containsFile<AUDIO>(itemView.context)) {
-                    audio.visibility = View.VISIBLE
-                }
+            if (uri.containsFile<IMAGE>(itemView.context)) {
+                image.visibility = View.VISIBLE
+                card.visibility = View.VISIBLE
+                imageView.setImageURI(attachmentAndOthers.fileUri.first {
+                    it!!.fileType(itemView.context) is IMAGE
+                }?.toUri())
+            }
+            if (uri.containsFile<AUDIO>(itemView.context)) {
+                audio.visibility = View.VISIBLE
+            }
 
-                if(uri.containsFile<VIDEO>(itemView.context)) {
-                    video.visibility = View.VISIBLE
-                }
+            if (uri.containsFile<VIDEO>(itemView.context)) {
+                video.visibility = View.VISIBLE
+            }
 
-                if(uri.containsFile<DOCUMENT>(itemView.context)) {
+            if (uri.containsFile<DOCUMENT>(itemView.context)) {
 
-                    document.visibility = View.VISIBLE
-                }
+                document.visibility = View.VISIBLE
+            }
 
 
-
-        }else if(attachmentAndOthers.fileUri.isEmpty()){
+        } else if (attachmentAndOthers.fileUri.isEmpty()) {
             image.visibility = View.GONE
             card.visibility = View.GONE
             document.visibility = View.GONE
@@ -306,7 +307,7 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
 
 //            date.text = datas[p].dateTime?.decodeToTimeAndDate()
             root.transitionName = "createNewNote${datas[p].dateTime}"
-          //  pin.visibility = View.GONE
+            //  pin.visibility = View.GONE
 
             when {
                 tracker?.isSelected((datas[p].id).toLong()) == true -> {
@@ -337,7 +338,23 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
 }
 
 class DateTimeAdapter : RecyclerView.Adapter<DateTimeAdapter.ViewHolder>() {
-    private var datas = (1..31).toList()
+    private var datas: MutableList<Date> = mutableListOf()
+    private var range = 1..31
+    fun generate() {
+        val cal = Calendar.getInstance()
+        cal.time = Date();
+        cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) - 15);
+        val myYear = cal.get(Calendar.YEAR)
+        datas.clear()
+        var x = 0
+        while (myYear == cal.get(Calendar.YEAR)) {
+            x++
+            datas.add(cal.time)
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            if (x == 31) break
+        }
+
+    }
 
     lateinit var parent: RecyclerView
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -355,27 +372,56 @@ class DateTimeAdapter : RecyclerView.Adapter<DateTimeAdapter.ViewHolder>() {
 
         val date: TextView
         val root2: MaterialCardView
+        val day: TextView
+        val line: View
 
         //        fun byPosition(pos: Int): View{
 //
 //        }
         init {
             val x = 0
+            line = binding.rmMainLine
             date = binding.rmDateTimeDate
             root2 = binding.root2
+            day = binding.rmDateTimeDay
         }
     }
 
     @SuppressLint("ResourceType")
+    override fun onViewRecycled(holder: ViewHolder) {
+        super.onViewRecycled(holder)
+        holder.root2.setCardBackgroundColor(ColorStateList.valueOf(holder.itemView.context.resolver(android.R.color.transparent)))
+        holder.line.setGone()
+    }
+
+    @SuppressLint("ResourceType", "SimpleDateFormat")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        this.parent.smoothScrollToPosition(currentTime.decodeDate() + ((1..3).random()))
-        val v = parent.findViewHolderForAdapterPosition(currentTime.decodeDate() - 1)?.itemView
-        val p = position
-        v?.findViewById<MaterialCardView>(R.id.root2)
-            ?.setCardBackgroundColor(ColorStateList.valueOf(holder.itemView.context.resolver(R.attr.colorTertiary)))
+
+        this.parent.smoothScrollToPosition(datas.map{ it.date }.indexOf(currentTime.decodeDate()) )
+        Log.d("MNA@392", datas.map{ it.date }.indexOf(currentTime.decodeDate() ).toString())
+//        val v = parent.findViewHolderForAdapterPosition(datas.map{ it.date }.indexOf(currentTime.decodeDate() ))?.itemView
+       val p = position
+//        v?.findViewById<MaterialCardView>(R.id.root2)
+//            ?.setCardBackgroundColor(ColorStateList.valueOf(holder.itemView.context.resolver(R.attr.colorTertiary)))
 
         holder {
-            date.text = datas[p].toString().toEditable()
+            val f: Format = SimpleDateFormat("EEEE")
+            Log.d("MNA@397", "$datas ")
+            Log.d("MNA@398", "${datas[p]} ")
+            val str: String = f.format(datas[p]).substring(0..2)
+            if(p == datas.map { it.date }.indexOf(currentTime.decodeDate())){
+                date.text = datas[p].date.toString().toEditable()
+                day.text = str
+                line.setVisible()
+                root2.setCardBackgroundColor(ColorStateList.valueOf(holder.itemView.context.resolver(R.attr.colorTertiary)))
+            } else if (p != datas.map { it.date }.indexOf(currentTime.decodeDate())){
+                date.text = datas[p].date.toString().toEditable()
+                day.text = str
+                root2.setCardBackgroundColor(ColorStateList.valueOf(holder.itemView.context.resolver(android.R.color.transparent)))
+
+            }
+
+
             root2.setOnClickListener {
                 it.shortSnackBar(p.toString())
             }

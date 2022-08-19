@@ -1,9 +1,8 @@
 package com.ultraone.nottie.util
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.Paint
+import android.content.res.ColorStateList
+import android.graphics.*
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
@@ -24,12 +23,20 @@ import com.ultraone.nottie.R
 
 import kotlin.math.roundToInt
 
-class  DocumentFrameUriFetcher(val context: Context,extension: String) : Fetcher<Uri> {
+class DocumentFrameUriFetcher(val context: Context,val extension: String) : Fetcher<Uri> {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
 
-    override suspend fun fetch(pool: BitmapPool, data: Uri, size: Size, options: Options): FetchResult {
+    override suspend fun fetch(
+        pool: BitmapPool,
+        data: Uri,
+        size: Size,
+        options: Options
+    ): FetchResult {
 
-        val defaultDrawable = context.getDrawableCompat(R.drawable.ic_outline_insert_drive_file_24) ?: ColorDrawable(Color.BLACK)
+        val defaultDrawable =
+            context.getDrawableCompat(R.drawable.ic_outline_insert_drive_file_24) ?: ColorDrawable(
+                Color.BLACK
+            )
         DrawableCompat.setTint(
             defaultDrawable,
             Color.GRAY
@@ -57,7 +64,8 @@ class  DocumentFrameUriFetcher(val context: Context,extension: String) : Fetcher
                         dstHeight = size.height,
                         scale = options.scale
                     )
-                    val scale = if (options.allowInexactSize) rawScale.coerceAtMost(1.0) else rawScale
+                    val scale =
+                        if (options.allowInexactSize) rawScale.coerceAtMost(1.0) else rawScale
                     val width = (scale * srcWidth).roundToInt()
                     val height = (scale * srcHeight).roundToInt()
                     PixelSize(width, height)
@@ -82,7 +90,7 @@ class  DocumentFrameUriFetcher(val context: Context,extension: String) : Fetcher
             true
         }
 
-        return DrawableResult(bitmap.toDrawable(context.resources), isSampled, DataSource.DISK)
+        return DrawableResult(drawStringonBitmap(bitmap, "hello", Point(3,4), Color.GRAY, 1, 24, true, 20,20)!!.toDrawable(context.resources), isSampled, DataSource.DISK)
     }
 
     override fun key(data: Uri) = data.toString()
@@ -128,11 +136,17 @@ class  DocumentFrameUriFetcher(val context: Context,extension: String) : Fetcher
         val outBitmap = pool.get(dstWidth, dstHeight, safeConfig)
         outBitmap.applyCanvas {
             scale(scale, scale)
+            val paint0 = Paint()
+            paint0.color = 0xffffff
+            paint0.alpha = 1
+            paint0.textSize = 20f
+            paint0.isUnderlineText = true
+            drawText(extension, 0f, 0f, paint0)
             drawBitmap(inBitmap, 0f, 0f, paint)
         }
-        pool.put(inBitmap)
+        pool.put(drawStringonBitmap(inBitmap, "Hello",Point(10,10),0xffffff,1,20, true, 10,10)!!)
 
-        return outBitmap
+        return drawStringonBitmap(outBitmap, "Hello",Point(10,10),0xffffff,1,20, true, 10,10)!!
     }
 
     private fun isConfigValid(bitmap: Bitmap, options: Options): Boolean {
@@ -141,15 +155,50 @@ class  DocumentFrameUriFetcher(val context: Context,extension: String) : Fetcher
 
     private fun isSizeValid(bitmap: Bitmap, options: Options, size: Size): Boolean {
         return options.allowInexactSize || size is OriginalSize ||
-                size == DecodeUtils.computePixelSize(bitmap.width, bitmap.height, size, options.scale)
+                size == DecodeUtils.computePixelSize(
+            bitmap.width,
+            bitmap.height,
+            size,
+            options.scale
+        )
     }
 }
-class  SongFrameUriFetcher(val context: Context) : Fetcher<Uri> {
+
+fun drawStringonBitmap(
+    src: Bitmap,
+    string: String?,
+    location: Point,
+    color: Int,
+    alpha: Int,
+    size: Int,
+    underline: Boolean,
+    width: Int,
+    height: Int
+): Bitmap? {
+    val result = Bitmap.createBitmap(width, height, src.config)
+    val canvas = Canvas(result)
+    canvas.drawBitmap(src, 0f, 0f, null)
+    val paint = Paint()
+    paint.color = color
+    paint.alpha = alpha
+    paint.textSize = size.toFloat()
+    paint.isAntiAlias = true
+    paint.isUnderlineText = underline
+    canvas.drawText(string ?: "", location.x.toFloat(), location.y.toFloat(), paint)
+    return result
+}
+class SongFrameUriFetcher(val context: Context) : Fetcher<Uri> {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
 
-    override suspend fun fetch(pool: BitmapPool, data: Uri, size: Size, options: Options): FetchResult {
+    override suspend fun fetch(
+        pool: BitmapPool,
+        data: Uri,
+        size: Size,
+        options: Options
+    ): FetchResult {
 
-        val defaultDrawable = context.getDrawableCompat(R.drawable.ic_outline_audiotrack_24) ?: ColorDrawable(Color.BLACK)
+        val defaultDrawable = context.getDrawableCompat(R.drawable.ic_outline_audiotrack_24)
+            ?: ColorDrawable(Color.BLACK)
         DrawableCompat.setTint(
             defaultDrawable,
             Color.GRAY
@@ -176,7 +225,8 @@ class  SongFrameUriFetcher(val context: Context) : Fetcher<Uri> {
                         dstHeight = size.height,
                         scale = options.scale
                     )
-                    val scale = if (options.allowInexactSize) rawScale.coerceAtMost(1.0) else rawScale
+                    val scale =
+                        if (options.allowInexactSize) rawScale.coerceAtMost(1.0) else rawScale
                     val width = (scale * srcWidth).roundToInt()
                     val height = (scale * srcHeight).roundToInt()
                     PixelSize(width, height)
@@ -260,6 +310,11 @@ class  SongFrameUriFetcher(val context: Context) : Fetcher<Uri> {
 
     private fun isSizeValid(bitmap: Bitmap, options: Options, size: Size): Boolean {
         return options.allowInexactSize || size is OriginalSize ||
-                size == DecodeUtils.computePixelSize(bitmap.width, bitmap.height, size, options.scale)
+                size == DecodeUtils.computePixelSize(
+            bitmap.width,
+            bitmap.height,
+            size,
+            options.scale
+        )
     }
 }

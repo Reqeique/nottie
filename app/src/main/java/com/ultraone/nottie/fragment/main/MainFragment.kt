@@ -2,6 +2,7 @@ package com.ultraone.nottie.fragment.main
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -45,6 +46,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 //ERROR java.lang.IllegalArgumentException: Navigation action/destination com.ultraone.nottie:id/action_noteTakingFragment_to_mainFragment cannot be found from the current destination Destination(com.ultraone.nottie:id/mainFragment) label=MainFragment class=com.ultraone.nottie.fragment.main.MainFragment
@@ -58,13 +61,15 @@ class MainFragment : Fragment() {
     private var cacheCollection: MutableList<NoteCollections> = mutableListOf()
     private var cacheSnippie: Snippie? = null
     lateinit var collectionsAdapter: NoteCollectionsAdapter
-    lateinit var dateTimeAdapter: DateTimeAdapter
+    private val  dateTimeAdapter by lazy {
+        DateTimeAdapter()
+    }
     lateinit var NoteAdapter: NoteAdapter
     val dataProvider by activityViewModels<DataProviderViewModel>()
     lateinit var controller: NavController
     lateinit var config: AppBarConfiguration
     val noteTakingFragmentViewModel: NoteTakingFragmentViewModel by activityViewModels()
-    private val month = 1..31
+
 
     private var tracker: SelectionTracker<Long>? = null
     lateinit var binding: FragmentMainBinding
@@ -89,15 +94,17 @@ class MainFragment : Fragment() {
                 it.setIsRecyclable(false)
             }
             delay(400L)
-
+        dateTimeAdapter
             binding.setUpNotes()
             binding.setUpCollections()
             binding.setUpSnippie()
             binding.setSearchCardClickListener()
 
             handleOpenArchive()
-            dateTimeAdapter = DateTimeAdapter()
+            dateTimeAdapter.generate()
+            val pat = SimpleDateFormat("MMMM, dd")
 
+            binding.textView3.text = pat.format(Date())
             binding.fragmentMainRecyclerDateTime.adapter = dateTimeAdapter
 
 

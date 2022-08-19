@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
 
@@ -13,10 +14,11 @@
         android:layout_width="50dp"
         android:layout_height="75dp"
         android:layout_margin="4dp"
-        app:cardBackgroundColor="@android:color/transparent"
+        app:cardBackgroundColor="?attr/colorTertiary"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -25,6 +27,7 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/rm_date_time_day"
 
                 style="@style/tertiaryTextStyle"
                 android:layout_width="wrap_content"
@@ -35,6 +38,19 @@
                 app:layout_constraintEnd_toEndOf="@+id/rm_date_time_date"
                 app:layout_constraintStart_toStartOf="@+id/rm_date_time_date"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:visibility="gone"
+                android:id="@+id/rm_main_line"
+                android:layout_width="0dp"
+                android:layout_height="4dp"
+                android:layout_marginTop="4dp"
+                android:background="?attr/colorPrimary"
+
+                app:layout_constraintEnd_toEndOf="@+id/rm_date_time_day"
+
+                app:layout_constraintStart_toStartOf="@+id/rm_date_time_day"
+                app:layout_constraintTop_toBottomOf="@+id/rm_date_time_day" />
 
             <TextView
                 android:id="@+id/rm_date_time_date"
