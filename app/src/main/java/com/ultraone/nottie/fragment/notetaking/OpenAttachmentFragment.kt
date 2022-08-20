@@ -73,7 +73,7 @@ class OpenAttachmentFragment: Fragment(){
         }
         return binding.root
     }
-    fun handleFile(uri: Uri) {
+    private fun handleFile(uri: Uri) {
 
         val mime: String = requireContext().contentResolver.getType(uri)!!
 
