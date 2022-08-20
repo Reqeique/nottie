@@ -1,12 +1,11 @@
 package com.ultraone.nottie.fragment.notetaking
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.PointF
-import android.media.MediaController2
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -14,6 +13,7 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.VideoView
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +24,7 @@ import com.ultraone.nottie.util.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
+
 
 class OpenAttachmentFragment: Fragment(){
     private lateinit var videoView: VideoView
@@ -59,14 +60,29 @@ class OpenAttachmentFragment: Fragment(){
 
               //  binding.fOAVV.setMediaController()
             }
-            is AUDIO -> TODO()
-            is DOCUMENT -> TODO()
+            is AUDIO -> {
+                handleFile(args.uri.toUri())
+            }
+            is DOCUMENT -> {
+                handleFile(args.uri.toUri())
+            }
             is IMAGE -> {
                 handleImage(args.uri.toUri())
             }
             is Other -> TODO()
         }
         return binding.root
+    }
+    fun handleFile(uri: Uri) {
+
+        val mime: String = requireContext().contentResolver.getType(uri)!!
+
+        // Open file with user selected app
+        val intent = Intent()
+        intent.action = Intent.ACTION_VIEW
+        intent.setDataAndType(uri, mime)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        startActivity(intent)
     }
     @SuppressLint("ClickableViewAccessibility")
     private fun handleImage(uri: Uri){

@@ -86,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:layout_width="wrap_content"
-                    android:text="JAN, 21"
+                    android:text="August, 21"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@+id/fragment_main_recycler_date_time"
