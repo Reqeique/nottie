@@ -51,7 +51,12 @@ class NoteCollectionsAdapter: RecyclerView.Adapter< NoteCollectionsAdapter.ViewH
         val root: MaterialCardView
         val pb: UAProgressBar
         val collectionName : TextView
+        val dateTime: TextView
+        val allNotesName: TextView
+
         init {
+            allNotesName = binding.rmMainCollectionAllNotes
+            dateTime = binding.rmMainCollectionDateTime
             pb = binding.rMCSPB
             root = binding.rmMainCollectionSmallRoot
             collectionName = binding.rmMainCollectionSmallName
@@ -60,6 +65,7 @@ class NoteCollectionsAdapter: RecyclerView.Adapter< NoteCollectionsAdapter.ViewH
             }
         }
     }
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: NoteCollectionsAdapter.ViewHolder, position: Int) {
         holder {
             root.transitionName = "createNewCollection-${datas[position].id}"
@@ -69,6 +75,8 @@ class NoteCollectionsAdapter: RecyclerView.Adapter< NoteCollectionsAdapter.ViewH
                     ?: R.attr.colorPrimary)) to listNotes.filter {  it1 -> it1.attachmentAndOthers?.collectionId == datas[position].id}.filter { it1 -> it1.attachmentAndOthers?.color == it.attachmentAndOthers?.color} .size
             }
             val allItemSize = kv.map { it.second }.sum()
+            dateTime.text = datas[position].dateTime.decodeToTimeAndDate()
+            allNotesName.text = "${listNotes.filter { it.attachmentAndOthers?.collectionId == datas[position].id }.size} Notes"
             initData(kv, allItemSize, pb)
             collectionName.text = datas[position].collectionName
         }

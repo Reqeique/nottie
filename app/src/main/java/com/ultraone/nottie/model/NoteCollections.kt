@@ -12,5 +12,6 @@ data class NoteCollections @JvmOverloads constructor (
     var id: Int,
     var collectionName: String,
     var deleted: Boolean,
-    var isVisible: Boolean
+    var isVisible: Boolean,
+    var dateTime: String
 ): Parcelable

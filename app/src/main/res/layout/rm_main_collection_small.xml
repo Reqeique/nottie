@@ -25,10 +25,10 @@
 <!--            android:layout_height="wrap_content">-->
             <com.ultraone.nottie.util.UAProgressBar
                 android:id="@+id/r_m_c_s_p_b"
-                app:layout_constraintBottom_toBottomOf="@+id/textView5"
-                app:layout_constraintEnd_toStartOf="@+id/textView5"
+                app:layout_constraintBottom_toBottomOf="@+id/rm_main_collection_date_time"
+                app:layout_constraintEnd_toStartOf="@+id/rm_main_collection_date_time"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textView5"
+                app:layout_constraintTop_toTopOf="@+id/rm_main_collection_date_time"
 
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
@@ -47,7 +47,7 @@
 
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/rm_main_collection_date_time"
             style="@style/tertiaryTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,6 +69,16 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/rm_main_collection_all_notes"
+            style="@style/secondaryTextStyle"
+            android:layout_marginBottom="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10 Notes"
+            app:layout_constraintBottom_toTopOf="@+id/r_m_c_s_p_b"
+            app:layout_constraintStart_toStartOf="@+id/r_m_c_s_p_b" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

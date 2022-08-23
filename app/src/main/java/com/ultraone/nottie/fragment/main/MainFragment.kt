@@ -330,7 +330,7 @@ class MainFragment : Fragment() {
                                         "Untitled Collection",
                                         false,
                                         isVisible = false
-                                    )
+                                    , currentTime)
                                 ).observe(viewLifecycleOwner)
                             }
                             cacheCollection.clear()
@@ -394,7 +394,7 @@ class MainFragment : Fragment() {
                                                 text.toString(),
                                                 deleted = false,
                                                 isVisible = true
-                                            )
+                                            , currentTime)
                                         ).observe(viewLifecycleOwner) {
                                             when (it) {
                                                 is Result.FAILED -> {
