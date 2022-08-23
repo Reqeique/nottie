@@ -71,6 +71,7 @@ class MainNoteAdapter(
         val root: MaterialCardView
         val title: TextView
         val date: TextView
+
         val indicator: MaterialCardView
 
         init {
@@ -85,6 +86,11 @@ class MainNoteAdapter(
             }
 
         }
+    }
+
+
+    private fun ViewHolder.setUpAttachment(){
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -164,6 +170,7 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
         val video: ImageView
         val audio: ImageView
         val indicator: MaterialCardView
+        val pin: ImageView
         val imageView: ImageView
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> =
             object : ItemDetailsLookup.ItemDetails<Long>() {
@@ -186,6 +193,7 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
             card = binding.card
             imageView = binding.rMNSImageView
             root = binding.rmMainNoteSmallRoot
+            pin = binding.rmMainNoteSmallPin
             indicator = binding.rmMainNoteSmallIndicator
             date = binding.rmMainNoteSmallDate
             note = binding.rmMainNoteSmallNote
@@ -284,14 +292,15 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
 //            audio.visibility = View.VISIBLE
 //
 //        }
-//        if (attachmentAndOthers.pinned == true) {
-//            root.setCardBackgroundColor(root.context.resolver(R.attr.colorPrimary))
-//            pin.visibility = View.VISIBLE
-//        } else if (attachmentAndOthers.pinned == false) {
-//            pin.visibility = View.GONE
-//            if(attachmentAndOthers.color != null) return
-//            root.setCardBackgroundColor(root.context.resolver(R.attr.colorSurface))
-//        }
+        if (attachmentAndOthers.pinned == true) {
+            root.setCardBackgroundColor(root.context.resolver(R.attr.colorPrimary))
+            pin.visibility = View.VISIBLE
+            pin.isSelected = true
+        } else if (attachmentAndOthers.pinned == false) {
+            pin.visibility = View.GONE
+            if(attachmentAndOthers.color != null) return
+            root.setCardBackgroundColor(root.context.resolver(R.attr.colorSurface))
+        }
 
     }
 
@@ -302,11 +311,13 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.ViewHolder>() {
         holder.apply {
             note.text = datas[p].mainNote
             title.text = datas[p].title
+            date.text  = datas[p].dateTime?.decodeToTimeAndDate()
             //todo uncomment the code below
             setUpAttachments(p)
 
 //            date.text = datas[p].dateTime?.decodeToTimeAndDate()
             root.transitionName = "createNewNote${datas[p].dateTime}"
+
             //  pin.visibility = View.GONE
 
             when {

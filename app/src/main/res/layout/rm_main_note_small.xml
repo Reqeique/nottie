@@ -171,6 +171,7 @@ Ut viverra arcu a justo auctor, sed elementum leo vestibulum. Integer vitae blan
                     app:layout_constraintTop_toBottomOf="@+id/rm_main_note_small_title" />
 
                 <TextView
+
                     android:id="@+id/rm_main_note_small_date"
 
                     style="@style/tertiaryTextStyle"
@@ -178,7 +179,7 @@ Ut viverra arcu a justo auctor, sed elementum leo vestibulum. Integer vitae blan
                     android:layout_height="wrap_content"
 
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginBottom="16dp"
                     android:text="1/2/19"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
@@ -186,16 +187,29 @@ Ut viverra arcu a justo auctor, sed elementum leo vestibulum. Integer vitae blan
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/rm_main_note_small_cv"
-                    android:layout_marginBottom="8dp"
+
 
                     android:layout_width="20dp"
                     android:layout_height="10dp"
-                    app:cardElevation="0dp"
                     app:cardBackgroundColor="?attr/colorPrimary"
                     app:cardCornerRadius="2.5dp"
+                    app:cardElevation="0dp"
                     app:layout_constraintBottom_toBottomOf="@+id/rm_main_note_small_date"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rm_main_note_small_note" />
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageView
+                    android:id="@+id/rm_main_note_small_pin"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="16dp"
+
+                    android:src="@drawable/ic_pin_selected_unselected"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="?attr/colorPrimary"
+                    app:cardCornerRadius="2.5dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/rm_main_note_small_cv"
+                    app:layout_constraintStart_toEndOf="@+id/rm_main_note_small_cv" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 

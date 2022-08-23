@@ -42,9 +42,9 @@ class NoteTakingAttachmentAdapter(): RecyclerView.Adapter<NoteTakingAttachmentAd
             }
             is DOCUMENT -> {
                 holder.binding.imageView.loadPreview(data){
-                    fetcher(DocumentFrameUriFetcher(holder.itemView.context, ""))
+                    fetcher(DocumentFrameUriFetcher(holder.itemView.context, "PNG"))
                 }
-//                TODO()
+
             }
             is IMAGE -> {
                 holder.binding.imageView.apply {
