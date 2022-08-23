@@ -89,8 +89,22 @@ class MainNoteAdapter(
     }
 
 
-    private fun ViewHolder.setUpAttachment(){
+    private fun ViewHolder.setUpAttachment(p: Int){
+        val attachmentAndOthers = datas[p].attachmentAndOthers ?: return
+        if (attachmentAndOthers.color != null) {
 
+            indicator.setCardBackgroundColor(
+                itemView.context.resolver(attachmentAndOthers.color.toInt())
+            )
+        }
+        if (attachmentAndOthers.pinned == true) {
+            root.setCardBackgroundColor(root.context.resolver(R.attr.colorPrimary))
+
+        } else if (attachmentAndOthers.pinned == false) {
+
+            if(attachmentAndOthers.color != null) return
+            root.setCardBackgroundColor(root.context.resolver(R.attr.colorSurface))
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -100,6 +114,7 @@ class MainNoteAdapter(
             note.text = datas[p].mainNote
             title.text = datas[p].title
             date.text = datas[p].dateTime?.decodeToTimeAndDate()
+            setUpAttachment(p)
             root.setOnLongClickListener {
 
 
